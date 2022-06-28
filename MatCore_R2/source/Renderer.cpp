@@ -5,7 +5,7 @@
 #include "Mesh.h"
 
 Renderer::Renderer() {
-	
+    testMeshRenderer = new MeshRenderer();
 }
 
 void Renderer::RenderScene(){
@@ -14,7 +14,7 @@ void Renderer::RenderScene(){
 	RenderMesh(testMeshRenderer);
 }
 
-void RenderMesh(MeshRenderer* meshRenderer) {
+void Renderer::RenderMesh(MeshRenderer* meshRenderer) {
     //create VAO
     unsigned int VAO, VBO, EBO;
     glGenBuffers(1, &VBO);
@@ -42,7 +42,12 @@ void RenderMesh(MeshRenderer* meshRenderer) {
     glEnableVertexAttribArray(3);
 
     //Unbind
-    glBindBuffer, GL_ARRAY_BUFFER(0);
-    glBindBuffer, GL_ELEMENT_ARRAY_BUFFER(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+}
+
+Renderer::~Renderer()
+{
+    delete testMeshRenderer;
 }

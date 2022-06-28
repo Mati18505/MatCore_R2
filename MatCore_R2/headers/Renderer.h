@@ -1,9 +1,10 @@
 #pragma once
 
-class MeshRenderer;
+struct MeshRenderer;
 class Renderer {
 public:
 	Renderer();
+	~Renderer();
 	void RenderScene();
 private:
 	MeshRenderer* testMeshRenderer;

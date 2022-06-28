@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#define _USE_MATH_DEFINES
+#include <math.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -91,7 +93,7 @@ public:
 		coliderAABB = meshCopy.coliderAABB;
 	}
 
-	void SetVertices(Vertex* verticesArray, unsigned int arrayLenght) {
+	void SetVertices(Vertex* verticesArray, size_t arrayLenght) {
 		vertices = std::vector<Vertex>(verticesArray, verticesArray + arrayLenght);
 		CreateAABB();
 		isVerticesChanged = true;
@@ -102,12 +104,12 @@ public:
 		isVerticesChanged = true;
 	}
 
-	void SetTriangles(unsigned int* trianglesArray, unsigned int arrayLenght) {
+	void SetTriangles(unsigned int* trianglesArray, size_t arrayLenght) {
 		triangles = std::vector<unsigned int>(trianglesArray, trianglesArray + arrayLenght);
 		CreateAABB();
 		isTrianglesChanged = true;
 	}
-	void SetTriangles(const unsigned int* trianglesArray, unsigned int arrayLenght) {
+	void SetTriangles(const unsigned int* trianglesArray, size_t arrayLenght) {
 		triangles = std::vector<unsigned int>(trianglesArray, trianglesArray + arrayLenght);
 		CreateAABB();
 		isTrianglesChanged = true;
@@ -131,12 +133,12 @@ public:
 		return coliderAABB;
 	}
 
-	void CombineMeshes(Mesh* meshes, unsigned int arrayLenght, bool isDeleteReapetedVertices = false) {
-		unsigned int thisVerticesSize = vertices.size();
+	void CombineMeshes(Mesh* meshes, size_t meshesArrayLenght, bool isDeleteReapetedVertices = false) {
+		size_t thisVerticesSize = vertices.size();
 
 		//Obliczanie wielkoœci tablicy newVertices
-		unsigned int newVerticesArrayLenght = thisVerticesSize;
-		for (int i = 0; i < arrayLenght; i++)
+		size_t newVerticesArrayLenght = thisVerticesSize;
+		for (int i = 0; i < meshesArrayLenght; i++)
 		{
 			newVerticesArrayLenght += meshes[i].vertices.size();
 		}
@@ -149,7 +151,7 @@ public:
 			newVertices[i] = vertices[i];
 		}
 
-		for (int index = thisVerticesSize, i = 0; i < arrayLenght; i++)
+		for (size_t index = thisVerticesSize, i = 0; i < meshesArrayLenght; i++)
 		{
 			for (int j = 0; j < meshes[i].vertices.size(); j++)
 			{
@@ -160,7 +162,7 @@ public:
 
 
 		//Obliczanie nowych wartoœci triangles meshy
-		for (int index = thisVerticesSize, i = 0; i < arrayLenght; i++)
+		for (size_t index = thisVerticesSize, i = 0; i < meshesArrayLenght; i++)
 		{
 			for (int j = 0; j < meshes[i].triangles.size(); j++)
 			{
@@ -170,8 +172,8 @@ public:
 		}
 
 		//Obliczanie wielkoœci tablicy newTriangles
-		unsigned int newTrianglesArrayLenght = triangles.size();
-		for (int i = 0; i < arrayLenght; i++)
+		size_t newTrianglesArrayLenght = triangles.size();
+		for (int i = 0; i < meshesArrayLenght; i++)
 		{
 			newTrianglesArrayLenght += meshes[i].triangles.size();
 		}
@@ -184,7 +186,7 @@ public:
 			newTriangles[i] = triangles[i];
 		}
 
-		for (int index = triangles.size(), i = 0; i < arrayLenght; i++)
+		for (size_t index = triangles.size(), i = 0; i < meshesArrayLenght; i++)
 		{
 			for (int j = 0; j < meshes[i].triangles.size(); j++)
 			{
@@ -214,7 +216,7 @@ public:
 	/// <param name="circleRadius">szerokoœæ okrêgu</param>
 	/// <param name="depth">odleg³oœæ pomiêdzy górnym wierzcho³kiem, a okrêgiem</param>
 	/// <returns></returns>
-	static Mesh Cone(unsigned int vertices, float circleRadius, float depth) {
+	static Mesh Cone(int vertices, float circleRadius, float depth) {
 		glm::vec3 origin = glm::vec3(0, 0, 0);
 		glm::vec3 coneHead = glm::vec3(0, 0, depth);
 
@@ -234,7 +236,7 @@ public:
 		for (int i = 0; i < vertices; i++)
 		{
 			//get vector from angle
-			float angleRad = angle * (M_PI / 180.f);
+			float angleRad = angle * (float(M_PI) / 180.f);
 			glm::vec3 angleVector = glm::vec3(std::cos(angleRad), std::sin(angleRad), 0.f);
 
 			circlev[vertexIndex].position = origin + angleVector * circleRadius;
@@ -272,7 +274,7 @@ public:
 		return circle;
 	}
 
-	static Mesh Circle(unsigned int vertices, float radius, glm::vec3 origin = glm::vec3(0, 0, 0)) {
+	static Mesh Circle(int vertices, float radius, glm::vec3 origin = glm::vec3(0, 0, 0)) {
 		const float angleIncrease = 360.f / vertices;
 		float angle = 0.f;
 
@@ -288,7 +290,7 @@ public:
 		for (int i = 0; i < vertices; i++)
 		{
 			//get vector from angle
-			float angleRad = angle * (M_PI / 180.f);
+			float angleRad = angle * (float(M_PI) / 180.f);
 			glm::vec3 angleVector = glm::vec3(std::cos(angleRad), std::sin(angleRad), 0.f);
 
 			circlev[vertexIndex].position = origin + angleVector * radius;
