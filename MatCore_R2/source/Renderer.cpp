@@ -3,7 +3,7 @@
 #include <glad.h>
 #include "Mesh.h"
 #include "Transform.h"
-#include "Shader.h"
+#include "Material.h"
 #include "Scene.h"
 #include "Application.h"
 
@@ -14,8 +14,6 @@ Renderer::Renderer() {
         Mesh& mesh = view.get<Mesh>(entity);
         MeshRenderer::Init(mesh);
     }
-    
-    testShaderID = Shader::Load("./Shaders/color.vs", "./Shaders/color.fs");
 }
 
 Renderer::~Renderer()
@@ -33,12 +31,13 @@ void Renderer::RenderScene(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, 800, 600);
 
-    auto group = applicationP->scene->entitiesRegistry.group<Mesh>(entt::get<Transform>);
+    auto group = applicationP->scene->entitiesRegistry.group<Mesh>(entt::get<Transform, Material>);
     for (auto entity : group)
     {
         Mesh& mesh = group.get<Mesh>(entity);
         Transform& transform = group.get<Transform>(entity);
-        MeshRenderer::RenderMesh(mesh, transform, testShaderID);
+        Material& material = group.get<Material>(entity);
+        MeshRenderer::RenderMesh(mesh, transform, material);
     }
 }
 
@@ -76,7 +75,7 @@ void MeshRenderer::Init(Mesh& mesh) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void MeshRenderer::RenderMesh(Mesh& mesh, Transform& transform, unsigned int shaderID) {
+void MeshRenderer::RenderMesh(Mesh& mesh, Transform& transform, Material& material) {
     //if (mesh == nullptr) /*error*/ return;
 
     // UpdateVBO
@@ -90,9 +89,8 @@ void MeshRenderer::RenderMesh(Mesh& mesh, Transform& transform, unsigned int sha
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     //Set MVP Uniform 
-    glUseProgram(shaderID);
-    unsigned int mvpUniformPos = glGetUniformLocation(shaderID, "mvp");
-    glUniformMatrix4fv(mvpUniformPos, 1, GL_FALSE, glm::value_ptr(applicationP->scene->VPMatrix *  transform.GetModelMatrix()));
+    material.SetMVPMatrix(transform.GetModelMatrix(), applicationP->scene->VPMatrix);
+    material.SetSelfUniforms();
 
     //Draw VAO
     glBindVertexArray(mesh.VAO);
