@@ -120,6 +120,9 @@ public:
 		isTrianglesChanged = true;
 	}
 
+	unsigned int VBO, VAO, EBO;
+	bool isVAOCreated;
+
 	std::vector<Vertex>* GetVertices() {
 		return &vertices;
 	}
