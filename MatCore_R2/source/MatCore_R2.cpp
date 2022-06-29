@@ -16,10 +16,13 @@ extern "C"
     __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
 
+Application* applicationP;
+
 int main(void)
 {
-    Application application;
-    application.RunApp();
+    applicationP = new Application();
+    applicationP->RunApp();
+    delete applicationP;
 
     return 0;
 }
