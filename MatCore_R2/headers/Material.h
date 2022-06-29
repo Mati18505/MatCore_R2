@@ -2,27 +2,21 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-typedef unsigned int ShaderID;
 
 struct Material {
 public:
 	Material(const char* vertexShaderPath, const char* fragmentShaderPath);
-	Material(const Material& materialCopy) = default;
+	Material(const Material& materialCopy);
 	~Material();
 
-	ShaderID shaderID;
-	glm::mat4 mvpMatrix;
+	unsigned int shaderID;
 
-	/// <summary>
-	/// Ustawia uniformy specyficzne dla Renderer (np. macierze)
-	/// </summary>
+	/// Ustawia uniformy specyficzne dla entity (np. macierze)
 	void SetSelfUniforms();
-	/// <summary>
 	/// Ustawia uniformy ogólne (np. œwiat³a)
-	/// </summary>
 	void SetUniforms();
 
-	virtual void SetMVPMatrix(glm::mat4 modelMatrix, glm::mat4 VPMatrix) {
-		this->mvpMatrix = VPMatrix * modelMatrix;
-	}
+	void SetMVPMatrix(glm::mat4 modelMatrix, glm::mat4 VPMatrix);
+private:
+	glm::mat4 mvpMatrix;
 };
