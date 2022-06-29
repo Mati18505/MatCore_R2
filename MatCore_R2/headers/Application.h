@@ -7,6 +7,8 @@ public:
 	void RunApp();
 	GLFWwindow* window;
 	Renderer* renderer;
+	Application() = default;
+	~Application();
 private:
 	int windowWidth{ 800 };
 	int windowHeight{ 600 };

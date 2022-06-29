@@ -5,7 +5,11 @@
 #include "../headers/Renderer.h"
 #include <iostream>
 #include <string>
+#include <crtdbg.h>
 
+Application::~Application() {
+    delete this->renderer;
+}
 
 void Application::RunApp() {
     //Load and parse config
@@ -17,6 +21,7 @@ void Application::RunApp() {
         MainLoop();
 
     CloseWindow();
+    _CrtDumpMemoryLeaks();
 }
 
 void Application::CreateWindow(){
