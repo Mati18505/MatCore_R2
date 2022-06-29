@@ -2,12 +2,14 @@
 
 struct GLFWwindow;
 class Renderer;
+class Scene;
 class Application {
 public:
 	void RunApp();
 	GLFWwindow* window;
 	Renderer* renderer;
-	Application() = default;
+	Scene* scene;
+	Application();
 	~Application();
 private:
 	int windowWidth{ 800 };

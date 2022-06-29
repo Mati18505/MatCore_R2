@@ -6,15 +6,24 @@
 #include <iostream>
 #include <string>
 #include <crtdbg.h>
+#include "Scene.h"
 
+Application::Application(){
+    renderer = nullptr;
+    scene = nullptr;
+    window = nullptr;
+}
 Application::~Application() {
     delete this->renderer;
+    delete this->scene;
 }
 
 void Application::RunApp() {
     //Load and parse config
     CreateWindow();
     InitGL();
+    this->scene = new Scene();
+    scene->Start();
     this->renderer = new Renderer();
 
     while (!WindowShouldClose())
@@ -45,7 +54,7 @@ void Application::InitGL() {
 
 void Application::MainLoop() {
     //delta time
-    //scene update
+    scene->Update();
     //camera update
     renderer->RenderScene();
     //vsync ? glfwswapbuffers : glfinish
