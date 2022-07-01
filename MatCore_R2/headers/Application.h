@@ -12,6 +12,8 @@ public:
 	Application();
 	~Application();
 private:
+	friend class Camera;
+
 	int windowWidth{ 800 };
 	int windowHeight{ 600 };
 
