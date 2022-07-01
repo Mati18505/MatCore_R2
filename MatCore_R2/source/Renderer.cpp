@@ -4,6 +4,7 @@
 #include "Mesh.h"
 #include "Transform.h"
 #include "Material.h"
+#include "Camera.h"
 #include "Scene.h"
 #include "Application.h"
 
@@ -89,7 +90,7 @@ void MeshRenderer::RenderMesh(Mesh& mesh, Transform& transform, Material& materi
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     //Set MVP Uniform 
-    material.SetMVPMatrix(transform.GetModelMatrix(), applicationP->scene->VPMatrix);
+    material.SetMVPMatrix(transform.GetModelMatrix(), applicationP->scene->camera->GetVPMatrix());
     material.SetSelfUniforms();
 
     //Draw VAO
