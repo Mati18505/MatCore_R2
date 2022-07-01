@@ -5,6 +5,7 @@
 #include <entt.hpp>
 
 class Mesh;
+class Camera;
 
 class Scene {
 public:
@@ -15,9 +16,8 @@ public:
 
 	entt::registry entitiesRegistry;
 
-	//TODO: zrobiæ prywatne
-	
-	glm::mat4 VPMatrix;
+	//TODO: przenieœæ do Editor
+	Camera* camera;
 private:
-	
+	entt::entity entity;
 };
