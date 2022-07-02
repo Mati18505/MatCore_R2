@@ -38,3 +38,7 @@ void Scene::Update() {
     Transform& transform = entitiesRegistry.get<Transform>(entity);
     transform.rotation.x++;
 }
+
+Scene::~Scene() {
+    delete this->camera;
+}

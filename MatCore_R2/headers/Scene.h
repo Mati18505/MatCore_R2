@@ -9,8 +9,8 @@ class Camera;
 
 class Scene {
 public:
-	Scene() = default;
-	~Scene() = default;
+	Scene() :camera(nullptr), entity(entt::null) {}
+	~Scene();
 	void Start();
 	void Update();
 
