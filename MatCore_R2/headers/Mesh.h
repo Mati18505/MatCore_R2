@@ -278,6 +278,8 @@ public:
 		Mesh circle = Mesh();
 		circle.SetVertices(circlev, cVC);
 		circle.SetTriangles(circlei, cIC);
+		delete[] circlev;
+		delete[] circlei;
 		return circle;
 	}
 
@@ -320,6 +322,8 @@ public:
 		Mesh circle = Mesh();
 		circle.SetVertices(circlev, cVC);
 		circle.SetTriangles(circlei, cIC);
+		delete[] circlev;
+		delete[] circlei;
 		return circle;
 	}
 };
