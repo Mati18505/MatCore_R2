@@ -5,7 +5,6 @@
 #include "../headers/Renderer.h"
 #include <iostream>
 #include <string>
-#include <crtdbg.h>
 #include "Scene.h"
 
 void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
@@ -35,7 +34,6 @@ void Application::RunApp() {
         MainLoop();
 
     CloseWindow();
-    _CrtDumpMemoryLeaks();
 }
 
 void Application::CreateWindow(){

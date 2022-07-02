@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <glm/glm.hpp>
 #include "Application.h"
+#include <crtdbg.h>
 
 
 //Zmuszenie do odpalenia aplikacji na dedykowanym GPU
@@ -23,6 +24,7 @@ int main(void)
     applicationP = new Application();
     applicationP->RunApp();
     delete applicationP;
+    _CrtDumpMemoryLeaks();
 
     return 0;
 }
