@@ -1,9 +1,7 @@
 #pragma once
 #include <memory>
-
-namespace spdlog {
-	class logger;
-}
+#include <spdlog/spdlog.h>
+#include <spdlog/fmt/ostr.h>
 
 class Log {
 public:
