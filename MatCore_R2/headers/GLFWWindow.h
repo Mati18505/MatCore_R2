@@ -1,6 +1,8 @@
 #pragma once
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include "Log.h"
+#undef CreateWindow
 
 namespace GLFWWindow {
     GLFWwindow* CreateWindow(int windowWidth, int windowHeight, bool fullscreen) {
@@ -8,13 +10,14 @@ namespace GLFWWindow {
         using namespace std;
 
         if (!glfwInit()) {
-            cout << "GLFW init failed!";
+            LOG_CORE_CRITICAL("GLFW init failed!");
             return nullptr;
         }
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
         /*glfwWindowHint(GLFW_DOUBLEBUFFER, windowProperties.VSync);
         glfwWindowHint(GLFW_DECORATED, !(windowProperties.borderlessWindow));
         glfwWindowHint(GLFW_MAXIMIZED, windowProperties.borderlessWindow);
@@ -26,7 +29,7 @@ namespace GLFWWindow {
 
         GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "MatCore", windowMonitor, nullptr);
         if (window == nullptr) {
-            cout << "GLFW window creation failed!";
+            LOG_CORE_CRITICAL("GLFW window creation failed!");
             return nullptr;
         }
 

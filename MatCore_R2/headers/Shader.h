@@ -5,6 +5,7 @@
 #include <sstream>
 #include <iostream>
 #include <glad.h>
+#include "Log.h"
 
 class Shader
 {
@@ -42,7 +43,7 @@ public:
         }
         catch (std::ifstream::failure& e)
         {
-            std::cout<<"file_not_succesfully_read: " << e.what() << std::endl;
+            LOG_CORE_ERROR("file_not_succesfully_read: {0}", e.what());
             return 0;
         }
         const char* vShaderCode = vertexCode.c_str();
@@ -110,7 +111,7 @@ private:
             if (!success)
             {
                 glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-                std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " + type + "\n" + infoLog + "\n -- --------------------------------------------------- -- \n";
+                LOG_CORE_ERROR("Shader compilation error of type: {0}\n{1}", type, infoLog);
             }
         }
         else
@@ -119,7 +120,7 @@ private:
             if (!success)
             {
                 glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-                std::cout<<"ERROR::PROGRAM_LINKING_ERROR of type: " + type + "\n" + infoLog + "\n -- --------------------------------------------------- -- \n";
+                LOG_CORE_ERROR("PROGRAM_LINKING_ERROR of type : {0}\n{1}", type, infoLog);
             }
         }
     }

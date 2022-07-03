@@ -6,6 +6,8 @@
 #include <iostream>
 #include <string>
 #include "Scene.h"
+#include "Log.h"
+#undef CreateWindow
 
 void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -23,16 +25,15 @@ Application::~Application() {
 }
 
 void Application::RunApp() {
-    //Load and parse config
-    CreateWindow();
-    InitGL();
-    this->scene = new Scene();
-    scene->Start();
-    this->renderer = new Renderer();
+    Log::Init();
+    LOG_CORE_INFO("Initializing app...");
+    InitializeApp();
+    LOG_CORE_INFO("App initialized!");
 
     while (!WindowShouldClose())
         MainLoop();
 
+    LOG_CORE_INFO("Closing...");
     CloseWindow();
 }
 
@@ -56,10 +57,22 @@ void Application::InitGL() {
     glViewport(0, 0, windowWidth, windowHeight);
 }
 
+void Application::InitializeApp() {
+    //Load and parse config
+    LOG_CORE_INFO("Creating window...");
+    CreateWindow();
+    LOG_CORE_INFO("Initializing OpenGL...");
+    InitGL();
+    LOG_CORE_INFO("Creating scene...");
+    this->scene = new Scene();
+    scene->Start();
+    LOG_CORE_INFO("Creating renderer...");
+    this->renderer = new Renderer();
+}
+
 void Application::MainLoop() {
     //delta time
     scene->Update();
-    //camera update
     renderer->RenderScene();
     //vsync ? glfwswapbuffers : glfinish
     glfwSwapBuffers(window);
@@ -69,6 +82,6 @@ void Application::MainLoop() {
     //Sprawdzanie error'ów OpenGL
     int error = glGetError();
     if (error != 0)
-        std::cout<<"GLERROR: " << std::to_string(error) << std::endl;
+        LOG_CORE_ERROR("GLERROR: {0}", std::to_string(error));
     glDebugMessageCallback(MessageCallback, 0);
 }

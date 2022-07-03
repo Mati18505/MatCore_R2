@@ -17,9 +17,12 @@ private:
 	int windowWidth{ 800 };
 	int windowHeight{ 600 };
 
+	void InitializeApp();
+	void MainLoop();
+
 	void CreateWindow();
 	void CloseWindow();
 	bool WindowShouldClose();
-	void MainLoop();
+
 	void InitGL();
 };

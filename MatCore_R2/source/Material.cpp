@@ -8,7 +8,7 @@ Material::Material(const char* vertexShaderPath, const char* fragmentShaderPath)
 }
 
 Material::Material(const Material& materialCopy) {
-	std::cout<<"Warning: Material copy constructor called!"<<std::endl;
+	LOG_CORE_WARN("Material copy constructor called!");
 	this->mvpMatrix = materialCopy.mvpMatrix;
 	this->shaderID = materialCopy.shaderID;
 }
