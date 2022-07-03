@@ -42,6 +42,9 @@ target_include_directories(MatCore_R2 PUBLIC ${GLAD_INCLUDE_DIRS})
 set(ENTT_INCLUDE_DIRS "./Dependece/entt")
 target_include_directories(MatCore_R2 PUBLIC ${ENTT_INCLUDE_DIRS})
 
+# spdlog
+set(SPDLOG_INCLUDE_DIRS "./Dependece/spdlog/include")
+target_include_directories(MatCore_R2 PUBLIC ${SPDLOG_INCLUDE_DIRS})
 
 
 # TODO: Add tests and install targets if needed.

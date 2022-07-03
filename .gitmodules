@@ -1,0 +1,3 @@
+[submodule "MatCore_R2/Dependece/spdlog"]
+	path = MatCore_R2/Dependece/spdlog
+	url = https://github.com/gabime/spdlog.git
