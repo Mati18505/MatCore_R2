@@ -4,6 +4,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+//windows defines
+#undef near
+#undef far
 
 class Application;
 extern Application* applicationP;//= applicationP z pliku MatCore_R2.cpp
@@ -95,4 +98,5 @@ private:
 	void RecalculateVPMatrix();
 
 	void FramebufferSizeCallback(int windowWidth, int windowHeight);
+	friend class Application;
 };

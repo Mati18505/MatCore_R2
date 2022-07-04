@@ -31,7 +31,7 @@ Renderer::~Renderer()
 void Renderer::RenderScene(){
 	glClearColor(0.2f, 0.7f, 1.f, 0.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glViewport(0, 0, 800, 600);
+    glViewport(0, 0, applicationP->windowWidth, applicationP->windowHeight);
 
     auto group = applicationP->scene->entitiesRegistry.group<>(entt::get<MeshComponent, Transform, Material>);
     for (auto entity : group)

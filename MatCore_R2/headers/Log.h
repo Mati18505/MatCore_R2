@@ -14,6 +14,13 @@ private:
 	static std::shared_ptr<spdlog::logger> clientLogger;
 };
 
+//critical: aplikacja przestaje dzia³aæ
+//Error : b³êdy odczytania pliku, kompilacji shader, gl error
+//Warn : coœ MO¯E Ÿle zadzia³aæ lub program siê wysypaæ
+//Info: things work
+//Trace :
+
+
 #define LOG_CORE_TRACE(...)		::Log::GetCoreLogger()->trace(__VA_ARGS__)
 #define LOG_CORE_INFO(...)		::Log::GetCoreLogger()->info(__VA_ARGS__)
 #define LOG_CORE_WARN(...)		::Log::GetCoreLogger()->warn(__VA_ARGS__)

@@ -8,6 +8,7 @@
 
 void Scene::Start() {
     Mesh coneMesh = Mesh::Cone(30, 20, 20);
+    Mesh circleMesh = Mesh::Circle(30, 20);
 
     //entity 1
     entity = entitiesRegistry.create();
@@ -18,6 +19,14 @@ void Scene::Start() {
     transform.scale = glm::vec3(10.f, 10.f, 10.f);
 
     entitiesRegistry.emplace<Material>(entity, "./Shaders/color.vs", "./Shaders/color.fs");
+
+    auto entity3 = entitiesRegistry.create();
+    entitiesRegistry.emplace<MeshComponent>(entity3, circleMesh);
+    Transform& transform3 = entitiesRegistry.emplace<Transform>(entity3);
+    transform3.position = glm::vec3(500.f, 0.f, -600.f);
+    transform3.rotation = glm::vec3(0.f, 180.f, 90.f);
+    transform3.scale = glm::vec3(10.f, 10.f, 10.f);
+    entitiesRegistry.emplace<Material>(entity3, "./Shaders/color.vs", "./Shaders/color.fs");
 
     //entity 2
     entt::entity entity2 = entitiesRegistry.create();
@@ -30,7 +39,7 @@ void Scene::Start() {
     entitiesRegistry.emplace<Material>(entity2, "./Shaders/color.vs", "./Shaders/color.fs");
 
     //Camera
-    camera = new Camera(90, Camera::CameraType::perspective);
+    camera = new Camera(90, Camera::CameraType::orthographic);
     camera->SetYaw(-90);
 }
 

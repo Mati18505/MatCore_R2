@@ -6,8 +6,11 @@
 #include <iostream>
 #include <string>
 #include "Scene.h"
+#include "Camera.h"
 #include "Log.h"
 #undef CreateWindow
+
+extern Application* applicationP;
 
 void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -39,6 +42,7 @@ void Application::RunApp() {
 
 void Application::CreateWindow(){
     this->window = GLFWWindow::CreateWindow(800, 600, false);
+    GLFWWindow::SetWindowCallbacks(window, WindowFramebufferSizeCallback, WindowCursorPosCallback, WindowKeyCallback, WindowMouseButtonCallback);
 }
 
 bool Application::WindowShouldClose() {
@@ -84,4 +88,22 @@ void Application::MainLoop() {
     if (error != 0)
         LOG_CORE_ERROR("GLERROR: {0}", std::to_string(error));
     glDebugMessageCallback(MessageCallback, 0);
+}
+
+void Application::WindowFramebufferSizeCallback(GLFWwindow* window, int width, int height) {
+    applicationP->windowWidth = width;
+    applicationP->windowHeight = height;
+    applicationP->scene->camera->FramebufferSizeCallback(width, height);
+}
+
+void Application::WindowCursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
+
+}
+
+void Application::WindowKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
+
+}
+
+void Application::WindowMouseButtonCallback(GLFWwindow* window, int button, int action, int mods){
+
 }

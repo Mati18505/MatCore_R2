@@ -13,6 +13,7 @@ public:
 	~Application();
 private:
 	friend class Camera;
+	friend class Renderer;
 
 	int windowWidth{ 800 };
 	int windowHeight{ 600 };
@@ -23,6 +24,10 @@ private:
 	void CreateWindow();
 	void CloseWindow();
 	bool WindowShouldClose();
+	static void WindowFramebufferSizeCallback(GLFWwindow* window, int width, int height);
+	static void WindowCursorPosCallback(GLFWwindow* window, double xpos, double ypos);
+	static void WindowKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	static void WindowMouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 
 	void InitGL();
 };
