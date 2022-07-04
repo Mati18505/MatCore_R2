@@ -91,10 +91,6 @@ public:
 		isVerticesChanged = meshCopy.isVerticesChanged;
 		isTrianglesChanged = meshCopy.isTrianglesChanged;
 		coliderAABB = meshCopy.coliderAABB;
-		VAO = meshCopy.VAO;
-		VBO = meshCopy.VBO;
-		EBO = meshCopy.EBO;
-		isVAOCreated = meshCopy.isVAOCreated;
 	}
 
 	void SetVertices(Vertex* verticesArray, size_t arrayLenght) {
@@ -124,8 +120,7 @@ public:
 		isTrianglesChanged = true;
 	}
 
-	unsigned int VBO, VAO, EBO;
-	bool isVAOCreated;
+	
 
 	std::vector<Vertex>* GetVertices() {
 		return &vertices;

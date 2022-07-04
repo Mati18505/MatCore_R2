@@ -1,7 +1,7 @@
 #pragma once
 #include "Scene.h"
 
-#include "Mesh.h"
+#include "MeshComponent.h"
 #include "Transform.h"
 #include "material.h"
 #include "Camera.h"
@@ -11,7 +11,7 @@ void Scene::Start() {
 
     //entity 1
     entity = entitiesRegistry.create();
-    entitiesRegistry.emplace<Mesh>(entity, coneMesh);
+    entitiesRegistry.emplace<MeshComponent>(entity, coneMesh);
 
     Transform& transform = entitiesRegistry.emplace<Transform>(entity);
     transform.position = glm::vec3(150.f, 0.f, -600.f);
@@ -21,7 +21,7 @@ void Scene::Start() {
 
     //entity 2
     entt::entity entity2 = entitiesRegistry.create();
-    entitiesRegistry.emplace<Mesh>(entity2, coneMesh);
+    entitiesRegistry.emplace<MeshComponent>(entity2, coneMesh);
 
     Transform& transform2 = entitiesRegistry.emplace<Transform>(entity2);
     transform2.position = glm::vec3(-150.f, 0.f, -600.f);

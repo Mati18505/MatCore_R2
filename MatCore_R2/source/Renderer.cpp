@@ -1,6 +1,7 @@
 #pragma once
 #include "Renderer.h"
 #include <glad.h>
+#include "MeshComponent.h"
 #include "Mesh.h"
 #include "Transform.h"
 #include "Material.h"
@@ -9,20 +10,20 @@
 #include "Application.h"
 
 Renderer::Renderer() {
-    auto view = applicationP->scene->entitiesRegistry.view<Mesh>();
+    auto view = applicationP->scene->entitiesRegistry.view<MeshComponent>();
     for (auto entity : view)
     {
-        Mesh& mesh = view.get<Mesh>(entity);
+        MeshComponent& mesh = view.get<MeshComponent>(entity);
         MeshRenderer::Init(mesh);
     }
 }
 
 Renderer::~Renderer()
 {
-    auto view = applicationP->scene->entitiesRegistry.view<Mesh>();
+    auto view = applicationP->scene->entitiesRegistry.view<MeshComponent>();
     for (auto entity : view)
     {
-        Mesh& mesh = view.get<Mesh>(entity);
+        MeshComponent& mesh = view.get<MeshComponent>(entity);
         MeshRenderer::DeInit(mesh);
     }
 }
@@ -32,27 +33,27 @@ void Renderer::RenderScene(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, 800, 600);
 
-    auto group = applicationP->scene->entitiesRegistry.group<Mesh>(entt::get<Transform, Material>);
+    auto group = applicationP->scene->entitiesRegistry.group<>(entt::get<MeshComponent, Transform, Material>);
     for (auto entity : group)
     {
-        Mesh& mesh = group.get<Mesh>(entity);
+        MeshComponent& meshComponent = group.get<MeshComponent>(entity);
         Transform& transform = group.get<Transform>(entity);
         Material& material = group.get<Material>(entity);
-        MeshRenderer::RenderMesh(mesh, transform, material);
+        MeshRenderer::RenderMesh(meshComponent, transform, material);
     }
 }
 
 
-void MeshRenderer::Init(Mesh& mesh) {
+void MeshRenderer::Init(MeshComponent& meshComponent) {
     //create VAO
-    glGenBuffers(1, &mesh.VBO);
-    glGenBuffers(1, &mesh.EBO);
-    glGenVertexArrays(1, &mesh.VAO);
+    glGenBuffers(1, &meshComponent.VBO);
+    glGenBuffers(1, &meshComponent.EBO);
+    glGenVertexArrays(1, &meshComponent.VAO);
 
     //bind
-    glBindVertexArray(mesh.VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.EBO);
+    glBindVertexArray(meshComponent.VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, meshComponent.VBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshComponent.EBO);
 
     //position
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::Vertex), (void*)0);
@@ -76,15 +77,15 @@ void MeshRenderer::Init(Mesh& mesh) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void MeshRenderer::RenderMesh(Mesh& mesh, Transform& transform, Material& material) {
+void MeshRenderer::RenderMesh(MeshComponent& meshComponent, Transform& transform, Material& material) {
     //if (mesh == nullptr) /*error*/ return;
 
     // UpdateVBO
-    glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Mesh::Vertex) * mesh.GetVertices()->size(), mesh.GetVertices()->data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, meshComponent.VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Mesh::Vertex) * meshComponent.mesh.GetVertices()->size(), meshComponent.mesh.GetVertices()->data(), GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * mesh.GetTriangles()->size(), mesh.GetTriangles()->data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshComponent.EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * meshComponent.mesh.GetTriangles()->size(), meshComponent.mesh.GetTriangles()->data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -94,13 +95,13 @@ void MeshRenderer::RenderMesh(Mesh& mesh, Transform& transform, Material& materi
     material.SetSelfUniforms();
 
     //Draw VAO
-    glBindVertexArray(mesh.VAO);
-    glDrawElements(GL_TRIANGLES, (GLsizei)mesh.GetTriangles()->size(), GL_UNSIGNED_INT, 0);
+    glBindVertexArray(meshComponent.VAO);
+    glDrawElements(GL_TRIANGLES, (GLsizei)meshComponent.mesh.GetTriangles()->size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 
-void MeshRenderer::DeInit(Mesh& mesh) {
-    glDeleteBuffers(1, &mesh.VBO);
-    glDeleteBuffers(1, &mesh.EBO);
-    glDeleteVertexArrays(1, &mesh.VAO);
+void MeshRenderer::DeInit(MeshComponent& meshComponent) {
+    glDeleteBuffers(1, &meshComponent.VBO);
+    glDeleteBuffers(1, &meshComponent.EBO);
+    glDeleteVertexArrays(1, &meshComponent.VAO);
 }

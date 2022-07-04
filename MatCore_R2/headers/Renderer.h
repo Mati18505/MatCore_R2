@@ -2,7 +2,7 @@
 class Application;
 extern Application* applicationP;//= applicationP z pliku MatCore_R2.cpp
 
-class Mesh;
+struct MeshComponent;
 struct Transform;
 struct Material;
 class Renderer {
@@ -15,7 +15,7 @@ private:
 };
 
 namespace MeshRenderer {
-	void Init(Mesh& meshRenderer);
-	void RenderMesh(Mesh& meshRenderer, Transform& transform, Material& material);
-	void DeInit(Mesh& meshRenderer);
+	void Init(MeshComponent& meshRenderer);
+	void RenderMesh(MeshComponent& meshRenderer, Transform& transform, Material& material);
+	void DeInit(MeshComponent& meshRenderer);
 }
