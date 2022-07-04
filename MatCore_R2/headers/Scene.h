@@ -20,4 +20,5 @@ public:
 	Camera* camera;
 private:
 	entt::entity entity;
+	double lastXMousePos{ 0 }, lastYMousePos{ 0 };
 };

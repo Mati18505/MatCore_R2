@@ -34,7 +34,7 @@ namespace GLFWWindow {
         }
 
         glfwMakeContextCurrent(window);
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         glfwSwapInterval(1);
         return window;
     }
