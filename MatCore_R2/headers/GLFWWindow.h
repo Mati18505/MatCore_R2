@@ -34,13 +34,18 @@ namespace GLFWWindow {
         }
 
         glfwMakeContextCurrent(window);
-        /*glfwSetCursorPosCallback(window, GLFW_mouseCallback);
-         glfwSetFramebufferSizeCallback(window, GLFW_framebufferSizeCallback);
-         glfwSetKeyCallback(window, GLFW_keyCallback);
-         glfwSetMouseButtonCallback(window, GLFW_mouseButtonCallback);*/
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         glfwSwapInterval(1);
         return window;
+    }
+
+    void SetWindowCallbacks(GLFWwindow* window, void(*FramebufferSizeCallback)(GLFWwindow*, int, int), void(*CursorPosCallback)(GLFWwindow*, double, double),
+        void(*KeyCallback)(GLFWwindow*, int, int, int, int), void(*MouseButtonCallback)(GLFWwindow*, int, int, int)) 
+    {
+        glfwSetCursorPosCallback(window, CursorPosCallback);
+        glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
+        glfwSetKeyCallback(window, KeyCallback);
+        glfwSetMouseButtonCallback(window, MouseButtonCallback);
     }
 
     void CloseWindow() {
