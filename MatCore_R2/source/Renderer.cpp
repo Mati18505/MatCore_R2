@@ -8,24 +8,14 @@
 #include "Camera.h"
 #include "Scene.h"
 #include "Application.h"
+#include "Log.h"
 
 Renderer::Renderer() {
-    auto view = applicationP->scene->entitiesRegistry.view<MeshComponent>();
-    for (auto entity : view)
-    {
-        MeshComponent& mesh = view.get<MeshComponent>(entity);
-        MeshRenderer::Init(mesh);
-    }
+
 }
 
-Renderer::~Renderer()
-{
-    auto view = applicationP->scene->entitiesRegistry.view<MeshComponent>();
-    for (auto entity : view)
-    {
-        MeshComponent& mesh = view.get<MeshComponent>(entity);
-        MeshRenderer::DeInit(mesh);
-    }
+Renderer::~Renderer(){
+
 }
 
 void Renderer::RenderScene(){
@@ -43,6 +33,16 @@ void Renderer::RenderScene(){
     }
 }
 
+
+void MeshRenderer::OnConstruct(entt::registry&, entt::entity entity){
+    MeshComponent& meshComponent = applicationP->scene->entitiesRegistry.get<MeshComponent>(entity);
+    Init(meshComponent);
+}
+
+void MeshRenderer::OnDestroy(entt::registry&, entt::entity entity){
+    MeshComponent& meshComponent = applicationP->scene->entitiesRegistry.get<MeshComponent>(entity);
+    DeInit(meshComponent);
+}
 
 void MeshRenderer::Init(MeshComponent& meshComponent) {
     //create VAO
@@ -78,7 +78,7 @@ void MeshRenderer::Init(MeshComponent& meshComponent) {
 }
 
 void MeshRenderer::RenderMesh(MeshComponent& meshComponent, Transform& transform, Material& material) {
-    //if (mesh == nullptr) /*error*/ return;
+    if (meshComponent.VAO == NULL) { LOG_CORE_WARN("MeshComponent VAO is NULL!"); return; }
 
     // UpdateVBO
     glBindBuffer(GL_ARRAY_BUFFER, meshComponent.VBO);

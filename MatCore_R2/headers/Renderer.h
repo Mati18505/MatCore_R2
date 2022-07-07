@@ -1,4 +1,6 @@
 #pragma once
+#include <entt.hpp>
+
 class Application;
 extern Application* applicationP;//= applicationP z pliku MatCore_R2.cpp
 
@@ -15,7 +17,9 @@ private:
 };
 
 namespace MeshRenderer {
-	void Init(MeshComponent& meshRenderer);
+	void OnConstruct(entt::registry&, entt::entity entity);
+	void OnDestroy(entt::registry&, entt::entity entity);
+	void Init(MeshComponent& meshComponent);
 	void RenderMesh(MeshComponent& meshRenderer, Transform& transform, Material& material);
-	void DeInit(MeshComponent& meshRenderer);
+	void DeInit(MeshComponent& meshComponent);
 }

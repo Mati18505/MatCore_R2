@@ -8,10 +8,14 @@
 #include <GLFW/glfw3.h>
 #include "Application.h"
 #include "Log.h"
+#include "Renderer.h"
 
 void Scene::Start() {
-    Mesh coneMesh = Mesh::Cone(30, 7, 7);
-    Mesh circleMesh = Mesh::Circle(30, 7);
+    entitiesRegistry.on_construct<MeshComponent>().connect<&MeshRenderer::OnConstruct>();
+    entitiesRegistry.on_destroy<MeshComponent>().connect<&MeshRenderer::OnDestroy>();
+
+    Mesh coneMesh = Mesh::Cone(360, 7, 7);
+    Mesh circleMesh = Mesh::Circle(360, 7);
 
     //entity 1
     entity = entitiesRegistry.create();
@@ -23,17 +27,21 @@ void Scene::Start() {
 
     entitiesRegistry.emplace<Material>(entity, "./Shaders/color.vs", "./Shaders/color.fs");
 
+
     auto entity3 = entitiesRegistry.create();
     entitiesRegistry.emplace<MeshComponent>(entity3, circleMesh);
+
     Transform& transform3 = entitiesRegistry.emplace<Transform>(entity3);
     transform3.position = glm::vec3(17.f, 0.f, -20.f);
     transform3.rotation = glm::vec3(0.f, 180.f, 90.f);
     transform3.scale = glm::vec3(1.f, 1.f, 1.f);
+
     entitiesRegistry.emplace<Material>(entity3, "./Shaders/color.vs", "./Shaders/color.fs");
 
     //entity 2
     entt::entity entity2 = entitiesRegistry.create();
     entitiesRegistry.emplace<MeshComponent>(entity2, coneMesh);
+
 
     Transform& transform2 = entitiesRegistry.emplace<Transform>(entity2);
     transform2.position = glm::vec3(-5.f, 0.f, -20.f);

@@ -4,7 +4,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <entt.hpp>
 
-class Mesh;
 class Camera;
 
 class Scene {
@@ -20,5 +19,5 @@ public:
 	Camera* camera;
 private:
 	entt::entity entity;
-	double lastXMousePos{ 0 }, lastYMousePos{ 0 };
+	double lastXMousePos{ 0 }, lastYMousePos{ 0 };	
 };
