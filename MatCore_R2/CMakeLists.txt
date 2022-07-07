@@ -11,7 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 file(GLOB_RECURSE SRC_FILES "source/*.cpp")
 
 # Pliki do skompilowania
-add_library(MatCore_R2 STATIC ${SRC_FILES}  "Dependece/glad/src/glad.c")
+add_library(MatCore_R2 STATIC ${SRC_FILES}  "Dependece/glad/src/glad.c" "./Dependece/stb_image/stb_image.cpp")
 #add_executable (MatCore_R2 ${SRC_FILES}  "Dependece/glad/src/glad.c")
 
 # Dołącza pliki nagłówkowe z folderu headers
@@ -47,5 +47,8 @@ target_include_directories(MatCore_R2 PUBLIC ${ENTT_INCLUDE_DIRS})
 set(SPDLOG_INCLUDE_DIRS "./Dependece/spdlog/include")
 target_include_directories(MatCore_R2 PUBLIC ${SPDLOG_INCLUDE_DIRS})
 
+# stbimage
+set(STBIMAGE_INCLUDE_DIRS "./Dependece/stb_image")
+target_include_directories(MatCore_R2 PUBLIC ${STBIMAGE_INCLUDE_DIRS})
 
 # TODO: Add tests and install targets if needed.
