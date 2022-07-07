@@ -21,11 +21,15 @@ namespace MatCore {
 }
 int main(void)
 {
+    //sprawdzanie przecieków pamięci po zamknięciu programu
+    int tmpFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+    tmpFlag |= _CRTDBG_LEAK_CHECK_DF;
+    _CrtSetDbgFlag(tmpFlag);
+
     using namespace MatCore;
     applicationP = new Application();
     applicationP->RunApp();
     delete applicationP;
-    _CrtDumpMemoryLeaks();
 
     return 0;
 }
