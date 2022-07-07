@@ -4,6 +4,8 @@
 cmake_minimum_required (VERSION 3.8)
 
 project ("MatCore_R2" VERSION 1.0)
+project ("Sandbox" VERSION 1.0)
 
 # Include sub-projects.
 add_subdirectory ("MatCore_R2")
+add_subdirectory ("Sandbox")

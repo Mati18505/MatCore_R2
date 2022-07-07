@@ -30,4 +30,6 @@ private:
 	static void WindowMouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 
 	void InitGL();
+
+	Scene* ApplicationStart(); // zdefiniowane przez klienta
 };

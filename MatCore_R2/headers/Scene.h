@@ -8,16 +8,14 @@ class Camera;
 
 class Scene {
 public:
-	Scene() :camera(nullptr), entity(entt::null) {}
+	Scene();
 	~Scene();
-	void Start();
-	void Update();
+	virtual void Start() = 0;
+	virtual void Update() = 0;
 
 	entt::registry entitiesRegistry;
 
 	//TODO: przenieœæ do Editor
 	Camera* camera;
 private:
-	entt::entity entity;
-	double lastXMousePos{ 0 }, lastYMousePos{ 0 };	
 };

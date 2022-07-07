@@ -11,7 +11,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 file(GLOB_RECURSE SRC_FILES "source/*.cpp")
 
 # Pliki do skompilowania
-add_executable (MatCore_R2 ${SRC_FILES}  "Dependece/glad/src/glad.c")
+add_library(MatCore_R2 STATIC ${SRC_FILES}  "Dependece/glad/src/glad.c")
+#add_executable (MatCore_R2 ${SRC_FILES}  "Dependece/glad/src/glad.c")
 
 # Dołącza pliki nagłówkowe z folderu headers
 target_include_directories(MatCore_R2 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/headers)

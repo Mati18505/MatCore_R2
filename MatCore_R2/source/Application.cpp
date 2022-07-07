@@ -70,7 +70,7 @@ void Application::InitializeApp() {
     LOG_CORE_INFO("Initializing OpenGL...");
     InitGL();
     LOG_CORE_INFO("Creating scene...");
-    this->scene = new Scene();
+    assert(this->scene = ApplicationStart());
     LOG_CORE_INFO("Creating renderer...");
     this->renderer = new Renderer();
 }
