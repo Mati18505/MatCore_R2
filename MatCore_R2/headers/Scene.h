@@ -9,7 +9,7 @@ namespace MatCore {
 	class Scene {
 	public:
 		Scene();
-		~Scene();
+		virtual ~Scene();
 		virtual void Start() = 0;
 		virtual void Update() = 0;
 
