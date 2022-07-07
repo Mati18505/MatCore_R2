@@ -8,7 +8,7 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "Log.h"
-#undef CreateWindow
+#undef CreateWindow //windows
 
 extern Application* applicationP;
 
@@ -32,6 +32,8 @@ void Application::RunApp() {
     LOG_CORE_INFO("Initializing app...");
     InitializeApp();
     LOG_CORE_INFO("App initialized!");
+    LOG_CORE_INFO("Starting...");
+    scene->Start();
 
     while (!WindowShouldClose())
         MainLoop();
@@ -69,7 +71,6 @@ void Application::InitializeApp() {
     InitGL();
     LOG_CORE_INFO("Creating scene...");
     this->scene = new Scene();
-    scene->Start();
     LOG_CORE_INFO("Creating renderer...");
     this->renderer = new Renderer();
 }
