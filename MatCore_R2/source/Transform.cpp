@@ -1,19 +1,19 @@
 #pragma once
 #include "../headers/Transform.h"
 
-Transform::Transform() {
+MatCore::Transform::Transform() {
 	position = glm::vec3(0, 0, 0);
 	rotation = glm::vec3(0, 0, 0);
 	scale = glm::vec3(1, 1, 1);
 	modelMatrix = glm::mat4(1.f);
 }
 
-glm::mat4 Transform::GetModelMatrix() {
+glm::mat4 MatCore::Transform::GetModelMatrix() {
 	UpdateModelMatrix();
 	return modelMatrix;
 }
 
-void Transform::UpdateModelMatrix() {
+void MatCore::Transform::UpdateModelMatrix() {
 	modelMatrix = glm::mat4(1.f);
 	modelMatrix = glm::translate(modelMatrix, position);
 

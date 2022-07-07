@@ -10,11 +10,11 @@
 #include "Log.h"
 #include "Renderer.h"
 
-Scene::Scene() :camera(nullptr) {
+MatCore::Scene::Scene() :camera(nullptr) {
     entitiesRegistry.on_construct<MeshComponent>().connect<&MeshRenderer::OnConstruct>();
     entitiesRegistry.on_destroy<MeshComponent>().connect<&MeshRenderer::OnDestroy>();
 }
 
-Scene::~Scene() {
+MatCore::Scene::~Scene() {
     
 }

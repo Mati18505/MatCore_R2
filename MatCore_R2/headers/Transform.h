@@ -2,20 +2,21 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+namespace MatCore {
+	struct Transform {
+	public:
+		Transform();
+		~Transform() = default;
 
-struct Transform {
-public:
-	Transform();
-	~Transform() = default;
+		glm::vec3 position;
+		glm::vec3 rotation;
+		glm::vec3 scale;
 
-	glm::vec3 position;
-	glm::vec3 rotation;
-	glm::vec3 scale;
+		glm::mat4 GetModelMatrix();
 
-	glm::mat4 GetModelMatrix();
+	private:
+		glm::mat4 modelMatrix;
 
-private:
-	glm::mat4 modelMatrix;
-
-	void UpdateModelMatrix();
-};
+		void UpdateModelMatrix();
+	};
+}

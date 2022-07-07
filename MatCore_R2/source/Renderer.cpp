@@ -10,15 +10,15 @@
 #include "Application.h"
 #include "Log.h"
 
-Renderer::Renderer() {
+MatCore::Renderer::Renderer() {
 
 }
 
-Renderer::~Renderer(){
+MatCore::Renderer::~Renderer(){
 
 }
 
-void Renderer::RenderScene(){
+void MatCore::Renderer::RenderScene(){
 	glClearColor(0.2f, 0.7f, 1.f, 0.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, applicationP->windowWidth, applicationP->windowHeight);
@@ -34,17 +34,17 @@ void Renderer::RenderScene(){
 }
 
 
-void MeshRenderer::OnConstruct(entt::registry&, entt::entity entity){
+void MatCore::MeshRenderer::OnConstruct(entt::registry&, entt::entity entity){
     MeshComponent& meshComponent = applicationP->scene->entitiesRegistry.get<MeshComponent>(entity);
     Init(meshComponent);
 }
 
-void MeshRenderer::OnDestroy(entt::registry&, entt::entity entity){
+void MatCore::MeshRenderer::OnDestroy(entt::registry&, entt::entity entity){
     MeshComponent& meshComponent = applicationP->scene->entitiesRegistry.get<MeshComponent>(entity);
     DeInit(meshComponent);
 }
 
-void MeshRenderer::Init(MeshComponent& meshComponent) {
+void MatCore::MeshRenderer::Init(MeshComponent& meshComponent) {
     //create VAO
     glGenBuffers(1, &meshComponent.VBO);
     glGenBuffers(1, &meshComponent.EBO);
@@ -77,7 +77,7 @@ void MeshRenderer::Init(MeshComponent& meshComponent) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void MeshRenderer::RenderMesh(MeshComponent& meshComponent, Transform& transform, Material& material) {
+void MatCore::MeshRenderer::RenderMesh(MeshComponent& meshComponent, Transform& transform, Material& material) {
     if (meshComponent.VAO == NULL) { LOG_CORE_WARN("MeshComponent VAO is NULL!"); return; }
 
     // UpdateVBO
@@ -100,7 +100,7 @@ void MeshRenderer::RenderMesh(MeshComponent& meshComponent, Transform& transform
     glBindVertexArray(0);
 }
 
-void MeshRenderer::DeInit(MeshComponent& meshComponent) {
+void MatCore::MeshRenderer::DeInit(MeshComponent& meshComponent) {
     glDeleteBuffers(1, &meshComponent.VBO);
     glDeleteBuffers(1, &meshComponent.EBO);
     glDeleteVertexArrays(1, &meshComponent.VAO);

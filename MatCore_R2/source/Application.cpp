@@ -10,7 +10,7 @@
 #include "Log.h"
 #undef CreateWindow //windows
 
-extern Application* applicationP;
+extern MatCore::Application* applicationP;
 
 void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -18,16 +18,16 @@ void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum se
         (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
 }
 
-Application::Application(){
+MatCore::Application::Application(){
     renderer = nullptr;
     scene = nullptr;
 }
-Application::~Application() {
+MatCore::Application::~Application() {
     delete this->renderer;
     delete this->scene;
 }
 
-void Application::RunApp() {
+void MatCore::Application::RunApp() {
     Log::Init();
     LOG_CORE_INFO("Initializing app...");
     InitializeApp();
@@ -42,20 +42,20 @@ void Application::RunApp() {
     CloseWindow();
 }
 
-void Application::CreateWindow(){
+void MatCore::Application::CreateWindow(){
     this->window = GLFWWindow::CreateWindow(800, 600, false);
     GLFWWindow::SetWindowCallbacks(window, WindowFramebufferSizeCallback, WindowCursorPosCallback, WindowKeyCallback, WindowMouseButtonCallback);
 }
 
-bool Application::WindowShouldClose() {
+bool MatCore::Application::WindowShouldClose() {
     return GLFWWindow::ShouldClose(window);
 }
 
-void Application::CloseWindow(){
+void MatCore::Application::CloseWindow(){
     GLFWWindow::CloseWindow();
 }
 
-void Application::InitGL() {
+void MatCore::Application::InitGL() {
     gladLoadGL();
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -63,7 +63,7 @@ void Application::InitGL() {
     glViewport(0, 0, windowWidth, windowHeight);
 }
 
-void Application::InitializeApp() {
+void MatCore::Application::InitializeApp() {
     //Load and parse config
     LOG_CORE_INFO("Creating window...");
     CreateWindow();
@@ -75,7 +75,7 @@ void Application::InitializeApp() {
     this->renderer = new Renderer();
 }
 
-void Application::MainLoop() {
+void MatCore::Application::MainLoop() {
     //delta time
     scene->Update();
     renderer->RenderScene();
@@ -91,20 +91,20 @@ void Application::MainLoop() {
     glDebugMessageCallback(MessageCallback, 0);
 }
 
-void Application::WindowFramebufferSizeCallback(GLFWwindow* window, int width, int height) {
+void MatCore::Application::WindowFramebufferSizeCallback(GLFWwindow* window, int width, int height) {
     applicationP->windowWidth = width;
     applicationP->windowHeight = height;
     applicationP->scene->camera->FramebufferSizeCallback(width, height);
 }
 
-void Application::WindowCursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
+void MatCore::Application::WindowCursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
 
 }
 
-void Application::WindowKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
+void MatCore::Application::WindowKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
 
 }
 
-void Application::WindowMouseButtonCallback(GLFWwindow* window, int button, int action, int mods){
+void MatCore::Application::WindowMouseButtonCallback(GLFWwindow* window, int button, int action, int mods){
 
 }

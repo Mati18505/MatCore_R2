@@ -2,7 +2,7 @@
 #include "../headers/Camera.h"
 #include "Application.h"
 
-Camera::Camera(float fov, CameraType cameraType)
+MatCore::Camera::Camera(float fov, CameraType cameraType)
 	:cameraType(cameraType), fov(fov), cameraPos({ 0.f, 0.f, 0.f }), cameraUp({ 0.f, 1.f, 0.f }),
 	pitch(0.f), yaw(0.f), roll(0.f), size2D(1.f), nearClip(0.1f), farClip(1000.f)
 {
@@ -11,12 +11,12 @@ Camera::Camera(float fov, CameraType cameraType)
 	RecalculateVPMatrix();
 }
 
-void Camera::FramebufferSizeCallback(int width, int height) {
+void MatCore::Camera::FramebufferSizeCallback(int width, int height) {
 	RecalculateProjectionMatrix();
 	RecalculateVPMatrix();
 }
 
-void Camera::RecalculateProjectionMatrix() {
+void MatCore::Camera::RecalculateProjectionMatrix() {
 	if (this->cameraType == CameraType::perspective)
 		projectionMatrix = glm::perspective(glm::radians(fov), (float)(applicationP->windowWidth) / (applicationP->windowHeight), nearClip, farClip);
 	else
@@ -24,7 +24,7 @@ void Camera::RecalculateProjectionMatrix() {
 }
 
 
-void Camera::RecalculateViewMatrix() {
+void MatCore::Camera::RecalculateViewMatrix() {
 	cameraFront.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
 	cameraFront.y = sin(glm::radians(pitch));
 	cameraFront.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
@@ -37,6 +37,6 @@ void Camera::RecalculateViewMatrix() {
 	viewMatrix = glm::lookAt(cameraPos, cameraPos + cameraFront, newCameraUp);
 }
 
-void Camera::RecalculateVPMatrix() {
+void MatCore::Camera::RecalculateVPMatrix() {
 	vpMatrix = GetProjectionMatrix() * GetViewMatrix();
 }

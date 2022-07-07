@@ -7,7 +7,7 @@
 #include "Camera.h"
 #include <GLFW/glfw3.h>
 #include "Log.h"
-
+using namespace MatCore;
 class SandboxScene : public Scene{
 public:
     SandboxScene() : entity(entt::null), Scene() { LOG_INFO("SandboxScene constructed!"); }

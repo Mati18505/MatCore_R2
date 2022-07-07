@@ -16,11 +16,12 @@ extern "C"
 {
     __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
-
-Application* applicationP;
-
+namespace MatCore {
+    MatCore::Application* applicationP;
+}
 int main(void)
 {
+    using namespace MatCore;
     applicationP = new Application();
     applicationP->RunApp();
     delete applicationP;
