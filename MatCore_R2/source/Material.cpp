@@ -1,6 +1,7 @@
 #pragma once
 #include "../headers/Material.h"
 #include "Shader.h"
+#include "Texture.h"
 
 MatCore::Material::Material(const char* vertexShaderPath, const char* fragmentShaderPath){
 	shaderID = Shader::Load(vertexShaderPath, fragmentShaderPath);
@@ -23,6 +24,10 @@ void MatCore::Material::SetSelfUniforms() {
 	glUseProgram(shaderID);
 	auto mvpUniformPos = glGetUniformLocation(shaderID, "mvp");
 	glUniformMatrix4fv(mvpUniformPos, 1, GL_FALSE, glm::value_ptr(mvpMatrix));
+}
+
+void MatCore::Material::SetUniforms() {
+	if(albedo != nullptr) albedo->Bind(0);
 }
 
 void MatCore::Material::SetMVPMatrix(glm::mat4 modelMatrix, glm::mat4 VPMatrix)

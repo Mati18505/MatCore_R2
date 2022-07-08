@@ -90,7 +90,7 @@ void MatCore::MeshRenderer::RenderMesh(MeshComponent& meshComponent, Transform& 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-    //Set MVP Uniform 
+    material.SetUniforms();
     material.SetMVPMatrix(transform.GetModelMatrix(), applicationP->scene->camera->GetVPMatrix());
     material.SetSelfUniforms();
 
