@@ -20,7 +20,18 @@ MatCore::Texture2D::Texture2D(const char* path) {
 	glTextureParameteri(renderID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTextureParameteri(renderID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	glTextureSubImage2D(renderID, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
+	GLenum format = GL_RGB;
+	switch (channels)
+	{
+	case 3: format = GL_RGB; 
+		break;
+	case 4: format = GL_RGBA; 
+		break;
+	default: LOG_CORE_WARN("Image format not supported! channels: {0}", channels);
+		break;
+	}
+	
+	glTextureSubImage2D(renderID, 0, 0, 0, width, height, format, GL_UNSIGNED_BYTE, data);
 
 	stbi_image_free(data);
 }
