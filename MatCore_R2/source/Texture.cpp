@@ -17,6 +17,7 @@ MatCore::Texture2D::Texture2D(const char* path) {
 	glCreateTextures(GL_TEXTURE_2D, 1, &renderID);
 	glTextureStorage2D(renderID, 1, GL_RGB8, width, height);
 
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glTextureParameteri(renderID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTextureParameteri(renderID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
