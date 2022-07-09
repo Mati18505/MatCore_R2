@@ -18,10 +18,9 @@ void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum se
         (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
 }
 
-MatCore::Application::Application(){
-    renderer = nullptr;
-    scene = nullptr;
-}
+MatCore::Application::Application()
+    :renderer(nullptr), scene(nullptr), window(nullptr)
+{}
 MatCore::Application::~Application() {
     delete this->renderer;
     delete this->scene;
