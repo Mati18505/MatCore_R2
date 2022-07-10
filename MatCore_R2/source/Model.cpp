@@ -5,6 +5,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include "Log.h"
+#include <filesystem>
 
 namespace MatCore {
 	void Model::LoadModel(const char* path) {
@@ -89,6 +90,8 @@ namespace MatCore {
 			else
 				vertex.uv = glm::vec2(0.0f, 0.0f);
 
+			//TODO: u¿ywaæ kolorów
+
 			vertices.push_back(vertex);
 		}
 
@@ -101,6 +104,7 @@ namespace MatCore {
 		}
 
 		//Materia³y
+		//TODO: u¿ywaæ parametrów materia³ów
 		if (mesh->mMaterialIndex >= 0) {
 			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
@@ -123,7 +127,15 @@ namespace MatCore {
 			aiString str;
 			mat->GetTexture(type, i, &str);
 
-			std::string fileDir = std::string(modelFileDirectory.c_str()) + '/' + std::string(str.C_Str());
+			std::string fileDir = str.C_Str(); //œcie¿ka absolutna
+			if (!std::filesystem::exists(fileDir))
+			{
+				fileDir = std::string(modelFileDirectory.c_str()) + '/' + std::string(str.C_Str()); //œcie¿ka relatywna
+				if (!std::filesystem::exists(fileDir)) {
+					fileDir = str.C_Str();
+					LOG_CORE_ERROR("Failed to load model texture: {0}", fileDir);
+				}
+			}
 			filesDirs.push_back(std::make_shared<Texture2D>(fileDir.c_str()));
 		}
 
