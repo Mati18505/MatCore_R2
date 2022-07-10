@@ -71,13 +71,15 @@ namespace MatCore {
 			vertex.position = vertexPosition;
 
 			//normalna
-			vertexNormal.x = mesh->mNormals[i].x;
-			vertexNormal.y = mesh->mNormals[i].y;
-			vertexNormal.z = mesh->mNormals[i].z;
-			vertex.normal = vertexNormal;
-
+			if (mesh->HasNormals()) {
+				vertexNormal.x = mesh->mNormals[i].x;
+				vertexNormal.y = mesh->mNormals[i].y;
+				vertexNormal.z = mesh->mNormals[i].z;
+				vertex.normal = vertexNormal;
+			}
+			
 			//UV TODO: u¿ywaæ wszystkich 8 map UV
-			if (mesh->mTextureCoords[0] != nullptr)
+			if (mesh->HasTextureCoords(0))
 			{
 				glm::vec2 vertexUV;
 				vertexUV.x = mesh->mTextureCoords[0][i].x;
