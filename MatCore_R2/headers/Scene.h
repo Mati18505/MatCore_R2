@@ -5,6 +5,7 @@
 #include <entt.hpp>
 namespace MatCore {
 	class Camera;
+	class Entity;
 	namespace MeshRenderer {
 		void OnConstruct(entt::registry&, entt::entity entity);
 		void OnDestroy(entt::registry&, entt::entity entity);
@@ -16,6 +17,7 @@ namespace MatCore {
 		virtual ~Scene();
 		virtual void Start() = 0;
 		virtual void Update() = 0;
+		Entity CreateEntity(std::string name = "");
 
 		//TODO: przenieœæ do Editor
 		Camera* camera;

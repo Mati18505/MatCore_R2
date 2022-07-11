@@ -9,6 +9,8 @@
 #include "Application.h"
 #include "Log.h"
 #include "Renderer.h"
+#include "Entity.h"
+#include "TagComponent.h"
 
 MatCore::Scene::Scene() :camera(nullptr) {
     entitiesRegistry.on_construct<MeshComponent>().connect<&MeshRenderer::OnConstruct>();
@@ -17,4 +19,13 @@ MatCore::Scene::Scene() :camera(nullptr) {
 
 MatCore::Scene::~Scene() {
     
+}
+
+MatCore::Entity MatCore::Scene::CreateEntity(std::string name)
+{
+    Entity entity(this);
+    entity.AddComponent<Transform>();
+    if (name.empty()) name = "Untitled entity";
+    entity.AddComponent<TagComponent>(name.c_str());
+    return entity;
 }
