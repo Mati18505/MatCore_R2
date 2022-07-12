@@ -29,3 +29,9 @@ MatCore::Entity MatCore::Scene::CreateEntity(std::string name)
     entity.AddComponent<TagComponent>(name.c_str());
     return entity;
 }
+
+void MatCore::Scene::DestroyEntity(Entity entity)
+{
+    entitiesRegistry.destroy(entity);
+    //TODO: usun¹æ w tym miejscu entity-dzieci
+}

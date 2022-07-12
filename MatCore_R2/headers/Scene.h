@@ -18,6 +18,7 @@ namespace MatCore {
 		virtual void Start() = 0;
 		virtual void Update() = 0;
 		Entity CreateEntity(std::string name = "");
+		void DestroyEntity(Entity entity);
 
 		//TODO: przenieœæ do Editor
 		Camera* camera;
