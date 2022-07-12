@@ -10,7 +10,7 @@
 namespace MatCore {
 	void Model::LoadModel(const char* path) {
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices
+		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FindInvalidData |aiProcess_JoinIdenticalVertices
 			| aiProcess_OptimizeMeshes | aiProcess_OptimizeGraph);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
