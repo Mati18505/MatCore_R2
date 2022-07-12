@@ -6,17 +6,20 @@
 #include "material.h"
 #include "Camera.h"
 #include <GLFW/glfw3.h>
+#include "Entity.h"
 #include "Log.h"
+#include "Model.h"
+#include "Texture.h"
+
 using namespace MatCore;
 class SandboxScene : public Scene{
 public:
-    SandboxScene() : entity(entt::null), Scene() { LOG_INFO("SandboxScene constructed!"); }
+    SandboxScene() : entity(CreateEntity()), Scene() { LOG_INFO("SandboxScene constructed!"); }
     ~SandboxScene();
 	void Start();
 	void Update();
 private:
-	entt::entity entity;
-    entt::entity e;
+    Entity entity;
 	double lastXMousePos{ 0 }, lastYMousePos{ 0 };
 };
 
@@ -31,54 +34,65 @@ void SandboxScene::Start() {
     Mesh circleMesh = Mesh::Circle(360, 7);
 
     //entity 1
-    entity = entitiesRegistry.create();
-    entitiesRegistry.emplace<MeshComponent>(entity, coneMesh);
+    entity.AddComponent<MeshComponent>(coneMesh);
+    entity.GetComponent<Transform>().position = { 5.f, 0.f, -20.f };
+    entity.AddComponent<Material>();
 
-    Transform& transform = entitiesRegistry.emplace<Transform>(entity);
-    transform.position = glm::vec3(5.f, 0.f, -20.f);
-    transform.scale = glm::vec3(1.f, 1.f, 1.f);
+    Entity entity3 = CreateEntity();
+    entity3.AddComponent<MeshComponent>(circleMesh);
+    entity3.GetComponent<Transform>().position = { 17.f, 0.f, -20.f };
+    entity3.AddComponent<Material>();
 
-    entitiesRegistry.emplace<Material>(entity, "./Shaders/color.vs", "./Shaders/color.fs");
+    Entity entity2 = CreateEntity();
+    entity2.AddComponent<MeshComponent>(coneMesh);
+    entity2.GetComponent<Transform>().position = { -5.f, 0.f, -20.f };
+    entity2.AddComponent<Material>();
 
-
-    auto entity3 = entitiesRegistry.create();
-    entitiesRegistry.emplace<MeshComponent>(entity3, circleMesh);
-
-    Transform& transform3 = entitiesRegistry.emplace<Transform>(entity3);
-    transform3.position = glm::vec3(17.f, 0.f, -20.f);
-    transform3.rotation = glm::vec3(0.f, 180.f, 90.f);
-    transform3.scale = glm::vec3(1.f, 1.f, 1.f);
-
-    entitiesRegistry.emplace<Material>(entity3, "./Shaders/color.vs", "./Shaders/color.fs");
-
-    //entity 2
-    entt::entity entity2 = entitiesRegistry.create();
-    entitiesRegistry.emplace<MeshComponent>(entity2, coneMesh);
-
-
-    Transform& transform2 = entitiesRegistry.emplace<Transform>(entity2);
-    transform2.position = glm::vec3(-5.f, 0.f, -20.f);
-    transform2.scale = glm::vec3(1.f, 1.f, 1.f);
-
-    entitiesRegistry.emplace<Material>(entity2, "./Shaders/color.vs", "./Shaders/color.fs");
+    //testy
+    {
+        Entity e3 = CreateEntity();
+        e3.AddComponent<Material>();
+        DestroyEntity(e3);
+        LOG_WARN(e3.HasComponent<Material>());
+        e3.RemoveComponent<Material>();
+    }
 
     //Camera
     camera = new Camera(90, Camera::CameraType::perspective);
     camera->SetYaw(-90);
     camera->SetCameraClip(1.f, 10000.f);
 
-    e = entitiesRegistry.create();
-    entitiesRegistry.emplace<MeshComponent>(e, coneMesh);
-    entitiesRegistry.emplace<Material>(e, "./Shaders/color.vs", "./Shaders/color.fs");
-    entitiesRegistry.emplace<Transform>(e);
+    //£adowanie modeli
+    Model models[5]{("Assets/test/Models/models/cyberpunkCar/untitled.obj"),
+        ("Assets/test/Models/models/Backpack/survivalBackpack/backpack.obj"),
+        ("Assets/test/Models/models/nanosuit/nanosuit.fbx"),
+        ("Assets/test/Models/models/spider/spider.obj"),
+        ("Assets/test/Models/models/cat/cat.fbx") };
+    int modelSizes[5]{ 10, 20, 10, 1, 10 };
+
+    int j = 0;
+    for (auto model : models) {
+        for (size_t i = 0; i < model.GetMeshes().size(); i++)
+        {
+            Entity e2 = CreateEntity();
+            e2.AddComponent<MeshComponent>(model.GetMeshes()[i]);
+            e2.AddComponent<Material>();
+            if (!model.GetTextures().empty())
+                e2.GetComponent<Material>().albedo = model.GetTextures()[i];
+            Transform& modelTransform = e2.GetComponent<Transform>();
+            modelTransform.position.x = j * 100;
+            modelTransform.scale *= modelSizes[j];
+        }
+        j++;
+    }
 }
 
 void SandboxScene::Update() {
-    Transform& transform = entitiesRegistry.get<Transform>(entity);
-    transform.rotation.x++;
+    entity.GetComponent<Transform>().rotation.x++;
 
     glm::vec3 cameraFront = glm::normalize(camera->GetCameraFront());
     glm::vec3 cameraRight = glm::normalize(glm::cross(cameraFront, camera->GetCameraUp()));
+    glm::vec3 cameraUp = glm::normalize(camera->GetCameraUp());
 
     glm::vec3 cameraTranslate{ 0,0,0 };
     int cameraSpeed = 2;
@@ -96,10 +110,10 @@ void SandboxScene::Update() {
         cameraTranslate += cameraRight;
     }
     if (glfwGetKey(applicationP->window, GLFW_KEY_Q) == GLFW_PRESS) {
-        cameraTranslate.y--;
+        cameraTranslate -= cameraUp;
     }
     if (glfwGetKey(applicationP->window, GLFW_KEY_E) == GLFW_PRESS) {
-        cameraTranslate.y++;
+        cameraTranslate += cameraUp;
     }
     if (glfwGetKey(applicationP->window, GLFW_KEY_X) == GLFW_PRESS) {
         cameraSpeed *= 10;
@@ -120,8 +134,8 @@ void SandboxScene::Update() {
     xOffset *= sensitivity;
     yOffset *= sensitivity;
 
-    camera->SetYaw(camera->GetYaw() + xOffset);
-    camera->SetPitch(camera->GetPitch() + yOffset);
+    camera->SetYaw(camera->GetYaw() + (float)xOffset);
+    camera->SetPitch(camera->GetPitch() + (float)yOffset);
 
     if (camera->GetPitch() > 89.0f)
         camera->SetPitch(89.0f);

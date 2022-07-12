@@ -7,7 +7,7 @@ namespace MatCore {
 	class Texture2D;
 	struct Material {
 	public:
-		Material(const char* vertexShaderPath = "./Shaders/color.vs", const char* fragmentShaderPath = "./Shaders/color.fs");
+		Material(const char* vertexShaderPath = "Assets/Shaders/color.vs", const char* fragmentShaderPath = "Assets/Shaders/color.fs");
 		Material(const Material& materialCopy);
 		~Material();
 
