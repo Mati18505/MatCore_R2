@@ -15,8 +15,8 @@ namespace MatCore {
 		friend class Camera;
 		friend class Renderer;
 
-		int windowWidth{ 800 };
-		int windowHeight{ 600 };
+		int windowWidth{ 1366 };
+		int windowHeight{ 768 };
 
 		void InitializeApp();
 		void MainLoop();

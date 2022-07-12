@@ -42,7 +42,7 @@ void MatCore::Application::RunApp() {
 }
 
 void MatCore::Application::CreateWindow(){
-    this->window = GLFWWindow::CreateWindow(800, 600, false);
+    this->window = GLFWWindow::CreateWindow(windowWidth, windowHeight, false);
     GLFWWindow::SetWindowCallbacks(window, WindowFramebufferSizeCallback, WindowCursorPosCallback, WindowKeyCallback, WindowMouseButtonCallback);
 }
 
