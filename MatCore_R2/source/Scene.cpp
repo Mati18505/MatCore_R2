@@ -23,7 +23,7 @@ MatCore::Scene::~Scene() {
 
 MatCore::Entity MatCore::Scene::CreateEntity(std::string name)
 {
-    Entity entity(this);
+    Entity entity(entitiesRegistry.create(), this);
     entity.AddComponent<Transform>();
     if (name.empty()) name = "Untitled entity";
     entity.AddComponent<TagComponent>(name);

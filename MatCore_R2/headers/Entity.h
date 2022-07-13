@@ -5,7 +5,8 @@ namespace MatCore {
 	class Scene;
 	class Entity {
 	public:
-		Entity(Scene* scene);
+		Entity(Scene* scene) : entityHandle(entt::null), scene(scene) {}
+		Entity(entt::entity entity, Scene* scene) :entityHandle(entity), scene(scene) {}
 		Entity(const Entity& other) = default;
 
 		template<typename T, typename... Args>
@@ -53,7 +54,10 @@ namespace MatCore {
 			scene->entitiesRegistry.remove<T>(entityHandle);
 		}
 
+		operator bool() const { return this->entityHandle != entt::null; }
 		operator entt::entity() const { return entityHandle; }
+		operator int() const { return (int)entityHandle; }
+		bool operator ==(Entity other) const { return other.entityHandle == this->entityHandle; }
 
 	private:
 		entt::entity entityHandle;
