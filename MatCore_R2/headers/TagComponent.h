@@ -3,9 +3,10 @@
 namespace MatCore {
 	struct TagComponent {
 	public:
-		TagComponent(const char* tag) :tag(tag) {}
+		TagComponent(std::string tag) :tag(tag) {}
 		TagComponent(const TagComponent& other) : tag(tag) {}
+		operator std::string () const { return tag; }
 	private:
-		const char* tag;
+		std::string tag;
 	};
 }
