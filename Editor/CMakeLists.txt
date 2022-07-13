@@ -12,3 +12,5 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Do³¹czamy MatCore_R2 jako bibliotekê
 target_link_libraries(${PROJECT_NAME} PUBLIC MatCore_R2)
+
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Dependece/ImGUI")

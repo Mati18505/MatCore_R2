@@ -12,6 +12,8 @@
 #include "Model.h"
 #include "Texture.h"
 
+struct ImGuiIO;
+
 using namespace MatCore;
 class EditorScene : public Scene
 {
@@ -20,7 +22,8 @@ public:
 	~EditorScene();
 	void Start();
 	void Update();
+	void Render();
 
 private:
-
+	ImGuiIO* io;
 };
