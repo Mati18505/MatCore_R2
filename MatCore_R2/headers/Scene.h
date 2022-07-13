@@ -17,6 +17,7 @@ namespace MatCore {
 		virtual ~Scene();
 		virtual void Start() = 0;
 		virtual void Update() = 0;
+		virtual void Render() = 0;
 		Entity CreateEntity(std::string name = "");
 		void DestroyEntity(Entity entity);
 

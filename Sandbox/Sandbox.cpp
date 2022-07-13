@@ -18,6 +18,7 @@ public:
     ~SandboxScene();
 	void Start();
 	void Update();
+    void Render() {}
 private:
     Entity entity;
 	double lastXMousePos{ 0 }, lastYMousePos{ 0 };

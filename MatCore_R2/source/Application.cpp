@@ -78,6 +78,7 @@ void MatCore::Application::MainLoop() {
     //delta time
     scene->Update();
     renderer->RenderScene();
+    scene->Render();
     //vsync ? glfwswapbuffers : glfinish
     glfwSwapBuffers(window);
     //input update
@@ -93,7 +94,8 @@ void MatCore::Application::MainLoop() {
 void MatCore::Application::WindowFramebufferSizeCallback(GLFWwindow* window, int width, int height) {
     applicationP->windowWidth = width;
     applicationP->windowHeight = height;
-    applicationP->scene->camera->FramebufferSizeCallback(width, height);
+    if(height != 0)
+        applicationP->scene->camera->FramebufferSizeCallback(width, height);
 }
 
 void MatCore::Application::WindowCursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
