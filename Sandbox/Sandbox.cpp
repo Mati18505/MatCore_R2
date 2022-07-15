@@ -1,17 +1,4 @@
-#include "Application.h"
-#include "Log.h"
-#include "Scene.h"
-#include "MeshComponent.h"
-#include "Transform.h"
-#include "material.h"
-#include "Camera.h"
-#include "Entity.h"
-#include "Log.h"
-#include "Model.h"
-#include "Texture.h"
-#include "Input.h"
-#include "KeyCodes.h"
-#include "MouseButtonCodes.h"
+#include "MatCore.h"
 
 using namespace MatCore;
 class SandboxScene : public Scene{
