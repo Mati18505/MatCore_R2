@@ -5,20 +5,22 @@
 #include "Transform.h"
 #include "material.h"
 #include "Camera.h"
-#include <GLFW/glfw3.h>
 #include "Entity.h"
 #include "Log.h"
 #include "Model.h"
 #include "Texture.h"
+#include "Input.h"
+#include "KeyCodes.h"
+#include "MouseButtonCodes.h"
 
 using namespace MatCore;
 class SandboxScene : public Scene{
 public:
     SandboxScene() : entity(CreateEntity()), Scene() { LOG_INFO("SandboxScene constructed!"); }
     ~SandboxScene();
-	void Start();
-	void Update();
-    void Render() {}
+	void Start() override;
+	void Update() override;
+    void Render()  override {}
 private:
     Entity entity;
 	double lastXMousePos{ 0 }, lastYMousePos{ 0 };
@@ -33,7 +35,7 @@ void SandboxScene::Start() {
     LOG_INFO("SandboxScene Start!");
     Mesh coneMesh = Mesh::Cone(360, 7, 7);
     Mesh circleMesh = Mesh::Circle(360, 7);
-
+    
     //entity 1
     entity.AddComponent<MeshComponent>(coneMesh);
     entity.GetComponent<Transform>().position = { 5.f, 0.f, -20.f };
@@ -72,7 +74,7 @@ void SandboxScene::Start() {
     int modelSizes[5]{ 10, 20, 10, 1, 10 };
 
     int j = 0;
-    for (auto model : models) {
+    for (auto model : models) { 
         for (size_t i = 0; i < model.GetMeshes().size(); i++)
         {
             Entity e2 = CreateEntity();
@@ -98,38 +100,37 @@ void SandboxScene::Update() {
     glm::vec3 cameraTranslate{ 0,0,0 };
     int cameraSpeed = 2;
 
-    if (glfwGetKey(applicationP->window, GLFW_KEY_W) == GLFW_PRESS) {
+    if (Input::IsKeyPressed(MC_KEY_W)) {
         cameraTranslate += cameraFront;
     }
-    if (glfwGetKey(applicationP->window, GLFW_KEY_A) == GLFW_PRESS) {
+    if (Input::IsKeyPressed(MC_KEY_A)) {
         cameraTranslate -= cameraRight;
     }
-    if (glfwGetKey(applicationP->window, GLFW_KEY_S) == GLFW_PRESS) {
+    if (Input::IsKeyPressed(MC_KEY_S)) {
         cameraTranslate -= cameraFront;
     }
-    if (glfwGetKey(applicationP->window, GLFW_KEY_D) == GLFW_PRESS) {
+    if (Input::IsKeyPressed(MC_KEY_D)) {
         cameraTranslate += cameraRight;
     }
-    if (glfwGetKey(applicationP->window, GLFW_KEY_Q) == GLFW_PRESS) {
+    if (Input::IsKeyPressed(MC_KEY_Q)) {
         cameraTranslate -= cameraUp;
     }
-    if (glfwGetKey(applicationP->window, GLFW_KEY_E) == GLFW_PRESS) {
+    if (Input::IsKeyPressed(MC_KEY_E)) {
         cameraTranslate += cameraUp;
     }
-    if (glfwGetKey(applicationP->window, GLFW_KEY_X) == GLFW_PRESS) {
+    if (Input::IsKeyPressed(MC_KEY_X)) {
         cameraSpeed *= 10;
     }
     cameraTranslate *= cameraSpeed;
 
     camera->SetCameraPos(camera->GetCameraPos() + cameraTranslate);
 
-    double xpos, ypos;
-    glfwGetCursorPos(applicationP->window, &xpos, &ypos);
-    double xOffset = xpos - lastXMousePos;
-    double yOffset = -ypos - lastYMousePos;
+    auto [x, y] = Input::GetMousePosition();
+    double xOffset = x - lastXMousePos;
+    double yOffset = -y - lastYMousePos;
 
-    lastXMousePos = xpos;
-    lastYMousePos = -ypos;
+    lastXMousePos = x;
+    lastYMousePos = -y;
 
     float sensitivity = 0.2f;
     xOffset *= sensitivity;
