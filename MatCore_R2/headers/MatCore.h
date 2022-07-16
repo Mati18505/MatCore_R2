@@ -23,3 +23,4 @@
 #include "Transform.h"
 #include "MeshComponent.h"
 #include "Material.h"
+#include "InheritanceComponent.h"
