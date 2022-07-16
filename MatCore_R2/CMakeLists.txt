@@ -1,7 +1,7 @@
 ﻿# CMakeList.txt : CMake project for MatCore_R2, include source and define
 # project specific logic here.
 #
-cmake_minimum_required (VERSION 3.2 FATAL_ERROR)
+cmake_minimum_required (VERSION 3.16 FATAL_ERROR)
 
 # Używamy c++11
 set(CMAKE_CXX_STANDARD 17)
