@@ -78,7 +78,10 @@ void MatCore::Application::InitializeApp() {
 }
 
 void MatCore::Application::MainLoop() {
-    //delta time
+    //TODO: przenieœæ delta time do fizyki? input?
+    deltaTime = (glfwGetTime() - lastFrameAppTime) * 1000.;
+    lastFrameAppTime = glfwGetTime();
+
     scene->Update();
     renderer->RenderScene();
     scene->Render();

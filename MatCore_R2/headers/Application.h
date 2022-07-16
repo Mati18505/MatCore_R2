@@ -9,6 +9,8 @@ namespace MatCore {
 		GLFWwindow* window;
 		Renderer* renderer;
 		Scene* scene;
+		double deltaTime = 0;
+		
 		Application();
 		~Application();
 	private:
@@ -17,6 +19,8 @@ namespace MatCore {
 
 		int windowWidth{ 1366 };
 		int windowHeight{ 768 };
+
+		double lastFrameAppTime = 0;
 
 		void InitializeApp();
 		void MainLoop();
