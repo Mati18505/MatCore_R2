@@ -1,29 +1,33 @@
 #pragma once
-#include "Application.h"
-#include "Log.h"
-#include "Scene.h"
-#include "MeshComponent.h"
-#include "Transform.h"
-#include "material.h"
-#include "Camera.h"
-#include <GLFW/glfw3.h>
-#include "Entity.h"
-#include "Log.h"
-#include "Model.h"
-#include "Texture.h"
-
-struct ImGuiIO;
+#include "MatCore.h"
+#define IMGUI_IMPL_OPENGL_LOADER_CUSTOM
+#include "SceneHierarchyPanel.h"
 
 using namespace MatCore;
+
+struct ImFontConfig;
+typedef int ImGuiConfigFlags;
+
 class EditorScene : public Scene
 {
 public:
 	EditorScene();
 	~EditorScene();
-	void Start();
-	void Update();
-	void Render();
+	void Start() override;
+	void Update() override;
+	void Render() override;
 
 private:
-	ImGuiIO* io;
+	friend class SceneHierarchyPanel;
+	SceneHierarchyPanel hierarchyPanel;
+
+	void SetupImGui(ImGuiConfigFlags imGuiConfigFlags);
+	void SetupImGuiFont(const char* filename, float size_pixels, const ImFontConfig* font_cfg_template = NULL);
+
+	void ShowGUIMenuBar();
+	void ShowGUIStats();
+
+	double lastXMousePos = 0, lastYMousePos = 0;
+	float FPS = 0;
+	float timer = 0;
 };
