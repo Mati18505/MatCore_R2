@@ -5,6 +5,8 @@
 
 static void DrawVec3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.f)
 {
+	ImGuiIO& io = ImGui::GetIO();
+	auto boldFont = io.Fonts->Fonts[0];
 	ImGui::PushID(label.c_str()); //uwaga: label nie mo¿e siê powtórzyæ
 
 	ImGui::Columns(2);
@@ -22,8 +24,10 @@ static void DrawVec3Control(const std::string& label, glm::vec3& values, float r
 	ImGui::PushStyleColor(ImGuiCol_Button, { .8f, .1f, .15f, 1.f });
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { .9f, .2f, .2f, 1.f });
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, { .8f, .1f, .15f, 1.f });
+	ImGui::PushFont(boldFont);
 	if (ImGui::Button("X", buttonSize))
 		values.x = resetValue;
+	ImGui::PopFont();
 	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
@@ -34,8 +38,10 @@ static void DrawVec3Control(const std::string& label, glm::vec3& values, float r
 	ImGui::PushStyleColor(ImGuiCol_Button, { .2f, .7f, .2f, 1.f });
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { .3f, .8f, .3f, 1.f });
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, { .2f, .7f, .2f, 1.f });
+	ImGui::PushFont(boldFont);
 	if (ImGui::Button("Y", buttonSize))
 		values.y = resetValue;
+	ImGui::PopFont();
 	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
@@ -46,8 +52,10 @@ static void DrawVec3Control(const std::string& label, glm::vec3& values, float r
 	ImGui::PushStyleColor(ImGuiCol_Button, { .1f, .25f, .8f, 1.f });
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { .2f, .35f, .9f, 1.f });
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, { .1f, .25f, .8f, 1.f });
+	ImGui::PushFont(boldFont);
 	if (ImGui::Button("Z", buttonSize))
 		values.z = resetValue;
+	ImGui::PopFont();
 	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
@@ -61,22 +69,35 @@ static void DrawVec3Control(const std::string& label, glm::vec3& values, float r
 }
 
 template<typename T>
-static void DrawInspectorComponent(const char* componentName, MatCore::Entity entity, bool removable, std::function<void(void)> componentElements) {
+static void DrawInspectorComponent(const char* componentName, MatCore::Entity entity, bool removable, std::function<void(T& component)> componentElements) {
 	if (entity.HasComponent<T>()) {
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 4, 4 });
-		bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, componentName);
-		ImGui::SameLine(ImGui::GetWindowWidth() - 25.f);
-		if (ImGui::Button("+"))
-		{
-			ImGui::OpenPopup("ComponentSettings");
-		}
-		ImGui::PopStyleVar();
+		const std::string uniqueID = std::to_string(typeid(T).hash_code());
 
+		auto contentRegionAvalible = ImGui::GetContentRegionAvail();
+
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 4, 4 });
+		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+
+		ImGui::Separator();	
+		bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanAvailWidth 
+			| ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding, componentName);
+
+		ImGui::PopStyleVar(); 
+
+		ImGui::SameLine(contentRegionAvalible.x - lineHeight * 0.5f);
+
+		//Przycisk ...
+		if (ImGui::Button((std::string("...##") + uniqueID).c_str(), { lineHeight, lineHeight }))
+		{
+			ImGui::OpenPopup((std::string("ComponentSettings##") + uniqueID).c_str());
+		}
+		
+		//Menu ...
 		bool removeComponent = false;
-		if (ImGui::BeginPopup("ComponentSettings"))
+		if (ImGui::BeginPopup((std::string("ComponentSettings##") + uniqueID).c_str()))
 		{
 			if (removable) {
-				if (ImGui::MenuItem(u8"Usuñ komponent"))
+				if (ImGui::MenuItem((std::string(u8"Usuñ komponent##") + uniqueID).c_str()))
 					removeComponent = true;
 			}
 
@@ -85,14 +106,13 @@ static void DrawInspectorComponent(const char* componentName, MatCore::Entity en
 
 		if(open)
 		{
-			componentElements();
+			auto& component = entity.GetComponent<T>();
+			componentElements(component);
 			ImGui::TreePop();
 		}
 
 		if (removeComponent)
 			entity.RemoveComponent<T>();
-
-		ImGui::Separator();
 	}
 }
 
@@ -100,6 +120,7 @@ void SceneHierarchyPanel::Render(EditorScene* scene) {
 	using namespace MatCore;
 	//ImGui::SetNextWindowSize(ImVec2(500, 440), ImGuiCond_FirstUseEver);
 
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, { 250.f, 500.f });
 	ImGui::Begin("Hierarchia sceny");
 
 	scene->entitiesRegistry.each([&](auto entityHandler)
@@ -123,35 +144,22 @@ void SceneHierarchyPanel::Render(EditorScene* scene) {
 	}
 
 	ImGui::End();
+	ImGui::PopStyleVar();
 
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, { 450.f, 500.f });
 	ImGui::Begin("Inspektor");
 	if (selectedEntity) {
 		DrawInspectorComponents(selectedEntity);
-		if (ImGui::Button("Dodaj komponent"))
-			ImGui::OpenPopup("AddComponent");
-
-		if (ImGui::BeginPopup("AddComponent")) 
-		{
-			if (ImGui::MenuItem("Material")) {
-				selectedEntity.AddComponent<Material>();
-				ImGui::CloseCurrentPopup();
-			}
-			if (ImGui::MenuItem("Mesh Component")) {
-				selectedEntity.AddComponent<MeshComponent>(Mesh::Cone(360, 2, 4));
-				ImGui::CloseCurrentPopup();
-			}
-
-			ImGui::EndPopup();
-		}
 	}
-		
 	ImGui::End();
+	ImGui::PopStyleVar();
 }
 
 void SceneHierarchyPanel::DrawEntityNode(Entity entity, EditorScene* scene)
 {
 	using namespace MatCore;
-	ImGuiTreeNodeFlags flags = ((selectedEntity == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+	ImGuiTreeNodeFlags flags = ((selectedEntity == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow
+		| ImGuiTreeNodeFlags_SpanAvailWidth;
 	auto& tag = entity.GetComponent<TagComponent>();
 	bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)(entt::entity)entity, flags, tag.Tag().c_str());
 
@@ -188,27 +196,18 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity, EditorScene* scene)
 
 void SceneHierarchyPanel::DrawInspectorComponents(MatCore::Entity entity)
 {
-	DrawInspectorComponent<TagComponent>("Tag", entity, false, [&]()
-	{
-		std::string& tag = entity.GetComponent<TagComponent>().Tag();
+	auto contentRegionAvalible = ImGui::GetContentRegionAvail();
+	DrawTagComponent(entity);
 
-		char buffer[256];
-		memset(buffer, 0, sizeof(buffer));
+	DrawAddComponentButton(contentRegionAvalible);
 
-		strcpy_s(buffer, sizeof(buffer), tag.c_str());
-
-		if (ImGui::InputText("Tag", buffer, sizeof(buffer)))
-			tag = std::string(buffer);
-	});
-
-	DrawInspectorComponent<Transform>("Transform", entity, false, [&]() {
-		auto& transform = entity.GetComponent<Transform>();
+	DrawInspectorComponent<Transform>("Transform", entity, false, [&](Transform& transform) {
 		DrawVec3Control("Position", transform.position, 0.f);
 		DrawVec3Control("Rotation", transform.rotation, 0.f);
 		DrawVec3Control("Scale", transform.scale, 1.f);
 	});
 	
-	DrawInspectorComponent<InheritanceComponent>("Dziedziczenie", entity, false, [&]() 
+	DrawInspectorComponent<InheritanceComponent>("Dziedziczenie", entity, false, [&](InheritanceComponent&)
 	{
 		ImGui::Text("Dzieci: ");
 		for (Entity e : entity.GetComponent<InheritanceComponent>().childEntities)
@@ -222,8 +221,8 @@ void SceneHierarchyPanel::DrawInspectorComponents(MatCore::Entity entity)
 		}
 	});
 	
-	DrawInspectorComponent<Material>(u8"Materia³", entity, true, [&]() {
-		auto& material = entity.GetComponent<Material>();
+	DrawInspectorComponent<Material>(u8"Materia³", entity, true, [&](Material& material) {
+		ImGui::Text(("ShaderID: " + std::to_string(material.shaderID)).c_str());
 		ImGui::Text("Albedo");
 		if (entity.GetComponent<Material>().albedo != nullptr) {
 			std::shared_ptr<Texture2D> texture = material.albedo;
@@ -231,4 +230,44 @@ void SceneHierarchyPanel::DrawInspectorComponents(MatCore::Entity entity)
 		}
 	});
 
+	DrawInspectorComponent<MeshComponent>(u8"Mesh", entity, true, [&](MeshComponent& mesh) {
+		ImGui::Text(("Vertices: " + std::to_string(mesh.mesh.GetVertices()->size())).c_str());
+		ImGui::Text(("Triangles: " + std::to_string(mesh.mesh.GetTriangles()->size())).c_str());
+	});
+
+}
+
+void SceneHierarchyPanel::DrawTagComponent(MatCore::Entity entity)
+{
+	std::string& tag = entity.GetComponent<TagComponent>().Tag();
+
+	char buffer[256];
+	memset(buffer, 0, sizeof(buffer));
+
+	strcpy_s(buffer, sizeof(buffer), tag.c_str());
+
+	if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
+		tag = std::string(buffer);
+}
+
+void SceneHierarchyPanel::DrawAddComponentButton(ImVec2 contentRegionAvalible)
+{
+	float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+	ImGui::SameLine(contentRegionAvalible.x - lineHeight * 0.5f);
+	if (ImGui::Button("+", { lineHeight, lineHeight }))
+		ImGui::OpenPopup("AddComponent");
+
+	if (ImGui::BeginPopup("AddComponent"))
+	{
+		if (ImGui::MenuItem("Material")) {
+			selectedEntity.AddComponent<Material>();
+			ImGui::CloseCurrentPopup();
+		}
+		if (ImGui::MenuItem("Mesh Component")) {
+			selectedEntity.AddComponent<MeshComponent>(Mesh::Cone(360, 2, 4));
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
 }

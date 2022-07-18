@@ -22,7 +22,8 @@ private:
 	SceneHierarchyPanel hierarchyPanel;
 
 	void SetupImGui(ImGuiConfigFlags imGuiConfigFlags);
-	void SetupImGuiFont(const char* filename, float size_pixels, const ImFontConfig* font_cfg_template = NULL);
+	void SetDarkTheme();
+	void SetupImGuiFont(const char* filename, float size_pixels, const ImFontConfig* font_cfg_template = NULL, const char* boldFontFile = nullptr);
 
 	void ShowGUIMenuBar();
 	void ShowGUIStats();

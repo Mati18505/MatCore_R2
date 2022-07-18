@@ -2,6 +2,7 @@
 #include "MatCore.h"
 
 class EditorScene;
+struct ImVec2;
 class SceneHierarchyPanel {
 public:
 	SceneHierarchyPanel() : selectedEntity(MatCore::Entity::Null()) {}
@@ -9,5 +10,8 @@ public:
 private:
 	void DrawEntityNode(MatCore::Entity entity, EditorScene* scene); 
 	void DrawInspectorComponents(MatCore::Entity entity); 
+
+	void DrawTagComponent(MatCore::Entity entity);
+	void DrawAddComponentButton(ImVec2 contentRegionAvalible);
 	MatCore::Entity selectedEntity;
 };

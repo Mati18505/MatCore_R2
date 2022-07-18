@@ -15,8 +15,9 @@ EditorScene::EditorScene()
 {
 	ImGuiConfigFlags imGuiConfig = ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable | ImGuiDockNodeFlags_PassthruCentralNode;
 	SetupImGui(imGuiConfig);
+	SetDarkTheme();
 	ImFontConfig fontConfig = ImFontConfig();
-	SetupImGuiFont("Assets/calibri.ttf", 20, &fontConfig);
+	SetupImGuiFont("Assets/Fonts/Rubik/static/Rubik-Regular.ttf", 20, &fontConfig, "Assets/Fonts/Rubik/static/Rubik-Bold.ttf");
 	
 	camera = new Camera(90, Camera::CameraType::perspective);
 	camera->SetYaw(-90);
@@ -60,7 +61,7 @@ void EditorScene::Start()
 
 void EditorScene::Update()
 {
-	if (ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard || Input::IsKeyPressed(MC_KEY_F1))
+	if (ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard || Input::IsKeyPressed(MC_KEY_1))
 	{
 		auto [x, y] = Input::GetMousePosition();
 		lastXMousePos = x;
@@ -134,7 +135,6 @@ void EditorScene::Render()
 	ShowGUIMenuBar();
 	ShowGUIStats();
 	hierarchyPanel.Render(this);
-	ImGui::ShowDemoWindow();
 
 	//Render
 	ImGui::Render();
@@ -156,7 +156,45 @@ void EditorScene::SetupImGui(ImGuiConfigFlags imGuiConfigFlags)
 	ImGui_ImplOpenGL3_Init("#version 450");
 }
 
-void EditorScene::SetupImGuiFont(const char* filename, float size_pixels, const ImFontConfig* fontConfigFlags)
+void EditorScene::SetDarkTheme()
+{
+	auto& colors = ImGui::GetStyle().Colors;
+	colors[ImGuiCol_WindowBg] = ImVec4(0.10f, 0.10f, 0.10f, 1.00f);
+
+	// Headers
+	colors[ImGuiCol_Header] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
+	colors[ImGuiCol_HeaderHovered] = ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
+	colors[ImGuiCol_HeaderActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+
+	// Buttons
+	colors[ImGuiCol_Button] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
+	colors[ImGuiCol_ButtonHovered] = ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
+	colors[ImGuiCol_ButtonActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+
+	// Frame BG
+	colors[ImGuiCol_FrameBg] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
+	colors[ImGuiCol_FrameBgHovered] = ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
+	colors[ImGuiCol_FrameBgActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+
+	// Tabs
+	colors[ImGuiCol_Tab] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+	colors[ImGuiCol_TabHovered] = ImVec4{ 0.38f, 0.3805f, 0.381f, 1.0f };
+	colors[ImGuiCol_TabActive] = ImVec4{ 0.28f, 0.2805f, 0.281f, 1.0f };
+	colors[ImGuiCol_TabUnfocused] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+	colors[ImGuiCol_TabUnfocusedActive] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
+
+	// Title
+	colors[ImGuiCol_TitleBg] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+	colors[ImGuiCol_TitleBgActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+	colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+
+	// Resize Grib
+	colors[ImGuiCol_ResizeGrip] = { 0.2f, 0.2f, 0.2f, 1.f };
+	colors[ImGuiCol_ResizeGripHovered] = { 0.2f, 0.2f, 0.2f, 1.f };
+	colors[ImGuiCol_ResizeGripActive] = { 0.1f, 0.1f, 0.1f, 1.f };
+}
+
+void EditorScene::SetupImGuiFont(const char* regularFontFile, float size_pixels, const ImFontConfig* fontConfigFlags, const char* boldFontFile)
 {
 	ImGuiIO& io = ImGui::GetIO();
 	ImVector<ImWchar> ranges;
@@ -164,7 +202,11 @@ void EditorScene::SetupImGuiFont(const char* filename, float size_pixels, const 
 	builder.AddRanges(io.Fonts->GetGlyphRangesDefault());
 	builder.AddText(u8"¹æê³ñóœŸ¿¥ÆÊ£ÑÓŒ¯");
 	builder.BuildRanges(&ranges);
-	io.Fonts->AddFontFromFileTTF(filename, size_pixels, fontConfigFlags, ranges.Data);
+
+	if (boldFontFile != nullptr) {
+		io.Fonts->AddFontFromFileTTF(boldFontFile, size_pixels, fontConfigFlags, ranges.Data);
+	}
+	io.FontDefault = io.Fonts->AddFontFromFileTTF(regularFontFile, size_pixels, fontConfigFlags, ranges.Data);
 	io.Fonts[0].Build();
 }
 
