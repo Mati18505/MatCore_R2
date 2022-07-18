@@ -8,6 +8,6 @@ public:
 	void Render(EditorScene* scene);
 private:
 	void DrawEntityNode(MatCore::Entity entity, EditorScene* scene); 
-	void DrawInspector(MatCore::Entity entity); 
+	void DrawInspectorComponents(MatCore::Entity entity); 
 	MatCore::Entity selectedEntity;
 };

@@ -60,6 +60,42 @@ static void DrawVec3Control(const std::string& label, glm::vec3& values, float r
 	ImGui::PopID();
 }
 
+template<typename T>
+static void DrawInspectorComponent(const char* componentName, MatCore::Entity entity, bool removable, std::function<void(void)> componentElements) {
+	if (entity.HasComponent<T>()) {
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 4, 4 });
+		bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, componentName);
+		ImGui::SameLine(ImGui::GetWindowWidth() - 25.f);
+		if (ImGui::Button("+"))
+		{
+			ImGui::OpenPopup("ComponentSettings");
+		}
+		ImGui::PopStyleVar();
+
+		bool removeComponent = false;
+		if (ImGui::BeginPopup("ComponentSettings"))
+		{
+			if (removable) {
+				if (ImGui::MenuItem(u8"Usuñ komponent"))
+					removeComponent = true;
+			}
+
+			ImGui::EndPopup();
+		}
+
+		if(open)
+		{
+			componentElements();
+			ImGui::TreePop();
+		}
+
+		if (removeComponent)
+			entity.RemoveComponent<T>();
+
+		ImGui::Separator();
+	}
+}
+
 void SceneHierarchyPanel::Render(EditorScene* scene) {
 	using namespace MatCore;
 	//ImGui::SetNextWindowSize(ImVec2(500, 440), ImGuiCond_FirstUseEver);
@@ -77,11 +113,38 @@ void SceneHierarchyPanel::Render(EditorScene* scene) {
 	if (ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
 		selectedEntity = {};
 
+	//klikniêto w pust¹ przestrzeñ
+	if (ImGui::BeginPopupContextWindow(0, 1, false)) 
+	{
+		if (ImGui::MenuItem(u8"Stwórz pusty obiekt")) {
+			scene->CreateEntity();
+		}
+		ImGui::EndPopup();
+	}
+
 	ImGui::End();
 
 	ImGui::Begin("Inspektor");
-	if(selectedEntity)
-		DrawInspector(selectedEntity);
+	if (selectedEntity) {
+		DrawInspectorComponents(selectedEntity);
+		if (ImGui::Button("Dodaj komponent"))
+			ImGui::OpenPopup("AddComponent");
+
+		if (ImGui::BeginPopup("AddComponent")) 
+		{
+			if (ImGui::MenuItem("Material")) {
+				selectedEntity.AddComponent<Material>();
+				ImGui::CloseCurrentPopup();
+			}
+			if (ImGui::MenuItem("Mesh Component")) {
+				selectedEntity.AddComponent<MeshComponent>(Mesh::Cone(360, 2, 4));
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::EndPopup();
+		}
+	}
+		
 	ImGui::End();
 }
 
@@ -96,75 +159,76 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity, EditorScene* scene)
 	{
 		selectedEntity = entity;
 	}
+
+	//klikniêto w entity
+	bool entityDeleted = false;
+	if (ImGui::BeginPopupContextItem())
+	{
+		if (ImGui::MenuItem(u8"Usuñ obiekt")) {
+			entityDeleted = true;
+		}
+		if (ImGui::MenuItem(u8"Stwórz dziecko")) {
+			scene->CreateEntity("", entity);
+		}
+		ImGui::EndPopup();
+	}
+
 	if (opened) {
 		for (Entity child : entity.GetComponent<InheritanceComponent>().childEntities)
 			DrawEntityNode(child, scene);
 		ImGui::TreePop();
 	}
+	if (entityDeleted) {
+		scene->DestroyEntity(entity);
+		if (entity == selectedEntity)
+			selectedEntity = Entity::Null();
+	}
+		
 }
 
-void SceneHierarchyPanel::DrawInspector(MatCore::Entity entity)
+void SceneHierarchyPanel::DrawInspectorComponents(MatCore::Entity entity)
 {
-	if (entity.HasComponent<TagComponent>()) {
-		if (ImGui::TreeNodeEx((void*)typeid(TagComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Tag"))
+	DrawInspectorComponent<TagComponent>("Tag", entity, false, [&]()
+	{
+		std::string& tag = entity.GetComponent<TagComponent>().Tag();
+
+		char buffer[256];
+		memset(buffer, 0, sizeof(buffer));
+
+		strcpy_s(buffer, sizeof(buffer), tag.c_str());
+
+		if (ImGui::InputText("Tag", buffer, sizeof(buffer)))
+			tag = std::string(buffer);
+	});
+
+	DrawInspectorComponent<Transform>("Transform", entity, false, [&]() {
+		auto& transform = entity.GetComponent<Transform>();
+		DrawVec3Control("Position", transform.position, 0.f);
+		DrawVec3Control("Rotation", transform.rotation, 0.f);
+		DrawVec3Control("Scale", transform.scale, 1.f);
+	});
+	
+	DrawInspectorComponent<InheritanceComponent>("Dziedziczenie", entity, false, [&]() 
+	{
+		ImGui::Text("Dzieci: ");
+		for (Entity e : entity.GetComponent<InheritanceComponent>().childEntities)
 		{
-			std::string& tag = entity.GetComponent<TagComponent>().Tag();
-
-			char buffer[256];
-			memset(buffer, 0, sizeof(buffer));
-
-			strcpy_s(buffer, sizeof(buffer), tag.c_str());
-
-			if (ImGui::InputText("Tag", buffer, sizeof(buffer)))
-				tag = std::string(buffer);
-
-			ImGui::TreePop();
+			ImGui::Text(e.GetComponent<TagComponent>().Tag().c_str());
 		}
-	}
-	ImGui::Separator();
-	if (entity.HasComponent<Transform>()) {
-		if (ImGui::TreeNodeEx((void*)typeid(Transform).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Transform")) 
-		{
-			auto& transform = entity.GetComponent<Transform>();
-			DrawVec3Control("Position", transform.position, 0.f);
-			DrawVec3Control("Rotation", transform.rotation, 0.f);
-			DrawVec3Control("Scale", transform.scale, 1.f);
-
-			ImGui::TreePop();
+		ImGui::Separator();
+		ImGui::Text("Rodzic: ");
+		if (Entity parent = entity.GetComponent<InheritanceComponent>().parentEntity) {
+			ImGui::Text(parent.GetComponent<TagComponent>().Tag().c_str());
 		}
-		
-	}
-	ImGui::Separator();
-	if (entity.HasComponent<InheritanceComponent>()) {
-		if (ImGui::TreeNodeEx((void*)typeid(InheritanceComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Dziedziczenie"))
-		{
-			ImGui::Text("Dzieci: ");
-			for (Entity e : entity.GetComponent<InheritanceComponent>().childEntities)
-			{
-				ImGui::Text(e.GetComponent<TagComponent>().Tag().c_str());
-			}
-			ImGui::Separator();
-			ImGui::Text("Rodzic: ");
-			if (Entity parent = entity.GetComponent<InheritanceComponent>().parentEntity) {
-				ImGui::Text(parent.GetComponent<TagComponent>().Tag().c_str());
-			}
-
-			ImGui::TreePop();
+	});
+	
+	DrawInspectorComponent<Material>(u8"Materia³", entity, true, [&]() {
+		auto& material = entity.GetComponent<Material>();
+		ImGui::Text("Albedo");
+		if (entity.GetComponent<Material>().albedo != nullptr) {
+			std::shared_ptr<Texture2D> texture = material.albedo;
+			ImGui::Image(texture->GetRawHandle(), { 128.f, 128.f });
 		}
-	}
-	ImGui::Separator();
-	if (entity.HasComponent<Material>()) {
-		if (ImGui::TreeNodeEx((void*)typeid(Material).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, u8"Materia³"))
-		{
-			auto& material = entity.GetComponent<Material>();
-			ImGui::Text("Albedo");
-			if (entity.GetComponent<Material>().albedo != nullptr) {
-				std::shared_ptr<Texture2D> texture = material.albedo;
-				ImGui::Image(texture->GetRawHandle(), { 128.f, 128.f });
-			}
-			
-			ImGui::TreePop();
-		}
-	}
+	});
 
 }

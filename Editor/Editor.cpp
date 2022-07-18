@@ -34,11 +34,12 @@ EditorScene::~EditorScene()
 void EditorScene::Start()
 {
 	Mesh coneMesh = Mesh::Cone(360, 10, 5);
-	for (size_t i = 0; i < 50; i++)
+	for (size_t i = 0; i < 6; i++)
 	{
 		Entity t = CreateEntity();
 		t.AddComponent<MeshComponent>(coneMesh);
 		t.AddComponent<Material>();
+		t.GetComponent<Transform>().position.z = -10;
 	}
 
 	Model model("Assets/test/Models/models/nanosuit/nanosuit.fbx");
