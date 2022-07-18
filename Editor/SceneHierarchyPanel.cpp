@@ -71,7 +71,7 @@ static void DrawVec3Control(const std::string& label, glm::vec3& values, float r
 template<typename T>
 static void DrawInspectorComponent(const char* componentName, MatCore::Entity entity, bool removable, std::function<void(T& component)> componentElements) {
 	if (entity.HasComponent<T>()) {
-		const std::string uniqueID = std::to_string(typeid(T).hash_code());
+		ImGui::PushID(typeid(T).hash_code());
 
 		auto contentRegionAvalible = ImGui::GetContentRegionAvail();
 
@@ -87,17 +87,17 @@ static void DrawInspectorComponent(const char* componentName, MatCore::Entity en
 		ImGui::SameLine(contentRegionAvalible.x - lineHeight * 0.5f);
 
 		//Przycisk ...
-		if (ImGui::Button((std::string("...##") + uniqueID).c_str(), { lineHeight, lineHeight }))
+		if (ImGui::Button("...", { lineHeight, lineHeight }))
 		{
-			ImGui::OpenPopup((std::string("ComponentSettings##") + uniqueID).c_str());
+			ImGui::OpenPopup("ComponentSettings");
 		}
 		
 		//Menu ...
 		bool removeComponent = false;
-		if (ImGui::BeginPopup((std::string("ComponentSettings##") + uniqueID).c_str()))
+		if (ImGui::BeginPopup("ComponentSettings"))
 		{
 			if (removable) {
-				if (ImGui::MenuItem((std::string(u8"Usuñ komponent##") + uniqueID).c_str()))
+				if (ImGui::MenuItem(u8"Usuñ komponent"))
 					removeComponent = true;
 			}
 
@@ -113,6 +113,8 @@ static void DrawInspectorComponent(const char* componentName, MatCore::Entity en
 
 		if (removeComponent)
 			entity.RemoveComponent<T>();
+
+		ImGui::PopID();
 	}
 }
 
