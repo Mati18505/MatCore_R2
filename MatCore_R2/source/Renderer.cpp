@@ -23,6 +23,7 @@ void MatCore::Renderer::RenderScene(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, applicationP->windowWidth, applicationP->windowHeight);
 
+    vertices = triangles = drawCalls = 0;
     auto group = applicationP->scene->entitiesRegistry.group<>(entt::get<MeshComponent, Transform, Material>);
     for (auto entity : group)
     {
@@ -30,6 +31,9 @@ void MatCore::Renderer::RenderScene(){
         Transform& transform = group.get<Transform>(entity);
         Material& material = group.get<Material>(entity);
         MeshRenderer::RenderMesh(meshComponent, transform, material);
+        vertices += meshComponent.mesh.GetVertices()->size();
+        triangles += meshComponent.mesh.GetTriangles()->size();
+        drawCalls++;
     }
 }
 

@@ -3,6 +3,7 @@
 #include "Dependece/ImGUI/imgui_impl_glfw.h"
 #include "Dependece/ImGUI/imgui_impl_opengl3.h"
 #include "Utils.h"
+#include <sstream>
 
 using namespace MatCore;
 
@@ -232,24 +233,42 @@ void EditorScene::ShowGUIStats()
 {
 	ImGuiIO& io = ImGui::GetIO();
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
-	ImGui::SetNextWindowBgAlpha(0.35f);
+	ImGui::SetNextWindowBgAlpha(0.5f);
+	ImGui::SetNextWindowSize({ 300, 200 });
 	if (ImGui::Begin("Statystyki", NULL, window_flags))
 	{
-		ImGui::Text("Statystyki renderowania");
+		static double frameTime = 0;
+		static float FPS = 0;
+		static float timer = 0;
+
+		ImGui::Text("Statystyki");
 		ImGui::Separator();
-		if (ImGui::IsMousePosValid())
-			ImGui::Text("Mouse Position: (%.1f,%.1f)", io.MousePos.x, io.MousePos.y);
-		else
-			ImGui::Text("Mouse Position: <invalid>");
-		if (timer < 100.f)
+		if (timer < 200.f)
 			timer += applicationP->deltaTime;
 		else
 		{
 			timer = 0;
 			FPS = 1000.f / applicationP->deltaTime;
+			frameTime = applicationP->deltaTime;
 		}
-		ImGui::Text("FPS: %.1f", FPS);
+		std::stringstream fpsS;
+		fpsS << frameTime << " ms/frame (" << (int)FPS << " fps) ";
+		ImGui::Text(fpsS.str().c_str());
 		
+		std::stringstream rendererS;
+		auto& renderer = applicationP->renderer;
+		rendererS << "Vertices: " << renderer->Vertices() << "\nTriangles: " << renderer->Triangles() << "\nDraw calls: " << renderer->DrawCalls();
+		ImGui::Text(rendererS.str().c_str());
+		
+		std::stringstream entityCountS;
+		entityCountS << "Obiekty: " << entitiesRegistry.alive();
+		ImGui::Text(entityCountS.str().c_str());
+		
+		std::stringstream hoveredEntityS;
+		Entity hoveredEntity = hierarchyPanel.GetSelectedEntity();
+		hoveredEntityS << "Trzymany obiekt: " << (hoveredEntity != Entity::Null() ? hoveredEntity.GetComponent<TagComponent>().Tag() : "<empty>");
+		ImGui::Text(hoveredEntityS.str().c_str());
+
 	}
 	ImGui::End();
 }

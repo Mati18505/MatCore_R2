@@ -12,8 +12,11 @@ namespace MatCore {
 		Renderer();
 		~Renderer();
 		void RenderScene();
+		unsigned int Vertices() { return vertices; }
+		unsigned int Triangles() { return triangles; }
+		unsigned int DrawCalls() { return drawCalls; }
 	private:
-
+		unsigned int vertices, triangles, drawCalls;
 	};
 
 	namespace MeshRenderer {

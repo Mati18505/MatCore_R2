@@ -29,6 +29,4 @@ private:
 	void ShowGUIStats();
 
 	double lastXMousePos = 0, lastYMousePos = 0;
-	float FPS = 0;
-	float timer = 0;
 };
