@@ -140,7 +140,7 @@ void SceneHierarchyPanel::Render(EditorScene* scene) {
 	if (ImGui::BeginPopupContextWindow(0, 1, false)) 
 	{
 		if (ImGui::MenuItem(u8"Stwórz pusty obiekt")) {
-			scene->CreateEntity();
+			selectedEntity = scene->CreateEntity();
 		}
 		ImGui::EndPopup();
 	}
@@ -178,7 +178,7 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity, EditorScene* scene)
 			entityDeleted = true;
 		}
 		if (ImGui::MenuItem(u8"Stwórz dziecko")) {
-			scene->CreateEntity("", entity);
+			selectedEntity = scene->CreateEntity("", entity);
 		}
 		ImGui::EndPopup();
 	}
@@ -189,9 +189,20 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity, EditorScene* scene)
 		ImGui::TreePop();
 	}
 	if (entityDeleted) {
-		scene->DestroyEntity(entity);
+		//Jeœli wybrany entity jest usuwanym entity, lub jego dzieckiem: selectedEntity = NULL
 		if (entity == selectedEntity)
 			selectedEntity = Entity::Null();
+		else {
+			for (auto childEntity : entity.GetComponent<InheritanceComponent>().childEntities) {
+				if (selectedEntity == childEntity)
+				{
+					selectedEntity = Entity::Null();
+					break;
+				}
+			}
+		}
+
+		scene->DestroyEntity(entity);
 	}
 		
 }
@@ -261,15 +272,19 @@ void SceneHierarchyPanel::DrawAddComponentButton(ImVec2 contentRegionAvalible)
 
 	if (ImGui::BeginPopup("AddComponent"))
 	{
-		if (ImGui::MenuItem("Material")) {
-			selectedEntity.AddComponent<Material>();
-			ImGui::CloseCurrentPopup();
+		if (!selectedEntity.HasComponent<Material>()) {
+			if (ImGui::MenuItem("Material")) {
+				selectedEntity.AddComponent<Material>();
+				ImGui::CloseCurrentPopup();
+			}
 		}
-		if (ImGui::MenuItem("Mesh Component")) {
-			selectedEntity.AddComponent<MeshComponent>(Mesh::Cone(360, 2, 4));
-			ImGui::CloseCurrentPopup();
+		if (!selectedEntity.HasComponent<MeshComponent>()) {
+			if (ImGui::MenuItem("Mesh Component")) {
+				selectedEntity.AddComponent<MeshComponent>(Mesh::Cone(360, 2, 4));
+				ImGui::CloseCurrentPopup();
+			}
 		}
-
+		
 		ImGui::EndPopup();
 	}
 }
