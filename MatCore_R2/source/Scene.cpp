@@ -11,6 +11,7 @@
 #include "Entity.h"
 #include "TagComponent.h"
 #include "InheritanceComponent.h"
+#include "TransformSystem.h"
 
 MatCore::Scene::Scene() :camera(nullptr) {
     entitiesRegistry.on_construct<MeshComponent>().connect<&MeshRenderer::OnConstruct>();
@@ -66,4 +67,9 @@ void MatCore::Scene::EraseEntityFromHisParent(Entity entity)
             }
         }
     }
+}
+
+void MatCore::Scene::BaseUpdate()
+{
+    TransformSystem::UpdateAllTransforms();
 }

@@ -29,6 +29,10 @@ namespace MatCore {
 		void EraseEntityFromHisParent(Entity entity);
 		friend class Entity;
 		friend class Renderer;
+		friend class TransformSystem;
+		friend class Application;
+		void BaseUpdate();
+
 		friend void MeshRenderer::OnConstruct(entt::registry&, entt::entity entity);
 		friend void MeshRenderer::OnDestroy(entt::registry&, entt::entity entity);
 		entt::registry entitiesRegistry;

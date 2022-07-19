@@ -83,6 +83,7 @@ void MatCore::Application::MainLoop() {
     lastFrameAppTime = glfwGetTime();
 
     scene->Update();
+    scene->BaseUpdate();
     renderer->RenderScene();
     scene->Render();
     //vsync ? glfwswapbuffers : glfinish
