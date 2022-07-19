@@ -49,7 +49,8 @@ void MatCore::Scene::DestroyEntity(Entity entity)
 void MatCore::Scene::DestroyEntityChildrens(Entity entity)
 {
     InheritanceComponent& IC = entity.GetComponent<InheritanceComponent>();
-    for (Entity childEntity : IC.childEntities)
+    auto childs = IC.childEntities;
+    for (Entity childEntity : childs)
         DestroyEntity(childEntity);
 }
 
