@@ -53,26 +53,21 @@ void SandboxScene::Start() {
     camera->SetCameraClip(1.f, 10000.f);
 
     //£adowanie modeli
-    Model models[5]{("Assets/test/Models/models/cyberpunkCar/untitled.obj"),
-        ("Assets/test/Models/models/Backpack/survivalBackpack/backpack.obj"),
-        ("Assets/test/Models/models/nanosuit/nanosuit.fbx"),
-        ("Assets/test/Models/models/spider/spider.obj"),
-        ("Assets/test/Models/models/cat/cat.fbx") };
+    Model models[5]{ 
+        {"Assets/test/Models/models/cyberpunkCar/untitled.obj", this},
+        {"Assets/test/Models/models/Backpack/survivalBackpack/backpack.obj", this},
+        {"Assets/test/Models/models/nanosuit/nanosuit.fbx", this },
+        {"Assets/test/Models/models/spider/spider.obj", this},
+        {"Assets/test/Models/models/cat/cat.fbx", this} 
+    };
     int modelSizes[5]{ 10, 20, 10, 1, 10 };
-
+    
     int j = 0;
     for (auto model : models) { 
-        for (size_t i = 0; i < model.GetMeshes().size(); i++)
-        {
-            Entity e2 = CreateEntity();
-            e2.AddComponent<MeshComponent>(model.GetMeshes()[i]);
-            e2.AddComponent<Material>();
-            if (!model.GetTextures().empty())
-                e2.GetComponent<Material>().albedo = model.GetTextures()[i];
-            Transform& modelTransform = e2.GetComponent<Transform>();
-            modelTransform.position.x = j * 100;
-            modelTransform.scale *= modelSizes[j];
-        }
+        Entity e2 = model;
+        Transform& modelTransform = e2.GetComponent<Transform>();
+        modelTransform.position.x = j * 100;
+        modelTransform.scale *= modelSizes[j];
         j++;
     }
 }

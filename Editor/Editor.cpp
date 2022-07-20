@@ -43,17 +43,10 @@ void EditorScene::Start()
 		t.AddComponent<Material>();
 		t.GetComponent<Transform>().position.z = -10;
 	}
-
-	Model model("Assets/test/Models/models/nanosuit/nanosuit.fbx");
-	Mesh modelM;
-	std::vector meshes = model.GetMeshes();
-	modelM.CombineMeshes(&meshes[0], meshes.size());
-
-	Entity modelEntity = CreateEntity("Nanosuit Model");
-	modelEntity.AddComponent<MeshComponent>(modelM);
-	modelEntity.AddComponent<Material>();
-	if (!model.GetTextures().empty())
-		modelEntity.GetComponent<Material>().albedo = model.GetTextures()[0];
+	
+	Model model("Assets/test/Models/models/nanosuit/nanosuit.fbx", this);
+	
+	Entity modelEntity = model;
 	modelEntity.GetComponent<Transform>().position.z = 10;
 
 	Entity child = CreateEntity("Child", modelEntity);

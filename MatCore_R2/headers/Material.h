@@ -9,6 +9,22 @@ namespace MatCore {
 	public:
 		Material(const char* vertexShaderPath = "Assets/Shaders/color.vs", const char* fragmentShaderPath = "Assets/Shaders/color.fs");
 		Material(const Material& materialCopy);
+		Material(Material&& other) noexcept {
+			this->shaderID = other.shaderID;
+			this->albedo = other.albedo;
+			this->mvpMatrix = other.mvpMatrix;
+			other.shaderID = 0;
+		}
+		Material& operator=(Material&& other) noexcept {
+			if (this != &other)
+			{
+				this->shaderID = other.shaderID;
+				this->albedo = other.albedo;
+				this->mvpMatrix = other.mvpMatrix;
+				other.shaderID = 0;
+			}
+			return *this;
+		}
 		~Material();
 
 		unsigned int shaderID;

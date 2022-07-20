@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include <iostream>
+#include "Entity.h"
 
 struct aiScene;
 struct aiNode;
@@ -12,24 +13,27 @@ enum aiTextureType;
 namespace MatCore {
 	class Mesh;
 	class Texture2D;
+	class Scene;
+	class Entity;
+	class Material;
 	class Model {
 	public:
-		Model(const char* modelFilePath)
+		Model(const char* modelFilePath, Scene* scene)
 		{
-			LoadModel(modelFilePath);
+			LoadModel(modelFilePath, scene);
 		}
-		const std::vector<Mesh>& GetMeshes();
-		const std::vector<std::shared_ptr<Texture2D>>& GetTextures();
+		
+		Entity GetEntity() const { return entity; }
+		operator Entity() const { return entity; }
 
 	private:
-		std::vector<Mesh> meshes;
-		std::vector<std::shared_ptr<Texture2D>> diffuseTextures;
-
-		void LoadModel(const char* path);
-		void ProcessNode(aiNode* node, const aiScene* scene);
+		void LoadModel(const char* path, Scene* mcScene);
+		Entity ProcessNode(aiNode* node, const aiScene* scene, Scene*mScene, Entity parentEntity);
 		Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
+		Material ProcessMaterial(aiMesh* mesh, const aiScene* scene);
 		std::vector<std::shared_ptr<Texture2D>> LoadMaterialTextures(aiMaterial* mat, aiTextureType type);
 
+		Entity entity;
 		std::string modelFileDirectory;
 	};
 }
