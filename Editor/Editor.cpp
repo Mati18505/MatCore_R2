@@ -259,7 +259,7 @@ void EditorScene::ShowGUIStats()
 		
 		std::stringstream hoveredEntityS;
 		Entity hoveredEntity = hierarchyPanel.GetSelectedEntity();
-		hoveredEntityS << "Trzymany obiekt: " << (hoveredEntity != Entity::Null() ? hoveredEntity.GetComponent<TagComponent>().Tag() : "<empty>");
+		hoveredEntityS << "Trzymany obiekt: " << (hoveredEntity != Entity::Null() ? hoveredEntity.GetComponent<TagComponent>().tag : "<empty>");
 		ImGui::Text(hoveredEntityS.str().c_str());
 
 	}

@@ -163,7 +163,7 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity, EditorScene* scene)
 	ImGuiTreeNodeFlags flags = ((selectedEntity == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow
 		| ImGuiTreeNodeFlags_SpanAvailWidth;
 	auto& tag = entity.GetComponent<TagComponent>();
-	bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)(entt::entity)entity, flags, tag.Tag().c_str());
+	bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)(entt::entity)entity, flags, tag.tag.c_str());
 
 	if (ImGui::IsItemClicked())
 	{
@@ -225,12 +225,12 @@ void SceneHierarchyPanel::DrawInspectorComponents(MatCore::Entity entity)
 		ImGui::Text("Dzieci: ");
 		for (Entity e : entity.GetComponent<InheritanceComponent>().childEntities)
 		{
-			ImGui::Text(e.GetComponent<TagComponent>().Tag().c_str());
+			ImGui::Text(e.GetComponent<TagComponent>().tag.c_str());
 		}
 		ImGui::Separator();
 		ImGui::Text("Rodzic: ");
 		if (Entity parent = entity.GetComponent<InheritanceComponent>().parentEntity) {
-			ImGui::Text(parent.GetComponent<TagComponent>().Tag().c_str());
+			ImGui::Text(parent.GetComponent<TagComponent>().tag.c_str());
 		}
 	});
 	
@@ -252,7 +252,7 @@ void SceneHierarchyPanel::DrawInspectorComponents(MatCore::Entity entity)
 
 void SceneHierarchyPanel::DrawTagComponent(MatCore::Entity entity)
 {
-	std::string& tag = entity.GetComponent<TagComponent>().Tag();
+	std::string& tag = entity.GetComponent<TagComponent>().tag;
 
 	char buffer[256];
 	memset(buffer, 0, sizeof(buffer));
