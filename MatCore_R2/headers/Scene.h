@@ -35,6 +35,7 @@ namespace MatCore {
 
 		friend void MeshRenderer::OnConstruct(entt::registry&, entt::entity entity);
 		friend void MeshRenderer::OnDestroy(entt::registry&, entt::entity entity);
+	protected:
 		entt::registry entitiesRegistry;
 	};
 }
