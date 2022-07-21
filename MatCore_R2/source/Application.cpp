@@ -6,7 +6,6 @@
 #include <iostream>
 #include <string>
 #include "Scene.h"
-#include "Camera.h"
 #include "Log.h"
 #include "Platform/Windows/WindowsInput.h"
 #undef CreateWindow //windows
@@ -62,6 +61,8 @@ void MatCore::Application::InitGL() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEBUG_OUTPUT);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+    glDebugMessageCallback(MessageCallback, 0);
     glViewport(0, 0, windowWidth, windowHeight);
 }
 
@@ -78,6 +79,8 @@ void MatCore::Application::InitializeApp() {
 }
 
 void MatCore::Application::MainLoop() {
+    while (glGetError() != 0)
+        continue;
     //TODO: przenieœæ delta time do fizyki? input?
     deltaTime = (glfwGetTime() - lastFrameAppTime) * 1000.;
     lastFrameAppTime = glfwGetTime();
@@ -95,14 +98,16 @@ void MatCore::Application::MainLoop() {
     int error = glGetError();
     if (error != 0)
         LOG_CORE_ERROR("GLERROR: {0}", std::to_string(error));
-    glDebugMessageCallback(MessageCallback, 0);
 }
 
 void MatCore::Application::WindowFramebufferSizeCallback(GLFWwindow* window, int width, int height) {
     applicationP->windowWidth = width;
-    applicationP->windowHeight = height;
-    if(height != 0)
-        applicationP->scene->camera->FramebufferSizeCallback(width, height);
+    if (height != 0)
+    {
+        applicationP->windowHeight = height;
+        applicationP->scene->FrameBufferSizeCallback(width, height);
+    }
+    
 }
 
 void MatCore::Application::WindowCursorPosCallback(GLFWwindow* window, double xpos, double ypos) {

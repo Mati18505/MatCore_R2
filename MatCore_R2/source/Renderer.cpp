@@ -5,7 +5,7 @@
 #include "Mesh.h"
 #include "Transform.h"
 #include "Material.h"
-#include "Camera.h"
+#include "Cameras/Camera.h"
 #include "Scene.h"
 #include "Application.h"
 #include "Log.h"
@@ -19,9 +19,14 @@ MatCore::Renderer::~Renderer(){
 }
 
 void MatCore::Renderer::RenderScene(){
-	glClearColor(0.2f, 0.7f, 1.f, 0.f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.2f, 0.7f, 1.f, 0.f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, applicationP->windowWidth, applicationP->windowHeight);
+
+    auto mainCameraOpt = applicationP->scene->GetMainCamera();
+    if (!mainCameraOpt.has_value())
+        return;
+    Camera mainCamera = mainCameraOpt.value();
 
     vertices = triangles = drawCalls = 0;
     auto group = applicationP->scene->entitiesRegistry.group<>(entt::get<MeshComponent, Transform, Material>);
@@ -30,7 +35,7 @@ void MatCore::Renderer::RenderScene(){
         MeshComponent& meshComponent = group.get<MeshComponent>(entity);
         Transform& transform = group.get<Transform>(entity);
         Material& material = group.get<Material>(entity);
-        MeshRenderer::RenderMesh(meshComponent, transform, material);
+        MeshRenderer::RenderMesh(meshComponent, transform, material, mainCamera);
         vertices += meshComponent.mesh.GetVertices()->size();
         triangles += meshComponent.mesh.GetTriangles()->size();
         drawCalls++;
@@ -81,7 +86,7 @@ void MatCore::MeshRenderer::Init(MeshComponent& meshComponent) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void MatCore::MeshRenderer::RenderMesh(MeshComponent& meshComponent, Transform& transform, Material& material) {
+void MatCore::MeshRenderer::RenderMesh(MeshComponent& meshComponent, Transform& transform, Material& material, Camera& camera) {
     if (meshComponent.VAO == NULL) { LOG_CORE_WARN("MeshComponent VAO is NULL!"); return; }
 
     // UpdateVBO
@@ -95,7 +100,7 @@ void MatCore::MeshRenderer::RenderMesh(MeshComponent& meshComponent, Transform& 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     material.SetUniforms();
-    material.SetMVPMatrix(transform.GetGlobalModelMatrix(), applicationP->scene->camera->GetVPMatrix());
+    material.SetMVPMatrix(transform.GetGlobalModelMatrix(), camera.GetProjection() * camera.GetView());
     material.SetSelfUniforms();
 
     //Draw VAO

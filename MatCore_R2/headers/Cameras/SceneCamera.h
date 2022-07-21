@@ -1,0 +1,26 @@
+#pragma once
+#include "Camera.h"
+
+namespace MatCore {
+	class Transform;
+	class SceneCamera : public Camera {
+	public:
+		SceneCamera() = default;
+
+		enum class CameraType {
+			orthographic,
+			perspective
+		};
+
+		CameraType cameraType = CameraType::perspective;
+		float fov = 90;
+		float size2D = 1.f;
+		float nearClip = 0.1f;
+		float farClip = 1000.f;
+	private:
+		void RecalculateViewMatrix(Transform& transform);
+		void RecalculateProjectionMatrix(int width, int height);
+		
+		friend class Scene;
+	};
+}

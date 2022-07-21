@@ -16,7 +16,6 @@
 #include "Model.h"
 #include "Mesh.h"
 #include "Texture.h"
-#include "Camera.h"
 
 //Komponenty
 #include "TagComponent.h"
@@ -24,3 +23,4 @@
 #include "MeshComponent.h"
 #include "Material.h"
 #include "InheritanceComponent.h"
+#include "CameraComponent.h"

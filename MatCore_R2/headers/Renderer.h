@@ -5,12 +5,14 @@ namespace MatCore {
 	extern Application* applicationP;//= applicationP z pliku MatCore_R2.cpp
 
 	struct MeshComponent;
+	class Camera;
 	struct Transform;
 	struct Material;
 	class Renderer {
 	public:
 		Renderer();
 		~Renderer();
+
 		void RenderScene();
 		unsigned int Vertices() { return vertices; }
 		unsigned int Triangles() { return triangles; }
@@ -23,7 +25,7 @@ namespace MatCore {
 		void OnConstruct(entt::registry&, entt::entity entity);
 		void OnDestroy(entt::registry&, entt::entity entity);
 		void Init(MeshComponent& meshComponent);
-		void RenderMesh(MeshComponent& meshRenderer, Transform& transform, Material& material);
+		void RenderMesh(MeshComponent& meshRenderer, Transform& transform, Material& material, Camera& camera);
 		void DeInit(MeshComponent& meshComponent);
 	}
 }

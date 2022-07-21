@@ -4,7 +4,7 @@
 #include "MeshComponent.h"
 #include "Transform.h"
 #include "material.h"
-#include "Camera.h"
+#include "CameraComponent.h"
 #include "Application.h"
 #include "Log.h"
 #include "Renderer.h"
@@ -13,7 +13,7 @@
 #include "InheritanceComponent.h"
 #include "TransformSystem.h"
 
-MatCore::Scene::Scene() :camera(nullptr) {
+MatCore::Scene::Scene() {
     entitiesRegistry.on_construct<MeshComponent>().connect<&MeshRenderer::OnConstruct>();
     entitiesRegistry.on_destroy<MeshComponent>().connect<&MeshRenderer::OnDestroy>();
 }
@@ -73,4 +73,60 @@ void MatCore::Scene::EraseEntityFromHisParent(Entity entity)
 void MatCore::Scene::BaseUpdate()
 {
     TransformSystem::UpdateAllTransforms();
+}
+
+void MatCore::Scene::FrameBufferSizeCallback(int width, int height)
+{
+    auto camera = GetMainRuntimeCamera().first;
+    if (camera)
+        camera->RecalculateProjectionMatrix(width, height);
+}
+
+
+std::pair<MatCore::SceneCamera*, MatCore::Entity> MatCore::Scene::GetMainRuntimeCamera()
+{
+    auto view = entitiesRegistry.view<CameraComponent>();
+
+    for (auto entityH : view) {
+        auto& cameraComponent = view.get<CameraComponent>(entityH);
+        if (cameraComponent.primary == true)
+            return { &cameraComponent.camera, Entity(entityH, this) };
+    }
+    return { nullptr, Entity::Null() };
+}
+
+std::optional<MatCore::Camera> MatCore::Scene::GetMainCamera()
+{
+    if (runtime)
+    {
+        SceneCamera* runtimeCamera = GetMainRuntimeCamera().first;
+        if (runtimeCamera)
+            return *runtimeCamera;
+    }
+    else
+    {
+#if 0
+        if (editorCamera)
+            return editorCamera;
+#endif
+    }
+    return {};
+}
+
+#if 0
+void MatCore::Scene::OnEditorUpdate()
+{
+    runtime = false;
+}
+#endif
+
+void MatCore::Scene::OnRuntimeUpdate()
+{
+    runtime = true;
+    //TODO: update scripts
+    auto[camera, entity] = GetMainRuntimeCamera();
+    if (camera) {
+        camera->RecalculateViewMatrix(entity.GetComponent<Transform>());
+        camera->RecalculateProjectionMatrix(applicationP->WindowWidth(), applicationP->WindowHeight());
+    }
 }
