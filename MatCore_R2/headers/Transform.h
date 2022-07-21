@@ -15,6 +15,13 @@ namespace MatCore {
 		glm::vec3 scale { 1, 1, 1 };
 
 		glm::mat4 GetGlobalModelMatrix() { return globalModelMatrix; }
+		glm::vec3 GetLocalForwardVector() {
+			glm::vec3 front;
+			front.x = cos(glm::radians(rotation.x)) * cos(glm::radians(rotation.y));
+			front.y = sin(glm::radians(rotation.x));
+			front.z = cos(glm::radians(rotation.x)) * sin(glm::radians(rotation.y));
+			return glm::normalize(front);
+		}
 
 	private:
 		friend class TransformSystem;
