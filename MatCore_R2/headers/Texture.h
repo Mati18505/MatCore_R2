@@ -8,6 +8,7 @@ namespace MatCore {
 		unsigned int GetWidth() const { return width; }
 		unsigned int GetHeight() const { return height; }
 		void Bind(unsigned int slot = 0) const;
+		void* GetRawHandle() { return (void*)renderID; }
 	private:
 		unsigned int width, height;
 		unsigned int renderID;
