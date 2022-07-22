@@ -77,31 +77,32 @@ void MatCore::Scene::BaseUpdate()
 
 void MatCore::Scene::FrameBufferSizeCallback(int width, int height)
 {
-    auto camera = GetMainRuntimeCamera().first;
-    if (camera)
-        camera->RecalculateProjectionMatrix(width, height);
+    Entity cameraEntity = GetMainRuntimeCameraEntity();
+    if (cameraEntity)
+        cameraEntity.GetComponent<CameraComponent>().camera.RecalculateProjectionMatrix(width, height);
 }
 
 
-std::pair<MatCore::SceneCamera*, MatCore::Entity> MatCore::Scene::GetMainRuntimeCamera()
+MatCore::Entity MatCore::Scene::GetMainRuntimeCameraEntity()
 {
     auto view = entitiesRegistry.view<CameraComponent>();
 
     for (auto entityH : view) {
         auto& cameraComponent = view.get<CameraComponent>(entityH);
         if (cameraComponent.primary == true)
-            return { &cameraComponent.camera, Entity(entityH, this) };
+            return Entity(entityH, this);
     }
-    return { nullptr, Entity::Null() };
+    LOG_CORE_WARN("GetMainRuntimeCameraEntity: Main camera does not exist!");
+    return Entity::Null();
 }
 
 std::optional<MatCore::Camera> MatCore::Scene::GetMainCamera()
 {
     if (runtime)
     {
-        SceneCamera* runtimeCamera = GetMainRuntimeCamera().first;
-        if (runtimeCamera)
-            return *runtimeCamera;
+        Entity cameraEntity = GetMainRuntimeCameraEntity();
+        if (cameraEntity)
+            return (Camera)cameraEntity.GetComponent<CameraComponent>().camera;
     }
     else
     {
@@ -124,9 +125,10 @@ void MatCore::Scene::OnRuntimeUpdate()
 {
     runtime = true;
     //TODO: update scripts
-    auto[camera, entity] = GetMainRuntimeCamera();
-    if (camera) {
-        camera->RecalculateViewMatrix(entity.GetComponent<Transform>());
-        camera->RecalculateProjectionMatrix(applicationP->WindowWidth(), applicationP->WindowHeight());
+    auto cameraEntity = GetMainRuntimeCameraEntity();
+    if (cameraEntity) {
+        auto& camera = cameraEntity.GetComponent<CameraComponent>().camera;
+        camera.RecalculateViewMatrix(cameraEntity.GetComponent<Transform>());
+        camera.RecalculateProjectionMatrix(applicationP->WindowWidth(), applicationP->WindowHeight());
     }
 }

@@ -3,7 +3,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <entt.hpp>
-#include <utility>
 #include <optional>
 
 namespace MatCore {
@@ -27,7 +26,7 @@ namespace MatCore {
 		Entity CreateEntity(std::string name, Entity parent);
 		void DestroyEntity(Entity entity);
 
-		std::pair<SceneCamera*, Entity> GetMainRuntimeCamera();
+		Entity GetMainRuntimeCameraEntity();
 		std::optional<Camera> GetMainCamera();
 	private:
 		bool runtime = true;
