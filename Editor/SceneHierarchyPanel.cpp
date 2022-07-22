@@ -68,6 +68,17 @@ static void DrawVec3Control(const std::string& label, glm::vec3& values, float r
 	ImGui::PopID();
 }
 
+static void AttributeFloat(const std::string& label, float& value, float dragSpeed = 1.f, float columnWidth = 100.f) {
+	ImGui::PushID(label.c_str());
+	ImGui::Columns(2);
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+	ImGui::DragFloat("", &value, dragSpeed);
+	ImGui::Columns(1);
+	ImGui::PopID();
+}
+
 template<typename T>
 static void DrawInspectorComponent(const char* componentName, MatCore::Entity entity, bool removable, std::function<void(T& component)> componentElements) {
 	if (entity.HasComponent<T>()) {
@@ -247,6 +258,19 @@ void SceneHierarchyPanel::DrawInspectorComponents(MatCore::Entity entity)
 		ImGui::Text(("Vertices: " + std::to_string(mesh.mesh.GetVertices()->size())).c_str());
 		ImGui::Text(("Triangles: " + std::to_string(mesh.mesh.GetTriangles()->size())).c_str());
 	});
+	
+	DrawInspectorComponent<CameraComponent>(u8"Camera", entity, true, [&](CameraComponent& camera) {
+		{
+			int current = (int)camera.camera.cameraType;
+			if(ImGui::Combo("Camera type", &current,"Orthographic\0Perspective"))
+				camera.camera.cameraType = SceneCamera::CameraType(current);
+		}
+		ImGui::Checkbox("primary", &camera.primary);
+		AttributeFloat("FOV", camera.camera.fov, .1f);
+		AttributeFloat("Size 2D", camera.camera.size2D, .01f);
+		AttributeFloat("Near clip", camera.camera.nearClip, .01f);
+		AttributeFloat("Far clip", camera.camera.farClip);
+	});
 
 }
 
@@ -269,7 +293,7 @@ void SceneHierarchyPanel::DrawAddComponentButton(ImVec2 contentRegionAvalible)
 	ImGui::SameLine(contentRegionAvalible.x - lineHeight * 0.5f);
 	if (ImGui::Button("+", { lineHeight, lineHeight }))
 		ImGui::OpenPopup("AddComponent");
-
+	//TODO: zautomatyzowaæ dodawanie elementów do tej listy
 	if (ImGui::BeginPopup("AddComponent"))
 	{
 		if (!selectedEntity.HasComponent<Material>()) {
@@ -281,6 +305,12 @@ void SceneHierarchyPanel::DrawAddComponentButton(ImVec2 contentRegionAvalible)
 		if (!selectedEntity.HasComponent<MeshComponent>()) {
 			if (ImGui::MenuItem("Mesh Component")) {
 				selectedEntity.AddComponent<MeshComponent>(Mesh::Cone(360, 2, 4));
+				ImGui::CloseCurrentPopup();
+			}
+		}
+		if (!selectedEntity.HasComponent<CameraComponent>()) {
+			if (ImGui::MenuItem("Camera Component")) {
+				selectedEntity.AddComponent<CameraComponent>();
 				ImGui::CloseCurrentPopup();
 			}
 		}
