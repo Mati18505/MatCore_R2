@@ -16,6 +16,7 @@
 #include "Model.h"
 #include "Mesh.h"
 #include "Texture.h"
+#include "PlatformUtils.h"
 
 //Komponenty
 #include "TagComponent.h"
