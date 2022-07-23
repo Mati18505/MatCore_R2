@@ -19,10 +19,10 @@ EditorScene::EditorScene()
 	SetDarkTheme();
 	ImFontConfig fontConfig = ImFontConfig();
 	SetupImGuiFont("Assets/Fonts/Rubik/static/Rubik-Regular.ttf", 20, &fontConfig, "Assets/Fonts/Rubik/static/Rubik-Bold.ttf");
-	
+	/*
 	camera = new Camera(90, Camera::CameraType::perspective);
 	camera->SetYaw(-90);
-	camera->SetCameraClip(0.01f, 1000.f);
+	camera->SetCameraClip(0.01f, 1000.f);*/
 }
 
 EditorScene::~EditorScene()
@@ -30,7 +30,7 @@ EditorScene::~EditorScene()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
-	delete this->camera;
+	//delete this->camera;
 }
 
 void EditorScene::Start()
@@ -45,16 +45,25 @@ void EditorScene::Start()
 	}
 	
 	Model model("Assets/test/Models/models/nanosuit/nanosuit.fbx", this);
+	Model darthVaderModel("Assets/test/Models/models/Darth Vader/scene.gltf", this);
 	
 	Entity modelEntity = model;
 	modelEntity.GetComponent<Transform>().position.z = 10;
+	Entity darthVader = darthVaderModel;
+	auto& dVT = darthVader.GetComponent<Transform>();
+	dVT.scale = { 400,400,400 };
 
 	Entity child = CreateEntity("Child", modelEntity);
 	Entity child2 = CreateEntity("Child2", child);
+	Entity camera = CreateEntity("Camera", CreateEntity("Camera parent"));
+	camera.AddComponent<CameraComponent>();
+	Entity camera2 = CreateEntity("Camera2");
+	camera2.AddComponent<CameraComponent>().primary = false;
 }
 
 void EditorScene::Update()
 {
+	OnRuntimeUpdate();
 	if (ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard || Input::IsKeyPressed(MC_KEY_1))
 	{
 		auto [x, y] = Input::GetMousePosition();
@@ -62,11 +71,16 @@ void EditorScene::Update()
 		lastYMousePos = -y;
 		return;
 	}
-		
 	//TODO: zamieniæ zarz¹dzanie kamer¹ na skrypt
-	glm::vec3 cameraFront = glm::normalize(camera->GetCameraFront());
-	glm::vec3 cameraRight = glm::normalize(glm::cross(cameraFront, camera->GetCameraUp()));
-	glm::vec3 cameraUp = glm::normalize(camera->GetCameraUp());
+	Entity cameraEntity = GetMainRuntimeCameraEntity();
+	if (!cameraEntity) return;
+	auto& transform = cameraEntity.GetComponent<Transform>();
+
+	//pitch - x yaw - y
+	glm::vec3 cameraFront = transform.GetLocalForwardVector();
+	glm::vec3 cameraUp = { 0, 1, 0 };
+	glm::vec3 cameraRight = glm::normalize(glm::cross(cameraFront, cameraUp));
+	
 
 	glm::vec3 cameraTranslate{ 0,0,0 };
 	float cameraSpeed = 2;
@@ -97,7 +111,7 @@ void EditorScene::Update()
 	}
 	cameraTranslate *= cameraSpeed;
 
-	camera->SetCameraPos(camera->GetCameraPos() + cameraTranslate);
+	transform.position = transform.position + cameraTranslate;
 
 	auto[x, y] = Input::GetMousePosition();
 	double xOffset = x - lastXMousePos;
@@ -110,13 +124,13 @@ void EditorScene::Update()
 	xOffset *= sensitivity;
 	yOffset *= sensitivity;
 
-	camera->SetYaw(camera->GetYaw() + (float)xOffset);
-	camera->SetPitch(camera->GetPitch() + (float)yOffset);
+	transform.rotation.y = transform.rotation.y + (float)xOffset;
+	transform.rotation.x = transform.rotation.x + (float)yOffset;
 
-	if (camera->GetPitch() > 89.0f)
-		camera->SetPitch(89.0f);
-	if (camera->GetPitch() < -89.0f)
-		camera->SetPitch(-89.0f);
+	if (transform.rotation.x > 89.0f)
+		transform.rotation.x = 89.0f;
+	if (transform.rotation.x < -89.0f)
+		transform.rotation.x = -89.0f;
 }
 
 void EditorScene::Render()
@@ -129,6 +143,7 @@ void EditorScene::Render()
 	ShowGUIMenuBar();
 	ShowGUIStats();
 	hierarchyPanel.Render(this);
+	assetsPanel.Render();
 
 	//Render
 	ImGui::Render();
@@ -209,12 +224,11 @@ void EditorScene::ShowGUIMenuBar() {
 	{
 		if (ImGui::BeginMenu(u8"Narzêdzia"))
 		{
-			char buf[200]{};
-			if (ImGui::InputTextWithHint("Model", u8"Scie¿ka do pliku", buf, sizeof(buf), ImGuiInputTextFlags_::ImGuiInputTextFlags_EnterReturnsTrue)) {
-				if (EditorUtils::LoadModel(this, buf))
-					LOG_INFO("Model \"{0}\" successfully loaded!", buf);
-				else
-					LOG_WARN("Cannot load model \"{0}\"", buf);
+			if (ImGui::MenuItem("Load model"))
+			{
+				Entity modelEntity = EditorUtils::LoadModel(this);
+				if (modelEntity)
+					LOG_INFO("Model \"{0}\" successfully loaded!", modelEntity.GetComponent<TagComponent>().tag);
 			}
 			ImGui::EndMenu();
 		}

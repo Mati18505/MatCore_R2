@@ -2,6 +2,7 @@
 #include "MatCore.h"
 #define IMGUI_IMPL_OPENGL_LOADER_CUSTOM
 #include "SceneHierarchyPanel.h"
+#include "AssetsBrowserPanel.h"
 
 using namespace MatCore;
 
@@ -20,6 +21,7 @@ public:
 private:
 	friend class SceneHierarchyPanel;
 	SceneHierarchyPanel hierarchyPanel;
+	AssetsBrowserPanel assetsPanel;
 
 	void SetupImGui(ImGuiConfigFlags imGuiConfigFlags);
 	void SetDarkTheme();
