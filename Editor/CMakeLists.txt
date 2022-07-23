@@ -4,6 +4,10 @@ cmake_minimum_required (VERSION 3.16 FATAL_ERROR)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+if (MSVC)
+	add_compile_options(/ZI) # enable edit and continue
+endif()
+
 file(GLOB_RECURSE SRC_FILES "*.cpp")
 
 add_executable (${PROJECT_NAME} ${SRC_FILES})
