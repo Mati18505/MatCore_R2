@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include <iostream>
+#include <filesystem>
 #include "Entity.h"
 
 struct aiScene;
@@ -16,7 +17,7 @@ namespace MatCore {
 	class Scene;
 	class Entity;
 	class Material;
-	class Model {
+	class Model { //TODO: umo¿liwiæ bezpieczne ³adowanie modelu na oddzielnym w¹tku
 	public:
 		Model(const char* modelFilePath, Scene* scene)
 		{
@@ -34,6 +35,6 @@ namespace MatCore {
 		std::vector<std::shared_ptr<Texture2D>> LoadMaterialTextures(aiMaterial* mat, aiTextureType type);
 
 		Entity entity;
-		std::string modelFileDirectory;
+		std::filesystem::path modelParentPath;
 	};
 }

@@ -22,7 +22,8 @@ namespace MatCore {
 			return;
 		}
 		//œcie¿ka do folderu zawieraj¹cego plik modelu
-		modelFileDirectory = std::string(path).substr(0, std::string(path).find_last_of('/'));
+		std::filesystem::path filePath = (std::string(path));
+		modelParentPath = filePath.parent_path();
 
 		LOG_CORE_TRACE("Scene materials: {0}", scene->mNumMaterials);
 		entity = ProcessNode(scene->mRootNode, scene, mScene, Entity::Null());
@@ -133,18 +134,19 @@ namespace MatCore {
 		for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 		{
 			aiString str;
-			mat->GetTexture(type, i, &str);
+			mat->GetTexture(type, i, &str);// ./texture.png
 
-			std::string fileDir = str.C_Str(); //œcie¿ka absolutna
-			if (!std::filesystem::exists(fileDir))
-			{
-				fileDir = std::string(modelFileDirectory.c_str()) + '/' + std::string(str.C_Str()); //œcie¿ka relatywna
-				if (!std::filesystem::exists(fileDir)) {
-					fileDir = str.C_Str();
-					LOG_CORE_ERROR("Failed to load model texture: {0}", fileDir);
-				}
+			std::filesystem::path texturePath = std::string(str.C_Str());
+
+			if (texturePath.is_relative())
+				texturePath = modelParentPath / texturePath;
+
+			if (!std::filesystem::exists(texturePath)) {
+				LOG_CORE_ERROR("Model: Texture \"{0}\" could not be loaded!", std::string(str.C_Str()));
+				continue;
 			}
-			filesDirs.push_back(std::make_shared<Texture2D>(fileDir.c_str()));
+
+			filesDirs.push_back(std::make_shared<Texture2D>(texturePath.string().c_str()));
 		}
 
 		return filesDirs;
