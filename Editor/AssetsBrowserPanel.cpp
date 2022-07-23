@@ -22,6 +22,7 @@ AssetsBrowserPanel::AssetsBrowserPanel()
 }
 
 void AssetsBrowserPanel::Render() {
+	static float timer;
 	ImGui::Begin("Assets browser");
 
 	if (currentDirectory != std::filesystem::path(assetsPath)) {
@@ -33,25 +34,31 @@ void AssetsBrowserPanel::Render() {
 		LOG_INFO("Opening {0} in file explorer", currentDirectory);
 		FileDialog::OpenFile("All files (*.*)\0*.*\0"); //TODO: zast¹piæ file explorerem
 	}
-		
+	
+	if (timer > 500)
+	{
+		UpdateFilesList();
+		timer = 0;
+	}
+	timer += applicationP->deltaTime;
 
-	static float padding = 16.f;
-	static float thumbnailSize = 128.f;
-	float cellSize = thumbnailSize + padding;
+	RenderFilesList();
+	
+	ImGui::End();
+}
 
-	float panelWidth = ImGui::GetContentRegionAvail().x;
-	int columnCount = int(panelWidth / cellSize);
-	if (columnCount < 1)
-		columnCount = 1;
-
-	ImGui::Columns(columnCount, 0, false);
+void AssetsBrowserPanel::UpdateFilesList()
+{
+	files.clear();
 	for (auto& directoryEntry : std::filesystem::directory_iterator(currentDirectory))
 	{
+		File file;
+
 		const auto& path = directoryEntry.path();
 
 		auto relativePath = std::filesystem::relative(path, assetsPath);
-		std::string filenameString = relativePath.filename().string();
-		ImGui::PushID(filenameString.c_str());
+		file.filenameString = relativePath.filename().string();
+		
 
 		std::string fileExtension = relativePath.filename().extension().string();
 
@@ -69,37 +76,57 @@ void AssetsBrowserPanel::Render() {
 			auto i = filesImagesCache.find(path.string());
 			if (i == filesImagesCache.end())
 			{
-				filesImagesCache.emplace(path.string(), std::make_unique<Texture2D>(path.string().c_str()));
+				//TODO: ³adowaæ teksturê w niskiej rozdzielczoœci (rozdzielczoœci kafelka) aby nie trwa³o to zbyt d³ugo
+				//TODO: nie ³adowaæ wszystkich na raz tylko kilka na klatkê
+				filesImagesCache.emplace(path.string(), std::make_shared<Texture2D>(path.string().c_str()));
 			}
 			icon = filesImagesCache.at(path.string());
 		}
 		else
 			icon = icons.at("empty");
 
-		
+		file.icon = icon;
+		file.path = path;
+		file.fileExtension = fileExtension;
+		file.isDirectory = directoryEntry.is_directory();
+		files.push_back(file);
+	}
+	
+}
 
+void AssetsBrowserPanel::RenderFilesList()
+{
+	float cellSize = thumbnailSize + padding;
+	float panelWidth = ImGui::GetContentRegionAvail().x;
+	int columnCount = int(panelWidth / cellSize);
+	if (columnCount < 1)
+		columnCount = 1;
+
+	ImGui::Columns(columnCount, 0, false);
+
+	for (File& file : files) 
+	{
+		ImGui::PushID(file.filenameString.c_str());
 		ImGui::PushStyleColor(ImGuiCol_Button, {});
-		ImGui::ImageButton(icon->GetRawHandle(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 }); // TODO: u¿yæ czcionki fontello zamiast image
+		ImGui::ImageButton(file.icon->GetRawHandle(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 }); // TODO: u¿yæ czcionki fontello zamiast image
 		ImGui::PopStyleColor();
 
 		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 		{
-			if (directoryEntry.is_directory()) {
-				currentDirectory /= path.filename();
+			if (file.isDirectory) {
+				currentDirectory /= file.path.filename();
 			}
 			else
 			{
-				std::cout << system((path.string()).c_str()); //mo¿e nie dzia³aæ na innych wersjach windows
-				if (fileExtension == ".txt")
+				std::cout << system((file.path.string()).c_str()); //mo¿e nie dzia³aæ na innych wersjach windows
+				if (file.fileExtension == ".txt")
 					;
-			}	
+			}
 		}
-		CenteredText(filenameString.c_str(), thumbnailSize);
-		
-		
+		CenteredText(file.filenameString.c_str(), thumbnailSize);
 		ImGui::NextColumn();
 		ImGui::PopID();
 	}
+
 	ImGui::Columns(1);
-	ImGui::End();
 }
