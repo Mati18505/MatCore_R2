@@ -6,12 +6,18 @@
 
 namespace MatCore {
 	void MatCore::SceneCamera::RecalculateProjectionMatrix(int width, int height) {
-		if (this->cameraType == CameraType::perspective)
-			projectionMatrix = glm::perspective(glm::radians(fov), (float)width / height, nearClip, farClip);
+		glm::vec2 size;
+		if (viewportSize.y == 0)
+			size = { width, height };
 		else
-			projectionMatrix = glm::ortho(-(width / 2) * size2D, width / 2 * size2D, -(height / 2 * size2D), height / 2 * size2D, nearClip, farClip);
+			size = { viewportSize.x, viewportSize.y };
+
+		if (this->cameraType == CameraType::perspective)
+			projectionMatrix = glm::perspective(glm::radians(fov), (float)size.x / size.y, nearClip, farClip);
+		else
+			projectionMatrix = glm::ortho(-(size.x / 2) * size2D, size.x / 2 * size2D, -(size.y / 2 * size2D), size.y / 2 * size2D, nearClip, farClip);
 	}
-	
+
 	void MatCore::SceneCamera::RecalculateViewMatrix(Transform& transform) {
 		glm::vec3 cameraFront = transform.GetLocalForwardVector();
 
