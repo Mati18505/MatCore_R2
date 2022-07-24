@@ -14,5 +14,7 @@ private:
 
 	void DrawTagComponent(MatCore::Entity entity);
 	void DrawAddComponentButton(ImVec2 contentRegionAvalible);
+
+	void MaterialTextureAcceptDragDrop(MatCore::Material& material);
 	MatCore::Entity selectedEntity;
 };

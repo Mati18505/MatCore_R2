@@ -129,6 +129,14 @@ static void DrawInspectorComponent(const char* componentName, MatCore::Entity en
 	}
 }
 
+static bool IsPathImage(std::string path) {
+	static const std::set<std::string> imageExtensions{ ".JPG", ".JPEG", ".JPE", ".BMP", ".GIF", ".PNG" };
+	std::string itemExtension = std::filesystem::path(std::string(path)).extension().string();
+	std::transform(itemExtension.begin(), itemExtension.end(), itemExtension.begin(), ::toupper);
+
+	return imageExtensions.count(itemExtension);
+}
+
 void SceneHierarchyPanel::Render(EditorScene* scene) {
 	using namespace MatCore;
 	//ImGui::SetNextWindowSize(ImVec2(500, 440), ImGuiCond_FirstUseEver);
@@ -254,6 +262,7 @@ void SceneHierarchyPanel::DrawInspectorComponents(MatCore::Entity entity)
 		if (entity.GetComponent<Material>().albedo != nullptr) {
 			std::shared_ptr<Texture2D> texture = material.albedo;
 			ImGui::Image(texture->GetRawHandle(), { 128.f, 128.f });
+			MaterialTextureAcceptDragDrop(material);
 		}
 	});
 
@@ -319,5 +328,19 @@ void SceneHierarchyPanel::DrawAddComponentButton(ImVec2 contentRegionAvalible)
 		}
 		
 		ImGui::EndPopup();
+	}
+}
+
+void SceneHierarchyPanel::MaterialTextureAcceptDragDrop(MatCore::Material& material)
+{
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+		{
+			const char* path = (const char*)payload->Data;
+
+			if (IsPathImage(std::string(path)))
+				material.albedo = std::make_unique<Texture2D>(path);
+		}
+		ImGui::EndDragDropTarget();
 	}
 }

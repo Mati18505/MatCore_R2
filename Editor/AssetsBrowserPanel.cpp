@@ -109,6 +109,15 @@ void AssetsBrowserPanel::RenderFilesList()
 		ImGui::PushID(file.filenameString.c_str());
 		ImGui::PushStyleColor(ImGuiCol_Button, {});
 		ImGui::ImageButton(file.icon->GetRawHandle(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 }); // TODO: u¿yæ czcionki fontello zamiast image
+		
+		if (ImGui::BeginDragDropSource()) {
+			std::string filePath = file.path.string();
+			const char* itemPath = filePath.c_str();
+			ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, (strlen(itemPath) + 1) * sizeof(char));
+			ImGui::Text(itemPath);
+			ImGui::EndDragDropSource();
+		}
+
 		ImGui::PopStyleColor();
 
 		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
