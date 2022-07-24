@@ -173,6 +173,9 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity, EditorScene* scene)
 	using namespace MatCore;
 	ImGuiTreeNodeFlags flags = ((selectedEntity == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow
 		| ImGuiTreeNodeFlags_SpanAvailWidth;
+	if (entity.GetComponent<InheritanceComponent>().childEntities.empty())
+		flags |= ImGuiTreeNodeFlags_Leaf;
+
 	auto& tag = entity.GetComponent<TagComponent>();
 	bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)(entt::entity)entity, flags, tag.tag.c_str());
 
