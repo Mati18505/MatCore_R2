@@ -2,6 +2,7 @@
 #include "Dependece/ImGUI/imgui.h"
 #include "Dependece/ImGUI/imgui_internal.h"
 #include "Editor.h"
+#include <shellapi.h>
 
 static void CenteredText(const char* text, float avalibleSizeX) {
 	float textWidth = ImGui::CalcTextSize(text).x;
@@ -31,8 +32,7 @@ void AssetsBrowserPanel::Render() {
 	}
 	ImGui::SameLine(ImGui::GetContentRegionAvail().x - ImGui::CalcTextSize("Open in file explorer").x);
 	if (ImGui::Button("Open in file explorer")) {
-		LOG_INFO("Opening {0} in file explorer", currentDirectory);
-		FileDialog::OpenFile("All files (*.*)\0*.*\0"); //TODO: zast¹piæ file explorerem
+		ShellExecute(NULL, "explore", (currentDirectory.string()).c_str(), NULL, NULL, SW_SHOWNORMAL);
 	}
 	
 	if (timer > 500)
@@ -127,7 +127,7 @@ void AssetsBrowserPanel::RenderFilesList()
 			}
 			else
 			{
-				std::cout << system((file.path.string()).c_str()); //mo¿e nie dzia³aæ na innych wersjach windows
+				ShellExecute(NULL, "open", (file.path.string()).c_str(), NULL, NULL, SW_SHOWNORMAL);
 				if (file.fileExtension == ".txt")
 					;
 			}
