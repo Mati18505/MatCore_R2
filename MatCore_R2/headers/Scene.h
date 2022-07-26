@@ -37,6 +37,7 @@ namespace MatCore {
 		friend class Renderer;
 		friend class TransformSystem;
 		friend class Application;
+		friend class SceneSerializer;
 		void BaseUpdate();
 		void FrameBufferSizeCallback(int width, int height);
 
