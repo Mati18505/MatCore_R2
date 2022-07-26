@@ -1,3 +1,6 @@
 [submodule "MatCore_R2/Dependece/spdlog"]
 	path = MatCore_R2/Dependece/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "MatCore_R2/Dependece/yaml-cpp-master"]
+	path = MatCore_R2/Dependece/yaml-cpp-master
+	url = https://github.com/TheCherno/yaml-cpp.git
