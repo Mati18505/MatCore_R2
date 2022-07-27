@@ -6,6 +6,7 @@
 #include "MeshComponent.h"
 #include "Material.h"
 #include "CameraComponent.h"
+#include "InheritanceComponent.h"
 #include "Entity.h"
 
 #include "yaml-cpp/yaml.h"
@@ -13,6 +14,8 @@
 #include <fstream>
 #include <functional>
 #include <glm/glm.hpp>
+using ID = uint32_t;
+#define ROOT_NODE_ID (ID)entt::null
 
 namespace YAML {
 	template<>
@@ -70,11 +73,16 @@ namespace MatCore {
 		out << YAML::Key << key << YAML::Value << value;
 	}
 
+	static ID GetEntityID(Entity entity) {
+		entt::entity H = (entt::entity)entity;
+		return (ID)H;
+	}
+
 	//TODO: klasa API dla out? aby nie pisaæ wszêdzie out
 	static void SerializeEntity(YAML::Emitter& out, Entity entity) {
 		out << YAML::BeginMap;
 
-		KeyValue(out, "ID", 0);
+		KeyValue(out, "ID", GetEntityID(entity));
 		SerializeComponent<TagComponent>(out, entity, "TagComponent", [&](TagComponent& tag) {
 			KeyValue(out, "tag", tag.tag);
 		});
@@ -96,6 +104,14 @@ namespace MatCore {
 			KeyValue(out, "far clip", camera.farClip);
 
 			out << YAML::EndMap;
+		});
+		SerializeComponent<InheritanceComponent>(out, entity, "InheritanceComponent", [&](InheritanceComponent& iC) {
+			KeyValue(out, "parent", (ID)(entt::entity)iC.parentEntity);
+			out << YAML::Key << "childs" << YAML::Flow << YAML::BeginSeq;
+			for (auto child : iC.childEntities) {
+				out << GetEntityID(child);
+			}
+			out << YAML::EndSeq;
 		});
 
 		out << YAML::EndMap;
@@ -119,6 +135,71 @@ namespace MatCore {
 		outFile << out.c_str();
 	}
 
+	static YAML::Node GetEntityNodeFromID(YAML::Node entities, ID entityID) {
+		for (auto entityNode : entities) {
+			ID id = entityNode["ID"].as<ID>();
+			if (id == entityID) {
+				return entityNode;
+			}
+		}
+	}
+
+	static Entity DeSerializeEntity(YAML::Node entitiesNode, ID ID, Scene& scene, Entity parent = Entity::Null()) {
+		auto entity = GetEntityNodeFromID(entitiesNode, ID);
+		std::string name;
+		auto tagComponent = entity["TagComponent"];
+		if (tagComponent)
+		{
+			name = tagComponent["tag"].as<std::string>();
+		}
+		LOG_CORE_TRACE("Deserialized entity with name = {0}", name);
+		Entity deserializedEntity = scene.CreateEntity(name, parent);
+
+		auto transformComponent = entity["Transform"];
+		if (transformComponent)
+		{
+			auto& tc = deserializedEntity.GetComponent<Transform>();
+			tc.position = transformComponent["position"].as<glm::vec3>();
+			tc.rotation = transformComponent["rotation"].as<glm::vec3>();
+			tc.scale = transformComponent["scale"].as<glm::vec3>();
+		}
+
+		auto cameraComponentNode = entity["CameraComponent"];
+		if (cameraComponentNode)
+		{
+			auto& cameraComponent = deserializedEntity.AddComponent<CameraComponent>();
+			auto& camera = cameraComponent.camera;
+
+			cameraComponent.primary = cameraComponentNode["primary"].as<bool>();
+
+			auto cameraNode = cameraComponentNode["Camera"];
+
+			camera.cameraType = (SceneCamera::CameraType)cameraNode["Camera type"].as<int>();
+			camera.fov = cameraNode["fov"].as<float>();
+			camera.size2D = cameraNode["size2D"].as<float>();
+			camera.nearClip = cameraNode["near clip"].as<float>();
+			camera.nearClip = cameraNode["far clip"].as<float>();
+		}
+		return deserializedEntity;
+	}
+	
+	static std::vector<ID> GetEntityNodeChilds(YAML::Node entityNode) {
+		std::vector<ID> childs;
+		for (auto child : entityNode["InheritanceComponent"]["childs"]) {
+			childs.push_back(child.as<ID>());
+		}
+		return childs;
+	}
+
+	static Entity DeserializeThisAndChilds(YAML::Node entitiesNode, ID entityID, Scene& scene, Entity parent) {
+		Entity entity = DeSerializeEntity(entitiesNode, entityID, scene, parent);
+		std::vector<ID> childs = GetEntityNodeChilds(GetEntityNodeFromID(entitiesNode, entityID));
+		for (auto childID : childs)
+			DeserializeThisAndChilds(entitiesNode, childID, scene, entity);
+
+		return entity;
+	}
+
 	bool SceneSerializer::DeSerialize(Scene& scene, const char* path)
 	{
 		std::ifstream input(path);
@@ -131,47 +212,33 @@ namespace MatCore {
 		std::string sceneName = data["Scene"].as<std::string>();
 		LOG_CORE_INFO("Deserializing scene {0}", sceneName);
 
+		//najpierw serializujemy wszystkie nody root
+		//po tym serializujemy dzieci nodów po kolei
 		auto entities = data["Entities"];
 		if (entities) {
-			for (auto entity : entities) {
-				uint64_t id = entity["ID"].as<uint64_t>(); //TODO: zamieniæ na uuid
+			std::vector<std::pair<Entity, std::vector<ID>>> rootNodes;//root - jego dzieci
 
-				std::string name;
-				auto tagComponent = entity["TagComponent"];
-				if (tagComponent)
+			//Wyszukanie wszystkich rootów i zapisanie do rootNodes
+			for (auto entityNode : entities) {
+				ID id = entityNode["ID"].as<ID>();
+				auto& inheritanceComponent = entityNode["InheritanceComponent"];
+				if (inheritanceComponent)
 				{
-					name = tagComponent["tag"].as<std::string>();
+					ID parentID = inheritanceComponent["parent"].as<ID>();
+					if (parentID == ROOT_NODE_ID)
+					{
+						Entity rootEntity = DeSerializeEntity(entities, id, scene);
+						std::vector<ID> childs = GetEntityNodeChilds(entityNode);
+						rootNodes.push_back(std::pair(rootEntity, childs));
+					}
 				}
-				LOG_CORE_TRACE("Deserialized entity with name = {0}", name);
-				Entity deserializedEntity = scene.CreateEntity(name);
-
-				auto transformComponent = entity["Transform"];
-				if (transformComponent)
-				{
-					auto& tc = deserializedEntity.GetComponent<Transform>();
-					tc.position = transformComponent["position"].as<glm::vec3>();
-					tc.rotation = transformComponent["rotation"].as<glm::vec3>();
-					tc.scale = transformComponent["scale"].as<glm::vec3>();
-				}
-				
-				auto cameraComponentNode = entity["CameraComponent"];
-				if (cameraComponentNode)
-				{
-					auto& cameraComponent = deserializedEntity.AddComponent<CameraComponent>();
-					auto& camera = cameraComponent.camera;
-
-					cameraComponent.primary = cameraComponentNode["primary"].as<bool>();
-
-					auto cameraNode = cameraComponentNode["Camera"];
-
-					camera.cameraType = (SceneCamera::CameraType)cameraNode["Camera type"].as<int>();
-					camera.fov = cameraNode["fov"].as<float>();
-					camera.size2D = cameraNode["size2D"].as<float>();
-					camera.nearClip = cameraNode["near clip"].as<float>();
-					camera.nearClip = cameraNode["far clip"].as<float>();
-				}
-
-
+			}
+			
+			//Deserializacja wszystkich dzieci root nodów
+			for (auto pair : rootNodes) {
+				Entity rootEntity = pair.first;
+				for (ID id : pair.second)
+					DeserializeThisAndChilds(entities, id, scene, rootEntity);
 			}
 		}
 
