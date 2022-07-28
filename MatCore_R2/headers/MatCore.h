@@ -10,6 +10,7 @@
 #include "Input.h"
 #include "KeyCodes.h"
 #include "MouseButtonCodes.h"
+#include "SceneSerializer.h"
 
 //Narzêdzia
 #include "Entity.h"
@@ -25,3 +26,4 @@
 #include "Material.h"
 #include "InheritanceComponent.h"
 #include "CameraComponent.h"
+#include "NativeScriptComponent.h"
