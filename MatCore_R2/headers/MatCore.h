@@ -27,3 +27,8 @@
 #include "InheritanceComponent.h"
 #include "CameraComponent.h"
 #include "NativeScriptComponent.h"
+
+//Eventy
+#include "Events/ApplicationEvents.h"
+#include "Events/KeyboardEvents.h"
+#include "Events/MouseEvents.h"
