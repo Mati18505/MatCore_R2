@@ -15,7 +15,6 @@
 #include <functional>
 #include <glm/glm.hpp>
 using ID = uint32_t;
-#define ROOT_NODE_ID (ID)entt::null
 
 namespace YAML {
 	template<>
@@ -120,15 +119,24 @@ namespace MatCore {
 	void SceneSerializer::Serialize(Scene& scene, const char* path) {
 		YAML::Emitter out;
 		out << YAML::BeginMap;
+
 		KeyValue(out, "Scene", "Untitled");
 		KeyValue(out, "Entities", YAML::BeginSeq);
 
+		std::vector<ID> roots;
 		scene.entitiesRegistry.each([&](auto entityHandler)
 		{
 			Entity entity(entityHandler, &scene);
+			if (entity.GetComponent<InheritanceComponent>().parentEntity == Entity::Null()) {
+				roots.push_back(GetEntityID(entity));
+			}
 			SerializeEntity(out, entity);
 		});
 		out << YAML::EndSeq;
+
+		KeyValue(out, "Root Entities", YAML::Flow);
+		out << roots;
+
 		out << YAML::EndMap;
 
 		std::ofstream outFile(path);
@@ -212,33 +220,12 @@ namespace MatCore {
 		std::string sceneName = data["Scene"].as<std::string>();
 		LOG_CORE_INFO("Deserializing scene {0}", sceneName);
 
-		//najpierw serializujemy wszystkie nody root
-		//po tym serializujemy dzieci nodów po kolei
 		auto entities = data["Entities"];
-		if (entities) {
-			std::vector<std::pair<Entity, std::vector<ID>>> rootNodes;//root - jego dzieci
+		std::vector<ID> roots = data["Root Entities"].as<std::vector<ID>>();
 
-			//Wyszukanie wszystkich rootów i zapisanie do rootNodes
-			for (auto entityNode : entities) {
-				ID id = entityNode["ID"].as<ID>();
-				auto& inheritanceComponent = entityNode["InheritanceComponent"];
-				if (inheritanceComponent)
-				{
-					ID parentID = inheritanceComponent["parent"].as<ID>();
-					if (parentID == ROOT_NODE_ID)
-					{
-						Entity rootEntity = DeSerializeEntity(entities, id, scene);
-						std::vector<ID> childs = GetEntityNodeChilds(entityNode);
-						rootNodes.push_back(std::pair(rootEntity, childs));
-					}
-				}
-			}
-			
-			//Deserializacja wszystkich dzieci root nodów
-			for (auto pair : rootNodes) {
-				Entity rootEntity = pair.first;
-				for (ID id : pair.second)
-					DeserializeThisAndChilds(entities, id, scene, rootEntity);
+		if (entities) {
+			for (auto rootID : roots) {
+				DeserializeThisAndChilds(entities, rootID, scene, Entity::Null());
 			}
 		}
 
