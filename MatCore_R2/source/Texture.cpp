@@ -15,10 +15,10 @@ MatCore::Texture2D::Texture2D(const char* path) {
 	this->height = height;
 
 	glCreateTextures(GL_TEXTURE_2D, 1, &renderID);
-	glTextureStorage2D(renderID, 1, GL_RGB8, width, height);
+	glTextureStorage2D(renderID, 4, GL_RGBA8, width, height);
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glTextureParameteri(renderID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTextureParameteri(renderID, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTextureParameteri(renderID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	GLenum format = GL_RGB;
@@ -33,7 +33,7 @@ MatCore::Texture2D::Texture2D(const char* path) {
 	}
 	
 	glTextureSubImage2D(renderID, 0, 0, 0, width, height, format, GL_UNSIGNED_BYTE, data);
-
+	glGenerateTextureMipmap(renderID); //TODO: zamieniæ na anisotropic filtering - wymaga rozszerzenia GL
 	stbi_image_free(data);
 }
 
