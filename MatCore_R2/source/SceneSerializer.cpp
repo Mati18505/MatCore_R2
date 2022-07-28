@@ -186,7 +186,7 @@ namespace MatCore {
 			camera.fov = cameraNode["fov"].as<float>();
 			camera.size2D = cameraNode["size2D"].as<float>();
 			camera.nearClip = cameraNode["near clip"].as<float>();
-			camera.nearClip = cameraNode["far clip"].as<float>();
+			camera.farClip = cameraNode["far clip"].as<float>();
 		}
 		return deserializedEntity;
 	}
