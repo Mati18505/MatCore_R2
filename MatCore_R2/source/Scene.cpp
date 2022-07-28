@@ -11,6 +11,7 @@
 #include "Entity.h"
 #include "TagComponent.h"
 #include "InheritanceComponent.h"
+#include "NativeScriptComponent.h"
 #include "TransformSystem.h"
 
 MatCore::Scene::Scene() {
@@ -124,7 +125,19 @@ void MatCore::Scene::OnEditorUpdate()
 void MatCore::Scene::OnRuntimeUpdate()
 {
     runtime = true;
-    //TODO: update scripts
+    
+    entitiesRegistry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+    {
+        //TODO: przenieœæ do Scene::Play
+        if (!nsc.instance)
+        {
+            nsc.instance = nsc.InstantiateScript();
+            nsc.instance->entity = Entity{ entity, this };
+            nsc.instance->Create();
+        }
+        nsc.instance->Update();
+    });
+
     auto cameraEntity = GetMainRuntimeCameraEntity();
     if (cameraEntity) {
         auto& camera = cameraEntity.GetComponent<CameraComponent>().camera;
