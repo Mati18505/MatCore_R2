@@ -8,6 +8,9 @@
 #include "Scene.h"
 #include "Log.h"
 #include "Platform/Windows/WindowsInput.h"
+#include "Events/KeyboardEvents.h"
+#include "Events/MouseEvents.h"
+#include "Events/ApplicationEvents.h"
 #undef CreateWindow //windows
 
 extern MatCore::Application* applicationP;
@@ -45,7 +48,7 @@ void MatCore::Application::RunApp() {
 
 void MatCore::Application::CreateWindow(){
     this->window = GLFWWindow::CreateWindow(windowWidth, windowHeight, false);
-    GLFWWindow::SetWindowCallbacks(window, WindowFramebufferSizeCallback, WindowCursorPosCallback, WindowKeyCallback, WindowMouseButtonCallback);
+    GLFWWindow::SetWindowCallbacks(window, BIND_EVENT_FN(Application::OnEvent));
 }
 
 bool MatCore::Application::WindowShouldClose() {
@@ -100,24 +103,19 @@ void MatCore::Application::MainLoop() {
         LOG_CORE_ERROR("GLERROR: {0}", std::to_string(error));
 }
 
-void MatCore::Application::WindowFramebufferSizeCallback(GLFWwindow* window, int width, int height) {
-    applicationP->windowWidth = width;
-    if (height != 0)
+bool MatCore::Application::WindowResizeCallback(WindowResizeEvent& e) {
+    windowWidth = e.GetWidth();
+    if (e.GetHeight() != 0)
     {
-        applicationP->windowHeight = height;
-        applicationP->scene->FrameBufferSizeCallback(width, height);
+        windowHeight = e.GetHeight();
+        scene->FrameBufferSizeCallback(e.GetWidth(), e.GetHeight());
     }
-    
+    return false;
 }
 
-void MatCore::Application::WindowCursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
-
-}
-
-void MatCore::Application::WindowKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
-
-}
-
-void MatCore::Application::WindowMouseButtonCallback(GLFWwindow* window, int button, int action, int mods){
-
+void MatCore::Application::OnEvent(Event& e)
+{
+    scene->OnEvent(e);
+    EventDispatcher dispatcher(e);
+    dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::WindowResizeCallback));
 }

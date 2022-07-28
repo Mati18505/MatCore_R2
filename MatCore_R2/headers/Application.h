@@ -3,6 +3,8 @@ struct GLFWwindow;
 namespace MatCore {
 	class Renderer;
 	class Scene;
+	class Event;
+	class WindowResizeEvent;
 	class Application {
 	public:
 		void RunApp();
@@ -31,10 +33,8 @@ namespace MatCore {
 		void CreateWindow();
 		void CloseWindow();
 		bool WindowShouldClose();
-		static void WindowFramebufferSizeCallback(GLFWwindow* window, int width, int height);
-		static void WindowCursorPosCallback(GLFWwindow* window, double xpos, double ypos);
-		static void WindowKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-		static void WindowMouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+		void OnEvent(Event& e);
+		bool WindowResizeCallback(WindowResizeEvent& e);
 
 		void InitGL();
 
