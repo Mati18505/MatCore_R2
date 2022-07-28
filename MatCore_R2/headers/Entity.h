@@ -1,12 +1,13 @@
 #pragma once
 #include <entt.hpp>
+#include "Log.h"
 
 namespace MatCore {
-	class Scene;
+	class Scene;	
 	class Entity {
 	public:
 		Entity() : entityHandle(entt::null), scene(nullptr) {}
-		Entity(entt::entity entity, Scene* scene) :entityHandle(entity), scene(scene) {}
+		Entity(entt::entity entity, Scene* scene) :entityHandle(entity), scene(scene) {} //TODO: schowaæ przed klientem
 		Entity(const Entity& other) = default;
 
 		template<typename T, typename... Args>
@@ -59,7 +60,7 @@ namespace MatCore {
 		operator bool() const { return this->entityHandle != entt::null; }
 		operator entt::entity() const { return entityHandle; }
 		operator int() const { return (int)entityHandle; }
-		bool operator ==(Entity other) const { return other.entityHandle == this->entityHandle; }
+		bool operator ==(Entity other) const { return other.entityHandle == this->entityHandle; }//TODO: dodaæ do sprawdzania scene
 		bool operator !=(Entity other) const { return !(other == *this); }
 
 	private:
