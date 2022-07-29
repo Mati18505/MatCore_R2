@@ -29,9 +29,9 @@ namespace MatCore {
 		glm::mat4 modelMatrix(1.f);
 		modelMatrix = glm::translate(modelMatrix, transform.position);
 
+		modelMatrix = glm::rotate(modelMatrix, glm::radians(transform.rotation.z), { 0, 0, 1 });
 		modelMatrix = glm::rotate(modelMatrix, glm::radians(transform.rotation.x), { 1, 0, 0 });
 		modelMatrix = glm::rotate(modelMatrix, glm::radians(transform.rotation.y), { 0, 1, 0 });
-		modelMatrix = glm::rotate(modelMatrix, glm::radians(transform.rotation.z), { 0, 0, 1 });
 
 		modelMatrix = glm::scale(modelMatrix, transform.scale);
 		return modelMatrix;
