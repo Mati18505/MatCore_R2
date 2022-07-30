@@ -35,4 +35,6 @@ private:
 
 	glm::vec2 lastMousePos{ 0, 0 };
 	glm::vec3 offsetDir{ 0, 0, 1 };
+
+	float lastDistance = 10;
 };
