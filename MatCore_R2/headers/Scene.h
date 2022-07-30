@@ -9,6 +9,7 @@ namespace MatCore {
 	class SceneCamera;
 	class Camera;
 	class Entity;
+	class Event;
 	namespace MeshRenderer {
 		void OnConstruct(entt::registry&, entt::entity entity);
 		void OnDestroy(entt::registry&, entt::entity entity);
@@ -21,16 +22,15 @@ namespace MatCore {
 		virtual void Start() = 0;
 		virtual void Update() = 0;
 		virtual void Render() = 0;
+		virtual void OnEvent(Event& e) = 0;
 
 		Entity CreateEntity(std::string name = "");
 		Entity CreateEntity(std::string name, Entity parent);
 		void DestroyEntity(Entity entity);
 
 		Entity GetMainRuntimeCameraEntity();
-		std::optional<Camera> GetMainCamera();
+		virtual std::optional<Camera> GetMainCamera();
 	private:
-		bool runtime = true;
-
 		void DestroyEntityChildrens(Entity entity);
 		void EraseEntityFromHisParent(Entity entity);
 		friend class Entity;
@@ -46,7 +46,6 @@ namespace MatCore {
 	protected:
 		entt::registry entitiesRegistry;
 
-		//void OnEditorUpdate();
 		void OnRuntimeUpdate();
 	};
 }

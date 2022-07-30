@@ -99,33 +99,14 @@ MatCore::Entity MatCore::Scene::GetMainRuntimeCameraEntity()
 
 std::optional<MatCore::Camera> MatCore::Scene::GetMainCamera()
 {
-    if (runtime)
-    {
-        Entity cameraEntity = GetMainRuntimeCameraEntity();
-        if (cameraEntity)
-            return (Camera)cameraEntity.GetComponent<CameraComponent>().camera;
-    }
-    else
-    {
-#if 0
-        if (editorCamera)
-            return editorCamera;
-#endif
-    }
+    Entity cameraEntity = GetMainRuntimeCameraEntity();
+    if (cameraEntity)
+        return (Camera)cameraEntity.GetComponent<CameraComponent>().camera;
     return {};
 }
 
-#if 0
-void MatCore::Scene::OnEditorUpdate()
-{
-    runtime = false;
-}
-#endif
-
 void MatCore::Scene::OnRuntimeUpdate()
 {
-    runtime = true;
-    
     entitiesRegistry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
     {
         //TODO: przenieœæ do Scene::Play
