@@ -1,6 +1,6 @@
 #include "Texture.h"
 #include <stb_image.h>
-#include <glad.h>
+#include <glad/glad.h>
 #include "Log.h"
 
 MatCore::Texture2D::Texture2D(const char* path) {

@@ -17,6 +17,7 @@ public:
 	void Start() override;
 	void Update() override;
 	void Render() override;
+	void OnEvent(Event& e) override {};
 
 private:
 	friend class SceneHierarchyPanel;

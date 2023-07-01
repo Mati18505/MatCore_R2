@@ -4,7 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <glad.h>
+#include <glad/glad.h>
 #include "Log.h"
 namespace MatCore {
     class Shader

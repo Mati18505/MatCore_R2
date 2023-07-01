@@ -1,6 +1,6 @@
 #pragma once
 #include "Renderer.h"
-#include <glad.h>
+#include <glad/glad.h>
 #include "MeshComponent.h"
 #include "Mesh.h"
 #include "Transform.h"
