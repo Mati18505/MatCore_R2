@@ -18,7 +18,7 @@ EditorScene::EditorScene()
 	SetupImGui(imGuiConfig);
 	SetDarkTheme();
 	ImFontConfig fontConfig = ImFontConfig();
-	SetupImGuiFont("Assets/Fonts/Rubik/static/Rubik-Regular.ttf", 20, &fontConfig, "Assets/Fonts/Rubik/static/Rubik-Bold.ttf");
+	SetupImGuiFont("Resources/Fonts/Rubik/static/Rubik-Regular.ttf", 20, &fontConfig, "Resources/Fonts/Rubik/static/Rubik-Bold.ttf");
 	/*
 	camera = new Camera(90, Camera::CameraType::perspective);
 	camera->SetYaw(-90);
@@ -45,13 +45,13 @@ void EditorScene::Start()
 	}
 	
 	Model model("Assets/test/Models/models/nanosuit/nanosuit.fbx", this);
-	Model darthVaderModel("Assets/test/Models/models/Darth Vader/scene.gltf", this);
+	Model darthVaderModel("Assets/test/Models/models/darth-vader-by-oscar-creativo/source/DARTH VADER BAJA.fbx", this);
 	
 	Entity modelEntity = model;
 	modelEntity.GetComponent<Transform>().position.z = 10;
 	Entity darthVader = darthVaderModel;
 	auto& dVT = darthVader.GetComponent<Transform>();
-	dVT.scale = { 400,400,400 };
+	dVT.scale = { 2,2,2 };
 
 	Entity child = CreateEntity("Child", modelEntity);
 	Entity child2 = CreateEntity("Child2", child);
