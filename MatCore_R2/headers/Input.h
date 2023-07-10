@@ -1,5 +1,6 @@
 #pragma once
 #include <utility>
+#include <memory>
 
 namespace MatCore {
 	class Input {
@@ -20,6 +21,6 @@ namespace MatCore {
 
 	private:
 		friend class Application;
-		static Input* instance;
+		static std::unique_ptr<Input> instance;
 	};
 }
