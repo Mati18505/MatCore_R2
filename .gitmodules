@@ -4,3 +4,6 @@
 [submodule "MatCore_R2/Dependece/yaml-cpp-master"]
 	path = MatCore_R2/Dependece/yaml-cpp-master
 	url = https://github.com/TheCherno/yaml-cpp.git
+[submodule "MatCore_R2/Dependece/glfw"]
+	path = MatCore_R2/Dependece/glfw
+	url = https://github.com/TheCherno/glfw.git
