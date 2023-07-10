@@ -34,8 +34,16 @@ void EditorCamera::RotateView(glm::vec2 offset)
 	offsetDir = -GetForwardDirection();
 }
 
+static float lerp(float a, float b, float f)
+{
+	return a + f * (b - a);
+}
+
 void EditorCamera::Update() {
-	position = center + offsetDir * distance;
+	float newDistance = lerp(lastDistance, distance, 0.5f);
+	position = center + offsetDir * newDistance;
+	lastDistance = newDistance;
+
 	UpdateView();
 	UpdateProjection();
 }

@@ -19,7 +19,6 @@ namespace MatCore {
 		int WindowWidth() { return windowWidth; }
 		int WindowHeight() { return windowHeight; }
 	private:
-		friend class Camera;
 		friend class Renderer;
 
 		int windowWidth{ 1366 };
