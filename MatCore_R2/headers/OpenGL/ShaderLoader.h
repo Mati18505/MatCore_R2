@@ -26,6 +26,7 @@ namespace MatCore {
         static void CheckCompileErrorsForShaderProgram(unsigned int shader);
 
         static unsigned int GetGLShaderType(ShaderType shaderType);
+        static std::string ToString(ShaderType shaderType);
 
     };
 }

@@ -57,7 +57,7 @@ void MatCore::ShaderLoader::CheckCompileErrorsForShader(unsigned int shader, Sha
     if (!success)
     {
         glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-        LOG_CORE_ERROR("Shader compilation error of type: {0}\n{1}", shaderType, infoLog);
+        LOG_CORE_ERROR("Shader compilation error of type: {0}\n{1}", ToString(shaderType), infoLog);
     }
 }
 
@@ -88,4 +88,20 @@ GLuint MatCore::ShaderLoader::GetGLShaderType(ShaderType shaderType)
         break;
     }
     return glShaderType;
+}
+
+std::string MatCore::ShaderLoader::ToString(ShaderType shaderType)
+{
+    std::string string;
+
+    switch (shaderType)
+    {
+    case ShaderType::vertex:
+        string = "VERTEX";
+        break;
+    case ShaderType::fragment:
+        string = "FRAGMENT";
+        break;
+    }
+    return string;
 }
