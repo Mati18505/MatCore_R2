@@ -7,12 +7,12 @@
 #include "CameraComponent.h"
 #include "Application.h"
 #include "Log.h"
-#include "Renderer.h"
 #include "Entity.h"
 #include "TagComponent.h"
 #include "InheritanceComponent.h"
 #include "NativeScriptComponent.h"
 #include "TransformSystem.h"
+extern MatCore::Application* applicationP;
 
 MatCore::Scene::Scene() {
 }
@@ -72,6 +72,7 @@ void MatCore::Scene::EraseEntityFromHisParent(Entity entity)
 void MatCore::Scene::BaseUpdate()
 {
     TransformSystem::UpdateAllTransforms();
+    sceneRenderer.Render(*this);
 }
 
 void MatCore::Scene::FrameBufferSizeCallback(int width, int height)

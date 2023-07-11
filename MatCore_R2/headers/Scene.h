@@ -4,16 +4,13 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <entt.hpp>
 #include <optional>
+#include "SceneRenderer.h"
 
 namespace MatCore {
 	class SceneCamera;
 	class Camera;
 	class Entity;
 	class Event;
-	namespace MeshRenderer {
-		void OnConstruct(entt::registry&, entt::entity entity);
-		void OnDestroy(entt::registry&, entt::entity entity);
-	}
 
 	class Scene {
 	public:
@@ -30,19 +27,20 @@ namespace MatCore {
 
 		Entity GetMainRuntimeCameraEntity();
 		virtual std::optional<Camera> GetMainCamera();
+		entt::registry& GetEntities() {
+			return entitiesRegistry;
+		}
 	private:
 		void DestroyEntityChildrens(Entity entity);
 		void EraseEntityFromHisParent(Entity entity);
 		friend class Entity;
-		friend class Renderer;
 		friend class TransformSystem;
 		friend class Application;
 		friend class SceneSerializer;
 		void BaseUpdate();
 		void FrameBufferSizeCallback(int width, int height);
 
-		friend void MeshRenderer::OnConstruct(entt::registry&, entt::entity entity);
-		friend void MeshRenderer::OnDestroy(entt::registry&, entt::entity entity);
+		SceneRenderer sceneRenderer;
 	protected:
 		entt::registry entitiesRegistry;
 

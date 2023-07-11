@@ -1,11 +1,11 @@
 #include "OpenGL/ShaderProgram.h"
 #include <glad/glad.h>
 
-inline MatCore::ShaderProgram::~ShaderProgram()
+MatCore::ShaderProgram::~ShaderProgram()
 {
 	glDeleteProgram(handle);
 }
 
-inline void MatCore::ShaderProgram::Bind() const {
+void MatCore::ShaderProgram::Bind() const {
 	glUseProgram(handle);
 }

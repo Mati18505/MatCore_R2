@@ -257,13 +257,11 @@ void SceneHierarchyPanel::DrawInspectorComponents(MatCore::Entity entity)
 	});
 	
 	DrawInspectorComponent<Material>(u8"Materia³", entity, true, [&](Material& material) {
-		ImGui::Text(("ShaderID: " + std::to_string(material.shaderID)).c_str());
+		ImGui::Text(("ShaderID: " + std::to_string(material.shader.GetBuffer()->GetHandle())).c_str());
 		ImGui::Text("Albedo");
-		if (entity.GetComponent<Material>().albedo != nullptr) {
-			std::shared_ptr<Texture2D> texture = material.albedo;
-			ImGui::Image(texture->GetRawHandle(), { 128.f, 128.f });
-			MaterialTextureAcceptDragDrop(material);
-		}
+		Resource<Texture2D> texture = material.albedo;
+		ImGui::Image(texture.GetBuffer()->GetRawHandle(), { 128.f, 128.f });
+		MaterialTextureAcceptDragDrop(material);
 	});
 
 	DrawInspectorComponent<MeshComponent>(u8"Mesh", entity, true, [&](MeshComponent& mesh) {
@@ -310,7 +308,10 @@ void SceneHierarchyPanel::DrawAddComponentButton(ImVec2 contentRegionAvalible)
 	{
 		if (!selectedEntity.HasComponent<Material>()) {
 			if (ImGui::MenuItem("Material")) {
-				selectedEntity.AddComponent<Material>();
+				Resource<Shader> vs = Factory::Get().CreateShaderAssetFromFile("Assets/Shaders/color.vs", Shader::ShaderType::vertex);
+				Resource<Shader> fs = Factory::Get().CreateShaderAssetFromFile("Assets/Shaders/color.fs", Shader::ShaderType::fragment);
+				selectedEntity.AddComponent<Material>(vs, fs);
+
 				ImGui::CloseCurrentPopup();
 			}
 		}
@@ -339,7 +340,7 @@ void SceneHierarchyPanel::MaterialTextureAcceptDragDrop(MatCore::Material& mater
 			const char* path = (const char*)payload->Data;
 
 			if (IsPathImage(std::string(path)))
-				material.albedo = std::make_unique<Texture2D>(path);
+				material.albedo = Factory::Get().CreateTextureAssetFromFile(path);
 		}
 		ImGui::EndDragDropTarget();
 	}

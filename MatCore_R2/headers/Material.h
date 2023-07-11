@@ -12,19 +12,12 @@
 namespace MatCore {
 	struct Material {
 	public:
-		Material(Resource<Shader>& vs, Resource<Shader>& ps);
-
-		Resource<Texture2D> albedo = Factory::Get().CreateTextureAssetFromFile("Resources/Textures/NoTexture.png");
-
-		/// Ustawia uniformy specyficzne dla entity (np. macierze)
-		void SetSelfUniforms();
-		/// Ustawia uniformy dla ca³ego materia³u (np. œwiat³a, tekstury)
-		void SetUniforms();
-
-		void SetMVPMatrix(glm::mat4 modelMatrix, glm::mat4 VPMatrix);
-
+		Material(Resource<Shader>& vs, Resource<Shader>& ps)
+			: shader(Factory::Get().CreateShaderProgramAssetFromShaders(vs, ps))
+		{}
+		
 		Resource<ShaderProgram> shader;
-	private:
+		Resource<Texture2D> albedo = Factory::Get().CreateTextureAssetFromFile("Resources/Textures/NoTexture.png");
 		glm::mat4 mvpMatrix = glm::mat4(1.f);
 	};
 }

@@ -1,31 +1,41 @@
 #pragma once
 #include "Bindable.h"
 #include <functional>
+#include "TextureBuffer.h"
+#include "Resource.h"
 
-class StaticRenderer
+namespace MatCore
 {
-public:
-	static StaticRenderer& Get()
+	class StaticRenderer
 	{
-		static StaticRenderer r;
-		return r;
-	}
+	public:
+		static StaticRenderer& Get()
+		{
+			static StaticRenderer r;
+			return r;
+		}
 
-	void Bind(const Bindable& bindable) const
-	{
-		bindable.Bind();
-	}
+		void Bind(const Bindable* bindable) const
+		{
+			bindable->Bind();
+		}
 
-	void DrawIndexed(int count) const;
+		void BindTexture(const Resource<Texture2D> texture, int slot) const
+		{
+			texture.GetBuffer()->Bind(slot);
+		}
 
-	void ClearColorAndDepth() const;
+		void DrawIndexed(int count) const;
 
-	void InitOpenGL(int windowWidth, int windowHeight) const;
+		void ClearColorAndDepth() const;
 
-	void SetViewportSize(int windowWidth, int windowHeight) const
-	{
-		SetViewportSize(0, 0, windowWidth, windowHeight);
-	}
-	
-	void SetViewportSize(int startX, int startY, int windowWidth, int windowHeight) const;
-};
+		void InitOpenGL(int windowWidth, int windowHeight) const;
+
+		void SetViewportSize(int windowWidth, int windowHeight) const
+		{
+			SetViewportSize(0, 0, windowWidth, windowHeight);
+		}
+
+		void SetViewportSize(int startX, int startY, int windowWidth, int windowHeight) const;
+	};
+}

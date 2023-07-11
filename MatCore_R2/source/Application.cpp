@@ -2,7 +2,6 @@
 #include "../headers/Application.h"
 #include <glad/glad.h>
 #include "GLFWWindow.h"
-#include "../headers/Renderer.h"
 #include <iostream>
 #include <string>
 #include <memory>
@@ -86,8 +85,6 @@ void MatCore::Application::InitializeApp() {
     InitGL();
     LOG_CORE_INFO("Creating scene...");
     assert(this->scene = ApplicationStart());
-    LOG_CORE_INFO("Creating renderer...");
-    this->renderer = new Renderer();
 }
 
 void MatCore::Application::MainLoop() {
@@ -99,7 +96,6 @@ void MatCore::Application::MainLoop() {
 
     scene->Update();
     scene->BaseUpdate();
-    renderer->RenderScene();
     scene->Render();
     //vsync ? glfwswapbuffers : glfinish
     glfwSwapBuffers(window);

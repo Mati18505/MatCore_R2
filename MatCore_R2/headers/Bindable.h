@@ -1,6 +1,10 @@
 #pragma once
-class Bindable {
-public:
-	virtual ~Bindable() = default;
-	virtual void Bind() const = 0;
-};
+
+namespace MatCore
+{
+	class Bindable {
+	public:
+		virtual ~Bindable() = default;
+		virtual void Bind() const = 0;
+	};
+}

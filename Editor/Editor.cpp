@@ -40,7 +40,10 @@ void EditorScene::Start()
 	{
 		Entity t = CreateEntity();
 		t.AddComponent<MeshComponent>(coneMesh);
-		t.AddComponent<Material>();
+
+		Resource<Shader> vs = Factory::Get().CreateShaderAssetFromFile("Assets/Shaders/color.vs", Shader::ShaderType::vertex);
+		Resource<Shader> fs = Factory::Get().CreateShaderAssetFromFile("Assets/Shaders/color.fs", Shader::ShaderType::fragment);
+		t.AddComponent<Material>(vs, fs);
 		t.GetComponent<Transform>().position.z = -10;
 	}
 	
@@ -261,11 +264,11 @@ void EditorScene::ShowGUIStats()
 		std::stringstream fpsS;
 		fpsS << frameTime << " ms/frame (" << (int)FPS << " fps) ";
 		ImGui::Text(fpsS.str().c_str());
-		
+		/*
 		std::stringstream rendererS;
 		auto& renderer = applicationP->renderer;
 		rendererS << "Vertices: " << renderer->Vertices() << "\nTriangles: " << renderer->Triangles() << "\nDraw calls: " << renderer->DrawCalls();
-		ImGui::Text(rendererS.str().c_str());
+		ImGui::Text(rendererS.str().c_str());*/
 		
 		std::stringstream entityCountS;
 		entityCountS << "Obiekty: " << entitiesRegistry.alive();
