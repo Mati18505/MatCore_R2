@@ -3,7 +3,7 @@
 
 #include "MeshComponent.h"
 #include "Transform.h"
-#include "material.h"
+#include "Material.h"
 #include "CameraComponent.h"
 #include "Application.h"
 #include "Log.h"
@@ -15,8 +15,6 @@
 #include "TransformSystem.h"
 
 MatCore::Scene::Scene() {
-    entitiesRegistry.on_construct<MeshComponent>().connect<&MeshRenderer::OnConstruct>();
-    entitiesRegistry.on_destroy<MeshComponent>().connect<&MeshRenderer::OnDestroy>();
 }
 
 MatCore::Scene::~Scene() {

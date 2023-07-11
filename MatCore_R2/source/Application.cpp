@@ -13,6 +13,7 @@
 #include "Events/KeyboardEvents.h"
 #include "Events/MouseEvents.h"
 #include "Events/ApplicationEvents.h"
+#include "OpenGL/StaticRenderer.h"
 #undef CreateWindow //windows
 
 extern MatCore::Application* applicationP;
@@ -21,8 +22,19 @@ std::unique_ptr<MatCore::Input> MatCore::Input::instance = std::make_unique<Wind
 
 void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
-    fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n", 
-        (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
+
+    switch (severity)
+    {
+    case GL_DEBUG_SEVERITY_LOW:
+    case GL_DEBUG_SEVERITY_MEDIUM:
+    case GL_DEBUG_SEVERITY_HIGH:
+        std::fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+            (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
+        break;
+    default:
+        break;
+    }
+
 }
 
 MatCore::Application::Application()
@@ -62,13 +74,8 @@ void MatCore::Application::CloseWindow(){
 }
 
 void MatCore::Application::InitGL() {
-    gladLoadGL();
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_DEBUG_OUTPUT);
-    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+    StaticRenderer::Get().InitOpenGL(windowWidth, windowHeight);
     glDebugMessageCallback(MessageCallback, 0);
-    glViewport(0, 0, windowWidth, windowHeight);
 }
 
 void MatCore::Application::InitializeApp() {

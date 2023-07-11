@@ -4,6 +4,7 @@
 #include "Application.h"
 #include <GLFW/glfw3.h>
 #include <MeshComponent.h>
+extern MatCore::Application* applicationP;
 
 namespace MatCore {
 	bool WindowsInput::IsKeyPressedImpl(int keyCode)

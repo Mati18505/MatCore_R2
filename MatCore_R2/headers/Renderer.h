@@ -22,10 +22,6 @@ namespace MatCore {
 	};
 
 	namespace MeshRenderer {
-		void OnConstruct(entt::registry&, entt::entity entity);
-		void OnDestroy(entt::registry&, entt::entity entity);
-		void Init(MeshComponent& meshComponent);
 		void RenderMesh(MeshComponent& meshRenderer, Transform& transform, Material& material, Camera& camera);
-		void DeInit(MeshComponent& meshComponent);
 	}
 }

@@ -4,6 +4,8 @@
 #include <iostream>
 #include <filesystem>
 #include "Entity.h"
+#include "OpenGL/Resource.h"
+#include "OpenGL/TextureBuffer.h"
 
 struct aiScene;
 struct aiNode;
@@ -13,7 +15,6 @@ enum aiTextureType;
 
 namespace MatCore {
 	class Mesh;
-	class Texture2D;
 	class Scene;
 	class Entity;
 	class Material;
@@ -32,7 +33,7 @@ namespace MatCore {
 		Entity ProcessNode(aiNode* node, const aiScene* scene, Scene*mScene, Entity parentEntity);
 		Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
 		Material ProcessMaterial(aiMesh* mesh, const aiScene* scene);
-		std::vector<std::shared_ptr<Texture2D>> LoadMaterialTextures(aiMaterial* mat, aiTextureType type);
+		std::vector<Resource<Texture2D>> LoadMaterialTextures(aiMaterial* mat, aiTextureType type);
 
 		Entity entity;
 		std::filesystem::path modelParentPath;
