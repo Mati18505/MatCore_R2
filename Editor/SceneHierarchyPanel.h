@@ -10,10 +10,10 @@ public:
 	MatCore::Entity GetSelectedEntity() { return selectedEntity; }
 private:
 	void DrawEntityNode(MatCore::Entity entity, EditorScene* scene); 
-	void DrawInspectorComponents(MatCore::Entity entity); 
+	void DrawInspectorComponents(EditorScene& scene, MatCore::Entity entity);
 
 	void DrawTagComponent(MatCore::Entity entity);
-	void DrawAddComponentButton(ImVec2 contentRegionAvalible);
+	void DrawAddComponentButton(EditorScene& scene, ImVec2 contentRegionAvalible);
 
 	void MaterialTextureAcceptDragDrop(MatCore::Material& material);
 	MatCore::Entity selectedEntity;

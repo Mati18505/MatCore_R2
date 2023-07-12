@@ -19,6 +19,7 @@
 #include "PlatformUtils.h"
 #include "OpenGL/Resource.h"
 #include "OpenGL/TextureBuffer.h"
+#include "ShaderLibrary.h"
 
 //Komponenty
 #include "TagComponent.h"

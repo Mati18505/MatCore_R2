@@ -170,7 +170,7 @@ void SceneHierarchyPanel::Render(EditorScene* scene) {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, { 450.f, 500.f });
 	ImGui::Begin("Inspektor");
 	if (selectedEntity) {
-		DrawInspectorComponents(selectedEntity);
+		DrawInspectorComponents(*scene, selectedEntity);
 	}
 	ImGui::End();
 	ImGui::PopStyleVar();
@@ -229,12 +229,12 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity, EditorScene* scene)
 		
 }
 
-void SceneHierarchyPanel::DrawInspectorComponents(MatCore::Entity entity)
+void SceneHierarchyPanel::DrawInspectorComponents(EditorScene& scene, MatCore::Entity entity)
 {
 	auto contentRegionAvalible = ImGui::GetContentRegionAvail();
 	DrawTagComponent(entity);
 
-	DrawAddComponentButton(contentRegionAvalible);
+	DrawAddComponentButton(scene, contentRegionAvalible);
 
 	DrawInspectorComponent<Transform>("Transform", entity, false, [&](Transform& transform) {
 		DrawVec3Control("Position", transform.position, 0.f);
@@ -297,7 +297,7 @@ void SceneHierarchyPanel::DrawTagComponent(MatCore::Entity entity)
 		tag = std::string(buffer);
 }
 
-void SceneHierarchyPanel::DrawAddComponentButton(ImVec2 contentRegionAvalible)
+void SceneHierarchyPanel::DrawAddComponentButton(EditorScene& scene, ImVec2 contentRegionAvalible)
 {
 	float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 	ImGui::SameLine(contentRegionAvalible.x - lineHeight * 0.5f);
@@ -308,9 +308,7 @@ void SceneHierarchyPanel::DrawAddComponentButton(ImVec2 contentRegionAvalible)
 	{
 		if (!selectedEntity.HasComponent<Material>()) {
 			if (ImGui::MenuItem("Material")) {
-				Resource<Shader> vs = Factory::Get().CreateShaderAssetFromFile("Assets/Shaders/color.vs", Shader::ShaderType::vertex);
-				Resource<Shader> fs = Factory::Get().CreateShaderAssetFromFile("Assets/Shaders/color.fs", Shader::ShaderType::fragment);
-				selectedEntity.AddComponent<Material>(vs, fs);
+				selectedEntity.AddComponent<Material>(scene.shaderLibrary.Get("default"));
 
 				ImGui::CloseCurrentPopup();
 			}

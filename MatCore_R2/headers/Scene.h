@@ -5,6 +5,7 @@
 #include <entt.hpp>
 #include <optional>
 #include "SceneRenderer.h"
+#include "ShaderLibrary.h"
 
 namespace MatCore {
 	class SceneCamera;
@@ -30,6 +31,8 @@ namespace MatCore {
 		entt::registry& GetEntities() {
 			return entitiesRegistry;
 		}
+
+		ShaderLibrary shaderLibrary;
 	private:
 		void DestroyEntityChildrens(Entity entity);
 		void EraseEntityFromHisParent(Entity entity);

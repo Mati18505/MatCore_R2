@@ -12,8 +12,8 @@
 namespace MatCore {
 	struct Material {
 	public:
-		Material(Resource<Shader>& vs, Resource<Shader>& ps)
-			: shader(Factory::Get().CreateShaderProgramAssetFromShaders(vs, ps))
+		Material(Resource<ShaderProgram>& shader)
+			: shader(shader)
 		{}
 		
 		Resource<ShaderProgram> shader;

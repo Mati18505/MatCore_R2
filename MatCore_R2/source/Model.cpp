@@ -119,11 +119,8 @@ namespace MatCore {
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
 		std::vector<Resource<Texture2D>> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE);
-		
-		Resource<Shader> vs = Factory::Get().CreateShaderAssetFromFile("Assets/Shaders/color.vs", Shader::ShaderType::vertex);
-		Resource<Shader> fs = Factory::Get().CreateShaderAssetFromFile("Assets/Shaders/color.fs", Shader::ShaderType::fragment);
 
-		Material mMaterial{ vs, fs };
+		Material mMaterial{ shader };
 
 		if (diffuseMaps.size() > 0)
 			mMaterial.albedo = diffuseMaps[0];

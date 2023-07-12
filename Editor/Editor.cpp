@@ -19,6 +19,13 @@ EditorScene::EditorScene()
 	SetDarkTheme();
 	ImFontConfig fontConfig = ImFontConfig();
 	SetupImGuiFont("Resources/Fonts/Rubik/static/Rubik-Regular.ttf", 20, &fontConfig, "Resources/Fonts/Rubik/static/Rubik-Bold.ttf");
+	
+	LOG_INFO("Editor: Loading shaders");
+	Resource<Shader> vs = Factory::Get().CreateShaderAssetFromFile("Assets/Shaders/color.vs", Shader::ShaderType::vertex);
+	Resource<Shader> fs = Factory::Get().CreateShaderAssetFromFile("Assets/Shaders/color.fs", Shader::ShaderType::fragment);
+	Resource<ShaderProgram> shader = Factory::Get().CreateShaderProgramAssetFromShaders(vs, fs);
+	shaderLibrary.Add("default", shader);
+	
 	/*
 	camera = new Camera(90, Camera::CameraType::perspective);
 	camera->SetYaw(-90);
@@ -40,15 +47,13 @@ void EditorScene::Start()
 	{
 		Entity t = CreateEntity();
 		t.AddComponent<MeshComponent>(coneMesh);
-
-		Resource<Shader> vs = Factory::Get().CreateShaderAssetFromFile("Assets/Shaders/color.vs", Shader::ShaderType::vertex);
-		Resource<Shader> fs = Factory::Get().CreateShaderAssetFromFile("Assets/Shaders/color.fs", Shader::ShaderType::fragment);
-		t.AddComponent<Material>(vs, fs);
+		
+		t.AddComponent<Material>(shaderLibrary.Get("default"));
 		t.GetComponent<Transform>().position.z = -10;
 	}
 	
-	Model model("Assets/test/Models/models/nanosuit/nanosuit.fbx", this);
-	Model darthVaderModel("Assets/test/Models/models/darth-vader-by-oscar-creativo/source/DARTH VADER BAJA.fbx", this);
+	Model model("Assets/test/Models/models/nanosuit/nanosuit.fbx", this, "default");
+	Model darthVaderModel("Assets/test/Models/models/darth-vader-by-oscar-creativo/source/DARTH VADER BAJA.fbx", this, "default");
 	
 	Entity modelEntity = model;
 	modelEntity.GetComponent<Transform>().position.z = 10;

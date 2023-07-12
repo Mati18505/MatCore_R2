@@ -6,6 +6,9 @@
 #include "Entity.h"
 #include "OpenGL/Resource.h"
 #include "OpenGL/TextureBuffer.h"
+#include "OpenGL/ShaderProgram.h"
+#include "Scene.h"
+#include "ShaderLibrary.h"
 
 struct aiScene;
 struct aiNode;
@@ -15,12 +18,12 @@ enum aiTextureType;
 
 namespace MatCore {
 	class Mesh;
-	class Scene;
 	class Entity;
 	class Material;
 	class Model { //TODO: umo¿liwiæ bezpieczne ³adowanie modelu na oddzielnym w¹tku
 	public:
-		Model(const char* modelFilePath, Scene* scene)
+		Model(const char* modelFilePath, Scene* scene, const std::string& shaderName)
+			: shader(scene->shaderLibrary.Get(shaderName))
 		{
 			LoadModel(modelFilePath, scene);
 		}
@@ -37,5 +40,6 @@ namespace MatCore {
 
 		Entity entity;
 		std::filesystem::path modelParentPath;
+		Resource<ShaderProgram> shader;
 	};
 }
