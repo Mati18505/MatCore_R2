@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "SceneSerializer.h"
 #include "Scene.h"
 #include "Log.h"
@@ -10,9 +12,7 @@
 #include "Entity.h"
 
 #include "yaml-cpp/yaml.h"
-#include <iostream>
 #include <fstream>
-#include <functional>
 #include <glm/glm.hpp>
 using ID = uint32_t;
 

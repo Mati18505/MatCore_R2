@@ -1,5 +1,7 @@
+#include "pch.h"
 #include "Texture.h"
 #include <stb_image.h>
+
 #include <glad/glad.h>
 #include "Log.h"
 

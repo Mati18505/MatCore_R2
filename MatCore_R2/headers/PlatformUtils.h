@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 
 namespace MatCore {
 	class FileDialog {

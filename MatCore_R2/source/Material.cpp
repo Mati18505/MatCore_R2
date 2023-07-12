@@ -1,4 +1,5 @@
-#pragma once
+#include "pch.h"
+
 #include "../headers/Material.h"
 #include "Shader.h"
 #include "Texture.h"

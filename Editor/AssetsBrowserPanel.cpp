@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "AssetsBrowserPanel.h"
 #include "Dependece/ImGUI/imgui.h"
 #include "Dependece/ImGUI/imgui_internal.h"

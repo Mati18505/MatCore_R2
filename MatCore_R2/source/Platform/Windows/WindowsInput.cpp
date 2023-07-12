@@ -1,4 +1,4 @@
-#pragma once
+#include "pch.h"
 
 #include "Platform/Windows/WindowsInput.h"
 #include "Application.h"

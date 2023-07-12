@@ -27,6 +27,7 @@ workspace "MatCore"
         include "MatCore_R2/Dependece/glad"
         include "Editor/Dependece/ImGUI"
         include "MatCore_R2/Dependece/yaml-cpp-master"
+        include "MatCore_R2/Dependece/stb_image"
 
     group "Core"
         include "MatCore_R2"

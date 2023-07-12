@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "PlatformUtils.h"
 #include "Application.h"
 #include "Renderer.h"//pozbyæ siê

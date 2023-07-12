@@ -2,6 +2,9 @@ project "MatCore_R2"
     kind "StaticLib"
     language "C++"
 
+    pchheader "pch.h"
+    pchsource "./source/pch.cpp"
+
     targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}") 
     objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
@@ -19,12 +22,11 @@ project "MatCore_R2"
 
     files {
         "./source/**.cpp",
-        "./headers/**.h",
-        "./Dependece/stb_image/stb_image.cpp"
+        "./headers/**.h"
     }
 
     libdirs {
         "./Dependece/assimp/dynamicDebug"
     }
 
-    links { "glad", "glfw", "assimp-vc142-mtd", "Dwmapi", "yaml-cpp" } --opengl32.lib?
+    links { "glad", "glfw", "assimp-vc142-mtd", "Dwmapi", "yaml-cpp", "stb_image" } --opengl32.lib?

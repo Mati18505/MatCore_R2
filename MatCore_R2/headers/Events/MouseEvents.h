@@ -1,6 +1,5 @@
 #pragma once
 #include "Event.h"
-#include <sstream>
 
 namespace MatCore {
 	using MouseCode = uint32_t;

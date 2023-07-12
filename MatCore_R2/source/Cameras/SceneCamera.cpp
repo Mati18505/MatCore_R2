@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "Cameras/SceneCamera.h"
 #include "Transform.h"
 #include <glm/glm.hpp>

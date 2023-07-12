@@ -1,6 +1,5 @@
 #pragma once
 #include <GLFW/glfw3.h>
-#include <iostream>
 #include "Log.h"
 #include "Events/ApplicationEvents.h"
 #include "Events/KeyboardEvents.h"

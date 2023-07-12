@@ -1,4 +1,5 @@
-#pragma once
+#include "pch.h"
+
 #include "Renderer.h"
 #include <glad/glad.h>
 #include "MeshComponent.h"

@@ -1,11 +1,9 @@
-#pragma once
+#include "pch.h"
+
 #include "../headers/Application.h"
 #include <glad/glad.h>
 #include "GLFWWindow.h"
 #include "../headers/Renderer.h"
-#include <iostream>
-#include <string>
-#include <memory>
 #include "Input.h"
 #include "Scene.h"
 #include "Log.h"
