@@ -1,6 +1,7 @@
 #pragma once
 #include "Resource.h"
 #include "MeshBuffer.h"
+#include "Mesh.h"
 #include "Shader.h"
 #include "ShaderProgram.h"
 #include "TextureBuffer.h"
@@ -18,7 +19,15 @@ namespace MatCore
 		Resource<MeshBuffer> CreateMeshBufferAssetFromMesh(Mesh& mesh) const
 		{
 			auto asset = Resource<MeshBuffer>{ std::make_shared<MeshBuffer>() };
-			asset.GetBuffer()->Update(mesh);
+			
+			BufferLayout layout;
+			layout.Push(BufferLayout::Type::Float, 3); //pos
+			layout.Push(BufferLayout::Type::Float, 2); //uv
+			layout.Push(BufferLayout::Type::Float, 3); //col
+			layout.Push(BufferLayout::Type::Float, 3); //normal
+			asset.GetBuffer()->SetLayout(layout);
+
+			asset.GetBuffer()->UpdateT(*mesh.GetVertices(), *mesh.GetTriangles());
 			return asset;
 		}
 

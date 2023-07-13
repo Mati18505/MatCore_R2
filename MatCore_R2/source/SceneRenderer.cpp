@@ -4,13 +4,58 @@
 #include "Application.h"
 #include "MatCore.h"
 #include "Cameras/Camera.h"
+#include "Application.h"
 #include <glad/glad.h>
-extern MatCore::Application* applicationP;
+#include "OpenGL/Factory.h"
 
+extern MatCore::Application* applicationP;
+    
 namespace MatCore {
+    std::vector<float> SceneRenderer::quadVertices{
+        -1.0f,  1.0f, 0.0f, 1.0f,         // Top left
+         1.0f,  1.0f, 1.0f, 1.0f,         // Top Right
+        -1.0f, -1.0f, 0.0f, 0.0f,         // Bottom left
+         1.0f, -1.0f, 1.0f, 0.0f          // Bottom right
+    };
+    std::vector<int> SceneRenderer::quadIndices{
+        2, 1, 0,
+        2, 3, 1
+    };
+
+    SceneRenderer::SceneRenderer()
+        : frameBuffer(std::make_shared<FrameBuffer>(applicationP->WindowWidth(), applicationP->WindowHeight()))
+    {
+        auto vs = Factory::Get().CreateShaderAssetFromFile("Resources/Shaders/Screen.vs", Shader::ShaderType::vertex);
+        auto fs = Factory::Get().CreateShaderAssetFromFile("Resources/Shaders/Screen.fs", Shader::ShaderType::fragment);
+        screenShader = Factory::Get().CreateShaderProgramAssetFromShaders(vs, fs);
+
+        quad = Resource<MeshBuffer>(std::make_shared<MeshBuffer>());
+        BufferLayout layout;
+        layout.Push(BufferLayout::Type::Float, 2);//pos
+        layout.Push(BufferLayout::Type::Float, 2);//uv
+        quad.GetBuffer()->SetLayout(layout);
+        quad.GetBuffer()->UpdateT(quadVertices, quadIndices);
+    }
     void SceneRenderer::Render(Scene& scene) {
-        StaticRenderer::Get().SetViewportSize(applicationP->WindowWidth(), applicationP->WindowHeight());
-        StaticRenderer::Get().ClearColorAndDepth();
+        auto& renderer = StaticRenderer::Get();
+        renderer.Bind(frameBuffer.GetBuffer().get());
+        renderer.Enable(StaticRenderer::Option::DEPTH_TEST);
+        renderer.SetViewportSize(applicationP->WindowWidth(), applicationP->WindowHeight());
+        renderer.ClearColorAndDepth();
+
+        RenderScene(scene);
+
+        renderer.BindScreenFrameBuffer();
+        renderer.Disable(StaticRenderer::Option::DEPTH_TEST);
+        renderer.ClearColorAndDepth();
+        renderer.Bind(screenShader.GetBuffer().get());
+        renderer.Bind(quad.GetBuffer().get());
+        frameBuffer.GetBuffer().get()->BindTexture();
+        renderer.DrawIndexed(6);
+
+    }
+    void SceneRenderer::RenderScene(Scene& scene)
+    {
         entt::registry& registry = scene.GetEntities();
 
         auto mainCameraOpt = scene.GetMainCamera();

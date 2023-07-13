@@ -25,6 +25,7 @@ namespace MatCore
 			texture.GetBuffer()->Bind(slot);
 		}
 
+		void DrawTriangles(int count) const;
 		void DrawIndexed(int count) const;
 
 		void ClearColorAndDepth() const;
@@ -37,5 +38,15 @@ namespace MatCore
 		}
 
 		void SetViewportSize(int startX, int startY, int windowWidth, int windowHeight) const;
+		
+		void BindScreenFrameBuffer() const;
+
+		enum class Option
+		{
+			DEPTH_TEST
+		};
+
+		void Enable(Option opt) const;
+		void Disable(Option opt) const;
 	};
 }
