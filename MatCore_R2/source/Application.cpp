@@ -96,6 +96,7 @@ void MatCore::Application::MainLoop() {
 
     scene->Update();
     scene->BaseUpdate();
+    scene->BaseRender();
     scene->Render();
     //vsync ? glfwswapbuffers : glfinish
     glfwSwapBuffers(window);

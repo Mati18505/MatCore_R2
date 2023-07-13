@@ -72,6 +72,10 @@ void MatCore::Scene::EraseEntityFromHisParent(Entity entity)
 void MatCore::Scene::BaseUpdate()
 {
     TransformSystem::UpdateAllTransforms();
+}
+
+void MatCore::Scene::BaseRender()
+{
     sceneRenderer.Render(*this);
 }
 
