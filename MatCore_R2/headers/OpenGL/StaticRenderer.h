@@ -20,6 +20,13 @@ namespace MatCore
 			bindable->Bind();
 		}
 
+		template<typename T>
+		void Bind(Resource<T> bindable) const
+		{
+			Bindable* b = static_cast<Bindable*>(bindable.GetBuffer().get());
+			Bind(b);
+		}
+
 		void BindTexture(const Resource<Texture2D> texture, int slot) const
 		{
 			texture.GetBuffer()->Bind(slot);

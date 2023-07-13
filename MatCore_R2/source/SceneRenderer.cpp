@@ -38,7 +38,7 @@ namespace MatCore {
     }
     void SceneRenderer::Render(Scene& scene) {
         auto& renderer = StaticRenderer::Get();
-        renderer.Bind(frameBuffer.GetBuffer().get());
+        renderer.Bind(frameBuffer);
         renderer.Enable(StaticRenderer::Option::DEPTH_TEST);
         renderer.SetViewportSize(applicationP->WindowWidth(), applicationP->WindowHeight());
         renderer.ClearColorAndDepth();
@@ -48,8 +48,8 @@ namespace MatCore {
         renderer.BindScreenFrameBuffer();
         renderer.Disable(StaticRenderer::Option::DEPTH_TEST);
         renderer.ClearColorAndDepth();
-        renderer.Bind(screenShader.GetBuffer().get());
-        renderer.Bind(quad.GetBuffer().get());
+        renderer.Bind(screenShader);
+        renderer.Bind(quad);
         frameBuffer.GetBuffer().get()->BindTexture();
         renderer.DrawIndexed(6);
 
@@ -73,7 +73,7 @@ namespace MatCore {
         }
     }
     void SceneRenderer::RenderEntity(MeshComponent& meshComponent, Transform& transform, Material& material, Camera& camera) {
-        StaticRenderer::Get().Bind(meshComponent.meshAsset.GetBuffer().get());
+        StaticRenderer::Get().Bind(meshComponent.meshAsset);
         StaticRenderer::Get().BindTexture(material.albedo, 0);
 
         glm::mat4 mvpMatrix = camera.GetProjection() * camera.GetView() * transform.GetGlobalModelMatrix();
