@@ -80,8 +80,7 @@ namespace MatCore {
         glm::mat4 mvpMatrix = camera.GetProjection() * camera.GetView() * transform.GetGlobalModelMatrix();
         auto& s = material.shader.GetBuffer();
         StaticRenderer::Get().Bind(s.get());
-        auto mvpUniformPos = glGetUniformLocation(s->GetHandle(), "mvp");
-        glUniformMatrix4fv(mvpUniformPos, 1, GL_FALSE, glm::value_ptr(mvpMatrix));
+        s->SetUniform("mvp", mvpMatrix);
 
         StaticRenderer::Get().DrawIndexed((int)meshComponent.mesh.GetTriangles()->size());
     }
