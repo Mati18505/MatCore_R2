@@ -84,6 +84,7 @@ void MatCore::Scene::FrameBufferSizeCallback(int width, int height)
     Entity cameraEntity = GetMainRuntimeCameraEntity();
     if (cameraEntity)
         cameraEntity.GetComponent<CameraComponent>().camera.RecalculateProjectionMatrix(width, height);
+    sceneRenderer.FrameBufferSizeCallback(width, height);
 }
 
 

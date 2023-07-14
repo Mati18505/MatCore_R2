@@ -20,6 +20,7 @@ namespace MatCore
     public:
         SceneRenderer();
         void Render(Scene& scene);
+        void FrameBufferSizeCallback(int width, int height);
 
     private:
         void RenderScene(Scene& scene);

@@ -54,6 +54,7 @@ namespace MatCore {
         renderer.DrawIndexed(6);
 
     }
+    
     void SceneRenderer::RenderScene(Scene& scene)
     {
         entt::registry& registry = scene.GetEntities();
@@ -83,5 +84,10 @@ namespace MatCore {
         glUniformMatrix4fv(mvpUniformPos, 1, GL_FALSE, glm::value_ptr(mvpMatrix));
 
         StaticRenderer::Get().DrawIndexed((int)meshComponent.mesh.GetTriangles()->size());
+    }
+
+    void SceneRenderer::FrameBufferSizeCallback(int width, int height)
+    {
+        frameBuffer.SetBuffer(std::make_shared<FrameBuffer>(width, height));
     }
 }
