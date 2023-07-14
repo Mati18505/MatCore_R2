@@ -3,6 +3,7 @@
 #include "OpenGL/Resource.h"
 #include "OpenGL/MeshBuffer.h"
 #include "OpenGL/ShaderProgram.h"
+#include "OpenGL/UniformBuffer.h"
 #include <memory>
 
 
@@ -29,6 +30,13 @@ namespace MatCore
         Resource<FrameBuffer> frameBuffer;
         Resource<MeshBuffer> quad;
         Resource<ShaderProgram> screenShader;
+
+        struct CB
+        {
+            glm::mat4 mvp;
+        };
+        CB cb{};
+        Resource<UniformBufferT<CB>> ub{std::make_shared<UniformBufferT<CB>>()};
 
         static std::vector<float> quadVertices;
         static std::vector<int> quadIndices;

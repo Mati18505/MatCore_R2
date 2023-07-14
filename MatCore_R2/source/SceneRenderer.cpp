@@ -77,10 +77,12 @@ namespace MatCore {
         StaticRenderer::Get().Bind(meshComponent.meshAsset);
         StaticRenderer::Get().BindTexture(material.albedo, 0);
 
-        glm::mat4 mvpMatrix = camera.GetProjection() * camera.GetView() * transform.GetGlobalModelMatrix();
         auto& s = material.shader.GetBuffer();
         StaticRenderer::Get().Bind(s.get());
-        s->SetUniform("mvp", mvpMatrix);
+
+        cb.mvp = camera.GetProjection() * camera.GetView() * transform.GetGlobalModelMatrix();
+        ub.GetBuffer()->Update(cb);
+        ub.GetBuffer()->Bind(0);
 
         StaticRenderer::Get().DrawIndexed((int)meshComponent.mesh.GetTriangles()->size());
     }
