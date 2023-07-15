@@ -1,4 +1,4 @@
-#include "OpenGL/StaticRenderer.h"
+#include "OpenGL/OpenGLRenderAPI.h"
 #include <glad/glad.h>
 
 namespace MatCore

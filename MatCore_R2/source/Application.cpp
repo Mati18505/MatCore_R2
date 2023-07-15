@@ -12,7 +12,7 @@
 #include "Events/KeyboardEvents.h"
 #include "Events/MouseEvents.h"
 #include "Events/ApplicationEvents.h"
-#include "OpenGL/StaticRenderer.h"
+#include "OpenGL/OpenGLRenderAPI.h"
 #undef CreateWindow //windows
 
 extern MatCore::Application* applicationP;
