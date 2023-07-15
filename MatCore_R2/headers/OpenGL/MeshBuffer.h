@@ -19,6 +19,8 @@ namespace MatCore {
 		}
 
 		void Update(size_t verticesByteSize, const void* verticesData, size_t indicesByteSize, const void* indicesData);
+		void SetVertices(size_t verticesByteSize, const void* verticesData);
+		void SetIndices(size_t indicesByteSize, const void* indicesData);
 
 		void SetLayout(BufferLayout layout);
 	private:

@@ -35,9 +35,18 @@ namespace MatCore
 	}
 	void MeshBuffer::Update(size_t verticesByteSize, const void* verticesData, size_t indicesByteSize, const void* indicesData)
 	{
+		SetVertices(verticesByteSize, verticesData);
+		SetIndices(indicesByteSize, indicesData);
+	}
+
+	void MeshBuffer::SetVertices(size_t verticesByteSize, const void* verticesData)
+	{
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glBufferData(GL_ARRAY_BUFFER, verticesByteSize, verticesData, GL_STATIC_DRAW);
+	}
+	void MeshBuffer::SetIndices(size_t indicesByteSize, const void* indicesData)
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesByteSize, indicesData, GL_STATIC_DRAW);
 	}
 
