@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "OpenGL/ShaderProgram.h"
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>

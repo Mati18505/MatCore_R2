@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "OpenGL/TextureBuffer.h"
 #include <glad/glad.h>
 #include <Log.h>

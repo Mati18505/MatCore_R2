@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "MatCore.h"
 #include <glm/glm.hpp>
 

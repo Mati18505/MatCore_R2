@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "Factory.h"
 #include <stb_image.h>
 

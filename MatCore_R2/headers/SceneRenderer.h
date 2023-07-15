@@ -4,7 +4,6 @@
 #include "OpenGL/MeshBuffer.h"
 #include "OpenGL/ShaderProgram.h"
 #include "OpenGL/UniformBuffer.h"
-#include <memory>
 
 
 namespace MatCore

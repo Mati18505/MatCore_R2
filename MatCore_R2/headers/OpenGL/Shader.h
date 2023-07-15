@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 #include "ShaderLoader.h"
 #include "GPUResource.h"
 

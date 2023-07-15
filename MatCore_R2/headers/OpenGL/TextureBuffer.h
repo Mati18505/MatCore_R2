@@ -1,7 +1,5 @@
 #pragma once
 #include "Bindable.h"
-#include <memory>
-#include <string>
 #include "OpenGL/GPUResource.h"
 
 namespace MatCore {

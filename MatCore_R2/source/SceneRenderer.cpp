@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "SceneRenderer.h"
 #include "OpenGL/OpenGLRenderAPI.h"
 #include "OpenGL/ShaderProgram.h"

@@ -1,6 +1,4 @@
 #pragma once
-#include <map>
-#include <string>
 #include "OpenGL/ShaderProgram.h"
 #include "Resource.h"
 

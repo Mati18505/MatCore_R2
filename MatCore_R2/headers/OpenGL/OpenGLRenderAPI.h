@@ -1,6 +1,5 @@
 #pragma once
 #include "Bindable.h"
-#include <functional>
 #include "TextureBuffer.h"
 #include "Resource.h"
 

@@ -1,7 +1,6 @@
 #pragma once
 #include "Bindable.h"
 #include "GPUResource.h"
-#include <vector>
 
 namespace MatCore {
 	struct BufferLayout;
