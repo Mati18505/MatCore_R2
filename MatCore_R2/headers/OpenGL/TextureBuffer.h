@@ -38,15 +38,15 @@ namespace MatCore {
 		explicit Texture2D(TextureDescription description);
 		~Texture2D() override;
 
-		unsigned int GetWidth() const { return width; }
-		unsigned int GetHeight() const { return height; }
+		unsigned int GetWidth() const { return description.width; }
+		unsigned int GetHeight() const { return description.height; }
 		void Bind(unsigned int slot = 0) const;
 		void* GetRawHandle() { return (void*)ID; }
 		void SetData(TextureDescription::Format format, const uint8_t* data, bool generateMipmaps = true);
+		const TextureDescription& GetDescription() { return description; }
 	private:
 		uint32_t ID;
-		uint32_t width;
-		uint32_t height;
+		TextureDescription description;
 	};
 
 }

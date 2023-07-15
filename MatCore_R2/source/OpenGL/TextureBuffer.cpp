@@ -67,7 +67,7 @@ namespace MatCore
 	}
 
 	Texture2D::Texture2D(TextureDescription desc)
-		: GPUResource(), width(desc.width), height(desc.height)
+		: GPUResource(), description(desc)
 	{
 		glCreateTextures(GL_TEXTURE_2D, 1, &ID);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -78,7 +78,7 @@ namespace MatCore
 		glTextureParameteri(ID, GL_TEXTURE_WRAP_T, GetGLWrapFromWrap(desc.wrapMode));
 
 		GLenum internalFormat = GetGLInternalFormatFromFormat(desc.internalFormat);
-		glTextureStorage2D(ID, desc.mipmapsCount, internalFormat, width, height);
+		glTextureStorage2D(ID, desc.mipmapsCount, internalFormat, desc.width, desc.height);
 	}
 	Texture2D::~Texture2D()
 	{
@@ -90,7 +90,7 @@ namespace MatCore
 	}
 	void Texture2D::SetData(TextureDescription::Format format, const uint8_t* data, bool generateMipmaps)
 	{
-		glTextureSubImage2D(ID, 0, 0, 0, width, height, GetGLFormatFromFormat(format), GL_UNSIGNED_BYTE, (const void*)data);
+		glTextureSubImage2D(ID, 0, 0, 0, description.width, description.height, GetGLFormatFromFormat(format), GL_UNSIGNED_BYTE, (const void*)data);
 		if(generateMipmaps)
 			glGenerateTextureMipmap(ID);
 	}
