@@ -9,10 +9,6 @@ namespace MatCore {
 	public:
 		MeshBuffer();
 		~MeshBuffer() override;
-		MeshBuffer(const MeshBuffer& other) = delete;
-		MeshBuffer(MeshBuffer&& other) noexcept = delete;
-		MeshBuffer& operator=(const MeshBuffer& other) = delete;
-		MeshBuffer& operator=(MeshBuffer&& other) noexcept = delete;
 
 		void Bind() const override;
 		

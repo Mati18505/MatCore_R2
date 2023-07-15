@@ -9,14 +9,11 @@ namespace MatCore {
 		using ShaderType = ShaderLoader::ShaderType;
 
 		Shader(const std::string& filePath, ShaderType type)
+			: GPUResource()
 		{
 			std::string shaderCode = ShaderLoader::LoadFileToShaderCode(filePath);
 			shader = ShaderLoader::CompileShader(shaderCode, type);
 		}
-		Shader(Shader&& other) noexcept;
-		Shader(const Shader&) = delete;
-		Shader& operator= (const Shader&) = delete;
-		Shader& operator= (const Shader&&) = delete;
 
 		~Shader() override;
 

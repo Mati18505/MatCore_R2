@@ -5,6 +5,7 @@
 namespace MatCore
 {
 	FrameBuffer::FrameBuffer(int width, int height)
+        : GPUResource()
 	{
         glCreateFramebuffers(1, &frameBuffer);
         

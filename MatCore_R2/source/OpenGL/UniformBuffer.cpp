@@ -4,6 +4,7 @@
 namespace MatCore
 {
 	UniformBuffer::UniformBuffer(size_t byteSize)
+		: GPUResource()
 	{
 		glGenBuffers(1, &ubo);
 		glBindBuffer(GL_UNIFORM_BUFFER, ubo);
@@ -12,6 +13,7 @@ namespace MatCore
 	}
 
 	UniformBuffer::UniformBuffer(size_t byteSize, const void* data)
+		: GPUResource()
 	{
 		glGenBuffers(1, &ubo);
 		glBindBuffer(GL_UNIFORM_BUFFER, ubo);

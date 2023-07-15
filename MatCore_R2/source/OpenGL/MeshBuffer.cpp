@@ -4,6 +4,7 @@
 namespace MatCore
 {
 	MeshBuffer::MeshBuffer()
+		: GPUResource()
 	{
 		//create VAO
 		glGenBuffers(1, &VBO);

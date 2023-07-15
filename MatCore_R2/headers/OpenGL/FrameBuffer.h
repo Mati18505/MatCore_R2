@@ -9,10 +9,6 @@ namespace MatCore {
 	public:
 		explicit FrameBuffer(int width, int height);
 		~FrameBuffer() override;
-		FrameBuffer(const FrameBuffer&) = delete;
-		FrameBuffer& operator= (const FrameBuffer&) = delete;
-		FrameBuffer(FrameBuffer&&) = delete;
-		FrameBuffer& operator= (FrameBuffer&&) = delete;
 
 		void Bind() const;
 		void BindTexture() const;

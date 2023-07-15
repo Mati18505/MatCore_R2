@@ -6,6 +6,7 @@
 namespace MatCore
 {
 	Texture2D::Texture2D(const std::string& path)
+		: GPUResource()
 	{
 		int imageWidth, imageHeight, imageChannels;
 		stbi_set_flip_vertically_on_load(1);

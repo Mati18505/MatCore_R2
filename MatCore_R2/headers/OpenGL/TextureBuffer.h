@@ -9,10 +9,6 @@ namespace MatCore {
 	public:
 		explicit Texture2D(const std::string& path);
 		~Texture2D() override;
-		Texture2D(const Texture2D&) = delete;
-		Texture2D& operator= (const Texture2D&) = delete;
-		Texture2D(Texture2D&&) = delete;
-		Texture2D& operator= (Texture2D&&) = delete;
 
 		unsigned int GetWidth() const { return width; }
 		unsigned int GetHeight() const { return height; }

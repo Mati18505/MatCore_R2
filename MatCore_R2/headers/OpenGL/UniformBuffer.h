@@ -12,10 +12,6 @@ namespace MatCore
 		UniformBuffer(size_t byteSize, const void* data);
 
 		~UniformBuffer() override;
-		UniformBuffer(const UniformBuffer&) = delete;
-		UniformBuffer& operator= (const UniformBuffer&) = delete;
-		UniformBuffer(UniformBuffer&&) = delete;
-		UniformBuffer& operator= (UniformBuffer&&) = delete;
 
 		void Bind(unsigned int slot = 0) const;
 
