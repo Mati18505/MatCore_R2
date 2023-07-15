@@ -42,7 +42,7 @@ namespace MatCore {
 		unsigned int GetHeight() const { return height; }
 		void Bind(unsigned int slot = 0) const;
 		void* GetRawHandle() { return (void*)ID; }
-		void SetData(TextureDescription::Format format, const uint8_t* data);
+		void SetData(TextureDescription::Format format, const uint8_t* data, bool generateMipmaps = true);
 	private:
 		uint32_t ID;
 		uint32_t width;

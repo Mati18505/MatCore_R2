@@ -88,9 +88,10 @@ namespace MatCore
 	{
 		glBindTextureUnit(slot, ID);
 	}
-	void Texture2D::SetData(TextureDescription::Format format, const uint8_t* data)
+	void Texture2D::SetData(TextureDescription::Format format, const uint8_t* data, bool generateMipmaps)
 	{
 		glTextureSubImage2D(ID, 0, 0, 0, width, height, GetGLFormatFromFormat(format), GL_UNSIGNED_BYTE, (const void*)data);
-		glGenerateTextureMipmap(ID);
+		if(generateMipmaps)
+			glGenerateTextureMipmap(ID);
 	}
 }
