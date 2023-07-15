@@ -42,4 +42,10 @@ namespace MatCore
     {
         colorTexture.GetBuffer()->Bind(slot);
     }
+    const Resource<Texture2D>& FrameBuffer::GetTexture() const {
+        return colorTexture;
+    }
+    Resource<Texture2D> FrameBuffer::GetTexture() {
+        return colorTexture;
+    }
 }

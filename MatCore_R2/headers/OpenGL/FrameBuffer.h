@@ -14,6 +14,8 @@ namespace MatCore {
 
 		void Bind() const;
 		void BindTexture(unsigned int slot = 0) const;
+		const Resource<Texture2D>& GetTexture() const;
+		Resource<Texture2D> GetTexture();
 	private:
 		uint32_t frameBuffer;
 		Resource<Texture2D> colorTexture;
