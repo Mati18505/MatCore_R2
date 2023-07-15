@@ -73,7 +73,7 @@ void MatCore::Application::CloseWindow(){
 }
 
 void MatCore::Application::InitGL() {
-    StaticRenderer::Get().InitOpenGL(windowWidth, windowHeight);
+    OpenGLRenderAPI::Get().InitOpenGL(windowWidth, windowHeight);
     glDebugMessageCallback(MessageCallback, 0);
 }
 

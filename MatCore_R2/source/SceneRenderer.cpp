@@ -37,16 +37,16 @@ namespace MatCore {
         quad.GetBuffer()->UpdateT(quadVertices, quadIndices);
     }
     void SceneRenderer::Render(Scene& scene) {
-        auto& renderer = StaticRenderer::Get();
+        auto& renderer = OpenGLRenderAPI::Get();
         renderer.Bind(frameBuffer);
-        renderer.Enable(StaticRenderer::Option::DEPTH_TEST);
+        renderer.Enable(OpenGLRenderAPI::Option::DEPTH_TEST);
         renderer.SetViewportSize(applicationP->WindowWidth(), applicationP->WindowHeight());
         renderer.ClearColorAndDepth();
 
         RenderScene(scene);
 
         renderer.BindScreenFrameBuffer();
-        renderer.Disable(StaticRenderer::Option::DEPTH_TEST);
+        renderer.Disable(OpenGLRenderAPI::Option::DEPTH_TEST);
         renderer.ClearColorAndDepth();
         renderer.Bind(screenShader);
         renderer.Bind(quad);
@@ -74,17 +74,17 @@ namespace MatCore {
         }
     }
     void SceneRenderer::RenderEntity(MeshComponent& meshComponent, Transform& transform, Material& material, Camera& camera) {
-        StaticRenderer::Get().Bind(meshComponent.meshAsset);
-        StaticRenderer::Get().BindTexture(material.albedo, 0);
+        OpenGLRenderAPI::Get().Bind(meshComponent.meshAsset);
+        OpenGLRenderAPI::Get().BindTexture(material.albedo, 0);
 
         auto& s = material.shader.GetBuffer();
-        StaticRenderer::Get().Bind(s.get());
+        OpenGLRenderAPI::Get().Bind(s.get());
 
         cb.mvp = camera.GetProjection() * camera.GetView() * transform.GetGlobalModelMatrix();
         ub.GetBuffer()->Update(cb);
         ub.GetBuffer()->Bind(0);
 
-        StaticRenderer::Get().DrawIndexed((int)meshComponent.mesh.GetTriangles()->size());
+        OpenGLRenderAPI::Get().DrawIndexed((int)meshComponent.mesh.GetTriangles()->size());
     }
 
     void SceneRenderer::FrameBufferSizeCallback(int width, int height)

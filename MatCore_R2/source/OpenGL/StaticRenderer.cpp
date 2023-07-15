@@ -3,22 +3,22 @@
 
 namespace MatCore
 {
-	void StaticRenderer::DrawTriangles(int count) const
+	void OpenGLRenderAPI::DrawTriangles(int count) const
 	{
 		glDrawArrays(GL_TRIANGLES, 0, count);
 	}
-	void StaticRenderer::DrawIndexed(int count) const
+	void OpenGLRenderAPI::DrawIndexed(int count) const
 	{
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
 	}
 
-	void StaticRenderer::ClearColorAndDepth() const
+	void OpenGLRenderAPI::ClearColorAndDepth() const
 	{
 		glClearColor(0.2f, 0.7f, 1.f, 0.f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	void StaticRenderer::InitOpenGL(int windowWidth, int windowHeight) const
+	void OpenGLRenderAPI::InitOpenGL(int windowWidth, int windowHeight) const
 	{
 		gladLoadGL();
 		glEnable(GL_DEPTH_TEST);
@@ -28,17 +28,17 @@ namespace MatCore
 		SetViewportSize(windowWidth, windowHeight);
 	}
 
-	void StaticRenderer::SetViewportSize(int startX, int startY, int windowWidth, int windowHeight) const
+	void OpenGLRenderAPI::SetViewportSize(int startX, int startY, int windowWidth, int windowHeight) const
 	{
 		glViewport(startX, startY, windowWidth, windowHeight);
 	}
 
-	void StaticRenderer::BindScreenFrameBuffer() const
+	void OpenGLRenderAPI::BindScreenFrameBuffer() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void StaticRenderer::Enable(Option opt) const
+	void OpenGLRenderAPI::Enable(Option opt) const
 	{
 		switch (opt)
 		{
@@ -47,7 +47,7 @@ namespace MatCore
 		}
 	}
 
-	void StaticRenderer::Disable(Option opt) const
+	void OpenGLRenderAPI::Disable(Option opt) const
 	{
 		switch (opt)
 		{

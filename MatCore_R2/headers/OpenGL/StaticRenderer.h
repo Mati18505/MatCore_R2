@@ -6,17 +6,17 @@
 
 namespace MatCore
 {
-	class StaticRenderer
+	class OpenGLRenderAPI
 	{
 	public:
-		static StaticRenderer& Get()
+		static OpenGLRenderAPI& Get()
 		{
-			static StaticRenderer r;
+			static OpenGLRenderAPI r;
 			return r;
 		}
 		
-		StaticRenderer(const StaticRenderer&) = delete;
-		StaticRenderer& operator=(const StaticRenderer& other) = delete;
+		OpenGLRenderAPI(const OpenGLRenderAPI&) = delete;
+		OpenGLRenderAPI& operator=(const OpenGLRenderAPI& other) = delete;
 
 		void Bind(const Bindable* bindable) const
 		{
@@ -59,6 +59,6 @@ namespace MatCore
 		void Enable(Option opt) const;
 		void Disable(Option opt) const;
 	private:
-		StaticRenderer() = default;
+		OpenGLRenderAPI() = default;
 	};
 }
