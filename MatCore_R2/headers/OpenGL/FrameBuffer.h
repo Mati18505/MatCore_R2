@@ -11,7 +11,7 @@ namespace MatCore {
 		~FrameBuffer() override;
 
 		void Bind() const;
-		void BindTexture() const;
+		void BindTexture(unsigned int slot = 0) const;
 	private:
 		uint32_t frameBuffer;
 		uint32_t textureColorBuffer;

@@ -35,8 +35,8 @@ namespace MatCore
 	{
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 	}
-    void FrameBuffer::BindTexture() const
+    void FrameBuffer::BindTexture(unsigned int slot) const
     {
-        glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
+        glBindTextureUnit(slot, textureColorBuffer);
     }
 }
