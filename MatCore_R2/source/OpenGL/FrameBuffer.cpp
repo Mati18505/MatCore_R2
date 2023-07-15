@@ -8,14 +8,18 @@ namespace MatCore
         : GPUResource()
 	{
         glCreateFramebuffers(1, &frameBuffer);
-        
-        glCreateTextures(GL_TEXTURE_2D, 1, &textureColorBuffer);
-        glTextureParameteri(textureColorBuffer, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTextureParameteri(textureColorBuffer, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTextureParameteri(textureColorBuffer, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTextureParameteri(textureColorBuffer, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTextureStorage2D(textureColorBuffer, 1, GL_RGB8, width, height);
-        glNamedFramebufferTexture(frameBuffer, GL_COLOR_ATTACHMENT0, textureColorBuffer, 0);
+
+        TextureDescription desc;
+        desc.minFilter = TextureDescription::Filter::Linear;
+        desc.magFilter = TextureDescription::Filter::Linear;
+        desc.wrapMode = TextureDescription::WrapMode::Clamp;
+        desc.internalFormat = TextureDescription::Format::RGB8;
+        desc.mipmapsCount = 1;
+        desc.width = width;
+        desc.height = height;
+        colorTexture = Resource<Texture2D>(std::make_shared<Texture2D>(desc));
+
+        glNamedFramebufferTexture(frameBuffer, GL_COLOR_ATTACHMENT0, (GLuint)(GLuint*)colorTexture.GetBuffer()->GetRawHandle(), 0);
 
         glCreateRenderbuffers(1, &RBO);
         glNamedRenderbufferStorage(RBO, GL_DEPTH_COMPONENT24, width, height);
@@ -27,7 +31,6 @@ namespace MatCore
 	}
 	FrameBuffer::~FrameBuffer()
 	{
-        glDeleteTextures(1, &textureColorBuffer);
         glDeleteRenderbuffers(1, &RBO);
         glDeleteFramebuffers(1, &frameBuffer);
 	}
@@ -37,6 +40,6 @@ namespace MatCore
 	}
     void FrameBuffer::BindTexture(unsigned int slot) const
     {
-        glBindTextureUnit(slot, textureColorBuffer);
+        colorTexture.GetBuffer()->Bind(slot);
     }
 }
