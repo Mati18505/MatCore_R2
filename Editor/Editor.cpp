@@ -21,8 +21,8 @@ EditorScene::EditorScene()
 	SetupImGuiFont("Resources/Fonts/Rubik/static/Rubik-Regular.ttf", 20, &fontConfig, "Resources/Fonts/Rubik/static/Rubik-Bold.ttf");
 	
 	LOG_INFO("Editor: Loading shaders");
-	Resource<Shader> vs = Factory::Get().CreateShaderAssetFromFile("Assets/Shaders/color.vs", Shader::ShaderType::vertex);
-	Resource<Shader> fs = Factory::Get().CreateShaderAssetFromFile("Assets/Shaders/color.fs", Shader::ShaderType::fragment);
+	Resource<Shader> vs = Factory::Get().CreateShaderAssetFromFile("Resources/Shaders/default.vs", Shader::ShaderType::vertex);
+	Resource<Shader> fs = Factory::Get().CreateShaderAssetFromFile("Resources/Shaders/default.fs", Shader::ShaderType::fragment);
 	Resource<ShaderProgram> shader = Factory::Get().CreateShaderProgramAssetFromShaders(vs, fs);
 	shaderLibrary.Add("default", shader);
 	
