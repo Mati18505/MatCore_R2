@@ -14,6 +14,9 @@ namespace MatCore
 			static StaticRenderer r;
 			return r;
 		}
+		
+		StaticRenderer(const StaticRenderer&) = delete;
+		StaticRenderer& operator=(const StaticRenderer& other) = delete;
 
 		void Bind(const Bindable* bindable) const
 		{
@@ -55,5 +58,7 @@ namespace MatCore
 
 		void Enable(Option opt) const;
 		void Disable(Option opt) const;
+	private:
+		StaticRenderer() = default;
 	};
 }

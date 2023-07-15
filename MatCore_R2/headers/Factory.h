@@ -16,6 +16,9 @@ namespace MatCore
 			return factory;
 		}
 
+		Factory(const Factory&) = delete;
+		Factory& operator=(const Factory& other) = delete;
+
 		Resource<MeshBuffer> CreateMeshBufferAssetFromMesh(Mesh& mesh) const
 		{
 			auto asset = Resource<MeshBuffer>{ std::make_shared<MeshBuffer>() };
@@ -45,5 +48,7 @@ namespace MatCore
 		{
 			return Resource<Texture2D>{std::make_shared<Texture2D>(path) };
 		}
+	private:
+		Factory() = default;
 	};
 }
