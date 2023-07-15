@@ -86,10 +86,13 @@ namespace MatCore
 	}
 	void Texture2D::Bind(unsigned int slot) const
 	{
+		if(!isDataSet)
+			LOG_CORE_WARN("Texture data is not set!");
 		glBindTextureUnit(slot, ID);
 	}
 	void Texture2D::SetData(TextureDescription::Format format, const uint8_t* data)
 	{
+		isDataSet = true;
 		glTextureSubImage2D(ID, 0, 0, 0, width, height, GetGLFormatFromFormat(format), GL_UNSIGNED_BYTE, (const void*)data);
 		glGenerateTextureMipmap(ID);
 	}

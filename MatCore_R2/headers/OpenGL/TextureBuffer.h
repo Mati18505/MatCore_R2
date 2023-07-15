@@ -47,6 +47,7 @@ namespace MatCore {
 		uint32_t ID;
 		uint32_t width;
 		uint32_t height;
+		bool isDataSet = false;
 	};
 
 }
