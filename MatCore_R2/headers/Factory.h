@@ -44,10 +44,7 @@ namespace MatCore
 			return Resource<ShaderProgram>{std::make_shared<ShaderProgram>(vertex, fragment) };
 		}
 
-		Resource<Texture2D> CreateTextureAssetFromFile(const std::string& path) const
-		{
-			return Resource<Texture2D>{std::make_shared<Texture2D>(path) };
-		}
+		Resource<Texture2D> CreateTextureAssetFromFile(const std::string& path) const;
 	private:
 		Factory() = default;
 	};
