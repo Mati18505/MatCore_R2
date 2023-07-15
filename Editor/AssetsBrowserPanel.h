@@ -2,6 +2,7 @@
 #include "MatCore.h"
 #include <filesystem>
 #include <map>
+#include <string>
 #include "PlatformUtils.h"
 
 class AssetsBrowserPanel {
@@ -11,13 +12,13 @@ public:
 	void Render();
 private:
 	std::filesystem::path currentDirectory;
-	std::map<std::string, std::shared_ptr<MatCore::Texture2D>> icons;
-	std::map<std::string, std::shared_ptr<MatCore::Texture2D>> filesImagesCache;
+	std::map<std::string, MatCore::Resource<MatCore::Texture2D>> icons;
+	std::map<std::string, MatCore::Resource<MatCore::Texture2D>> filesImagesCache;
 
 	struct File {
 		bool isDirectory;
 		std::string filenameString;
-		std::shared_ptr<MatCore::Texture2D> icon;
+		MatCore::Resource<MatCore::Texture2D> icon;
 		std::filesystem::path path;
 		std::string fileExtension;
 	};

@@ -52,7 +52,8 @@ void SandboxScene::Start() {
     }
     //Camera
     cameraEntity = CreateEntity();
-    cameraEntity.GetComponent<Transform>().position = { -5.f, 0.f, -20.f };
+    cameraEntity.GetComponent<Transform>().position = { 147.f, 172.f, 142.f };
+    cameraEntity.GetComponent<Transform>().rotation = { -32.f, -70.f, 0.f };
     auto& camera = cameraEntity.AddComponent<CameraComponent>().camera;
     camera.cameraType = SceneCamera::CameraType::perspective; 
     cameraEntity.GetComponent<CameraComponent>().primary = true;

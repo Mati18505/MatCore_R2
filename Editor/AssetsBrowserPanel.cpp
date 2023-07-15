@@ -15,11 +15,11 @@ static const std::filesystem::path assetsPath = "Assets";
 AssetsBrowserPanel::AssetsBrowserPanel()
 	:currentDirectory(assetsPath)
 {
-	icons.emplace<std::string, std::shared_ptr<Texture2D>>("folder", std::make_shared<Texture2D>("./Resources/AssetsBrowser/folderIcon.png"));
-	icons.emplace<std::string, std::shared_ptr<Texture2D>>("text", std::make_shared<Texture2D>("./Resources/AssetsBrowser/text.jpg"));
-	icons.emplace<std::string, std::shared_ptr<Texture2D>>("fbx", std::make_shared<Texture2D>("./Resources/AssetsBrowser/FBX.png"));
-	icons.emplace<std::string, std::shared_ptr<Texture2D>>("obj", std::make_shared<Texture2D>("./Resources/AssetsBrowser/OBJ.png"));
-	icons.emplace<std::string, std::shared_ptr<Texture2D>>("empty", std::make_shared<Texture2D>("./Resources/AssetsBrowser/text.jpg"));
+	icons.emplace("folder", Factory::Get().CreateTextureAssetFromFile("./Resources/AssetsBrowser/folderIcon.png"));
+	icons.emplace("text", Factory::Get().CreateTextureAssetFromFile("./Resources/AssetsBrowser/text.jpg"));
+	icons.emplace("fbx", Factory::Get().CreateTextureAssetFromFile("./Resources/AssetsBrowser/FBX.png"));
+	icons.emplace("obj", Factory::Get().CreateTextureAssetFromFile("./Resources/AssetsBrowser/OBJ.png"));
+	icons.emplace("empty", Factory::Get().CreateTextureAssetFromFile("./Resources/AssetsBrowser/text.jpg"));
 }
 
 void AssetsBrowserPanel::Render() {
@@ -62,7 +62,7 @@ void AssetsBrowserPanel::UpdateFilesList()
 
 		std::string fileExtension = relativePath.filename().extension().string();
 
-		std::shared_ptr<Texture2D> icon;
+		Resource<Texture2D> icon;
 		if (directoryEntry.is_directory())
 			icon = icons.at("folder");
 		else if (fileExtension == ".txt")
@@ -78,7 +78,7 @@ void AssetsBrowserPanel::UpdateFilesList()
 			{
 				//TODO: ³adowaæ teksturê w niskiej rozdzielczoœci (rozdzielczoœci kafelka) aby nie trwa³o to zbyt d³ugo
 				//TODO: nie ³adowaæ wszystkich na raz tylko kilka na klatkê
-				filesImagesCache.emplace(path.string(), std::make_shared<Texture2D>(path.string().c_str()));
+				filesImagesCache.emplace(path.string(), Factory::Get().CreateTextureAssetFromFile(path.string().c_str()));
 			}
 			icon = filesImagesCache.at(path.string());
 		}
@@ -108,7 +108,7 @@ void AssetsBrowserPanel::RenderFilesList()
 	{
 		ImGui::PushID(file.filenameString.c_str());
 		ImGui::PushStyleColor(ImGuiCol_Button, {});
-		ImGui::ImageButton(file.icon->GetRawHandle(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 }); // TODO: u¿yæ czcionki fontello zamiast image
+		ImGui::ImageButton(file.icon.GetBuffer()->GetRawHandle(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 }); // TODO: u¿yæ czcionki fontello zamiast image
 		
 		if (ImGui::BeginDragDropSource()) {
 			std::string filePath = file.path.string();
