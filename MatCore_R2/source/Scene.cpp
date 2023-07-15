@@ -4,20 +4,18 @@
 
 #include "MeshComponent.h"
 #include "Transform.h"
-#include "material.h"
+#include "Material.h"
 #include "CameraComponent.h"
 #include "Application.h"
 #include "Log.h"
-#include "Renderer.h"
 #include "Entity.h"
 #include "TagComponent.h"
 #include "InheritanceComponent.h"
 #include "NativeScriptComponent.h"
 #include "TransformSystem.h"
+extern MatCore::Application* applicationP;
 
 MatCore::Scene::Scene() {
-    entitiesRegistry.on_construct<MeshComponent>().connect<&MeshRenderer::OnConstruct>();
-    entitiesRegistry.on_destroy<MeshComponent>().connect<&MeshRenderer::OnDestroy>();
 }
 
 MatCore::Scene::~Scene() {
@@ -77,11 +75,17 @@ void MatCore::Scene::BaseUpdate()
     TransformSystem::UpdateAllTransforms();
 }
 
+void MatCore::Scene::BaseRender()
+{
+    sceneRenderer.Render(*this);
+}
+
 void MatCore::Scene::FrameBufferSizeCallback(int width, int height)
 {
     Entity cameraEntity = GetMainRuntimeCameraEntity();
     if (cameraEntity)
         cameraEntity.GetComponent<CameraComponent>().camera.RecalculateProjectionMatrix(width, height);
+    sceneRenderer.FrameBufferSizeCallback(width, height);
 }
 
 

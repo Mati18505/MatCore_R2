@@ -17,9 +17,9 @@ extern "C"
 {
     __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
-namespace MatCore {
-    MatCore::Application* applicationP;
-}
+
+MatCore::Application* applicationP;
+
 int main(void)
 {
     //sprawdzanie przecieków pamięci po zamknięciu programu

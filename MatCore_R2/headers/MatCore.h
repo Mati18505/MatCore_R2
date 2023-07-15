@@ -16,8 +16,10 @@
 #include "Entity.h"
 #include "Model.h"
 #include "Mesh.h"
-#include "Texture.h"
 #include "PlatformUtils.h"
+#include "Resource.h"
+#include "OpenGL/TextureBuffer.h"
+#include "ShaderLibrary.h"
 
 //Komponenty
 #include "TagComponent.h"
@@ -32,3 +34,5 @@
 #include "Events/ApplicationEvents.h"
 #include "Events/KeyboardEvents.h"
 #include "Events/MouseEvents.h"
+
+extern MatCore::Application* applicationP;

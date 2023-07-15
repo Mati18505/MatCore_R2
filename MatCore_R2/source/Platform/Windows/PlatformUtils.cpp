@@ -2,12 +2,12 @@
 
 #include "PlatformUtils.h"
 #include "Application.h"
-#include "Renderer.h"//pozbyæ siê
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 #include <commdlg.h>
+#include "../../MatCore_R2.cpp" //TODO: Pozbyc sie
 
 namespace MatCore {
 	std::string FileDialog::OpenFile(const char* filter) {

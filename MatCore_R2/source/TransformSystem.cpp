@@ -2,6 +2,7 @@
 
 #include "TransformSystem.h"
 #include "MatCore.h"
+extern MatCore::Application* applicationP;
 
 namespace MatCore {
 	void TransformSystem::UpdateAllTransforms() {

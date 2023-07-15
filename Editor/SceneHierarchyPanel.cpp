@@ -171,7 +171,7 @@ void SceneHierarchyPanel::Render(EditorScene* scene) {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, { 450.f, 500.f });
 	ImGui::Begin("Inspektor");
 	if (selectedEntity) {
-		DrawInspectorComponents(selectedEntity);
+		DrawInspectorComponents(*scene, selectedEntity);
 	}
 	ImGui::End();
 	ImGui::PopStyleVar();
@@ -230,12 +230,12 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity, EditorScene* scene)
 		
 }
 
-void SceneHierarchyPanel::DrawInspectorComponents(MatCore::Entity entity)
+void SceneHierarchyPanel::DrawInspectorComponents(EditorScene& scene, MatCore::Entity entity)
 {
 	auto contentRegionAvalible = ImGui::GetContentRegionAvail();
 	DrawTagComponent(entity);
 
-	DrawAddComponentButton(contentRegionAvalible);
+	DrawAddComponentButton(scene, contentRegionAvalible);
 
 	DrawInspectorComponent<Transform>("Transform", entity, false, [&](Transform& transform) {
 		DrawVec3Control("Position", transform.position, 0.f);
@@ -258,13 +258,11 @@ void SceneHierarchyPanel::DrawInspectorComponents(MatCore::Entity entity)
 	});
 	
 	DrawInspectorComponent<Material>(u8"Materia³", entity, true, [&](Material& material) {
-		ImGui::Text(("ShaderID: " + std::to_string(material.shaderID)).c_str());
+		ImGui::Text(("ShaderID: " + std::to_string(material.shader.GetBuffer()->GetHandle())).c_str());
 		ImGui::Text("Albedo");
-		if (entity.GetComponent<Material>().albedo != nullptr) {
-			std::shared_ptr<Texture2D> texture = material.albedo;
-			ImGui::Image(texture->GetRawHandle(), { 128.f, 128.f });
-			MaterialTextureAcceptDragDrop(material);
-		}
+		Resource<Texture2D> texture = material.albedo;
+		ImGui::Image(texture.GetBuffer()->GetRawHandle(), { 128.f, 128.f });
+		MaterialTextureAcceptDragDrop(material);
 	});
 
 	DrawInspectorComponent<MeshComponent>(u8"Mesh", entity, true, [&](MeshComponent& mesh) {
@@ -300,7 +298,7 @@ void SceneHierarchyPanel::DrawTagComponent(MatCore::Entity entity)
 		tag = std::string(buffer);
 }
 
-void SceneHierarchyPanel::DrawAddComponentButton(ImVec2 contentRegionAvalible)
+void SceneHierarchyPanel::DrawAddComponentButton(EditorScene& scene, ImVec2 contentRegionAvalible)
 {
 	float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 	ImGui::SameLine(contentRegionAvalible.x - lineHeight * 0.5f);
@@ -311,7 +309,8 @@ void SceneHierarchyPanel::DrawAddComponentButton(ImVec2 contentRegionAvalible)
 	{
 		if (!selectedEntity.HasComponent<Material>()) {
 			if (ImGui::MenuItem("Material")) {
-				selectedEntity.AddComponent<Material>();
+				selectedEntity.AddComponent<Material>(scene.shaderLibrary.Get("default"));
+
 				ImGui::CloseCurrentPopup();
 			}
 		}
@@ -340,7 +339,7 @@ void SceneHierarchyPanel::MaterialTextureAcceptDragDrop(MatCore::Material& mater
 			const char* path = (const char*)payload->Data;
 
 			if (IsPathImage(std::string(path)))
-				material.albedo = std::make_unique<Texture2D>(path);
+				material.albedo = Factory::Get().CreateTextureAssetFromFile(path);
 		}
 		ImGui::EndDragDropTarget();
 	}

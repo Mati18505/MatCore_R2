@@ -1,5 +1,6 @@
 #pragma once
 struct GLFWwindow;
+#undef CreateWindow //windows
 namespace MatCore {
 	class Renderer;
 	class Scene;

@@ -2,7 +2,6 @@
 
 #include "Model.h"
 #include "Mesh.h"
-#include "Texture.h"
 #include "Scene.h"
 #include "MeshComponent.h"
 #include "Material.h"
@@ -11,6 +10,7 @@
 #include <assimp/postprocess.h>
 #include "Log.h"
 #include <filesystem>
+#include "Factory.h"
 
 namespace MatCore {
 	void Model::LoadModel(const char* path, Scene* mScene) {
@@ -45,7 +45,7 @@ namespace MatCore {
 			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 
 			meshEntity.AddComponent<MeshComponent>(ProcessMesh(mesh, scene));
-			meshEntity.AddComponent<Material>(std::move(ProcessMaterial(mesh, scene)));
+			meshEntity.AddComponent<Material>(ProcessMaterial(mesh, scene));
 		}
 		// nastêpnie wykonaj to samo dla ka¿dego z jego dzieci
 		for (uint32_t i = 0; i < node->mNumChildren; i++)
@@ -120,8 +120,9 @@ namespace MatCore {
 		//TODO: u¿ywaæ parametrów materia³ów
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-		std::vector<std::shared_ptr<Texture2D>> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE);
-		Material mMaterial;
+		std::vector<Resource<Texture2D>> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE);
+
+		Material mMaterial{ shader };
 
 		if (diffuseMaps.size() > 0)
 			mMaterial.albedo = diffuseMaps[0];
@@ -129,10 +130,10 @@ namespace MatCore {
 		return mMaterial;
 	}
 
-	std::vector<std::shared_ptr<Texture2D>> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType type)
+	std::vector<Resource<Texture2D>> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType type)
 	{
 		LOG_CORE_TRACE("Material textures: {0}", mat->GetTextureCount(type));
-		std::vector<std::shared_ptr<Texture2D>> filesDirs;
+		std::vector<Resource<Texture2D>> filesDirs;
 		for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 		{
 			aiString str;
@@ -148,7 +149,7 @@ namespace MatCore {
 				continue;
 			}
 
-			filesDirs.push_back(std::make_shared<Texture2D>(texturePath.string().c_str()));
+			filesDirs.push_back(Factory::Get().CreateTextureAssetFromFile(texturePath.string()));
 		}
 
 		return filesDirs;
