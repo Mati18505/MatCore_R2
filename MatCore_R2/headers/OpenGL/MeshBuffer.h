@@ -5,7 +5,7 @@
 
 namespace MatCore {
 	struct BufferLayout;
-	struct MeshBuffer : public Bindable, public GPUResource {
+	class MeshBuffer : public Bindable, public GPUResource {
 	public:
 		MeshBuffer();
 		~MeshBuffer() override;
