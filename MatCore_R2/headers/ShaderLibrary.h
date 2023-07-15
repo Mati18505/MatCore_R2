@@ -2,7 +2,7 @@
 #include <map>
 #include <string>
 #include "OpenGL/ShaderProgram.h"
-#include "OpenGL/Resource.h"
+#include "Resource.h"
 
 namespace MatCore
 {

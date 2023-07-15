@@ -8,7 +8,7 @@
 #include <assimp/postprocess.h>
 #include "Log.h"
 #include <filesystem>
-#include "OpenGL/Factory.h"
+#include "Factory.h"
 
 namespace MatCore {
 	void Model::LoadModel(const char* path, Scene* mScene) {

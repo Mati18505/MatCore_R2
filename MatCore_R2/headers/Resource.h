@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <type_traits>
-#include "GPUResource.h"
+#include "OpenGL/GPUResource.h"
 
 namespace MatCore
 {

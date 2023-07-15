@@ -5,9 +5,9 @@
 #include <memory>
 #include "OpenGL/Shader.h"
 #include "OpenGL/ShaderProgram.h"
-#include "OpenGL/Resource.h"
+#include "Resource.h"
 #include "OpenGL/TextureBuffer.h"
-#include "OpenGL/Factory.h"
+#include "Factory.h"
 
 namespace MatCore {
 	struct Material {

@@ -1,10 +1,10 @@
 #pragma once
 #include "Resource.h"
-#include "MeshBuffer.h"
+#include "OpenGL/MeshBuffer.h"
 #include "Mesh.h"
-#include "Shader.h"
-#include "ShaderProgram.h"
-#include "TextureBuffer.h"
+#include "OpenGL/Shader.h"
+#include "OpenGL/ShaderProgram.h"
+#include "OpenGL/TextureBuffer.h"
 
 namespace MatCore 
 {

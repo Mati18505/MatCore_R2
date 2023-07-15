@@ -17,7 +17,7 @@
 #include "Model.h"
 #include "Mesh.h"
 #include "PlatformUtils.h"
-#include "OpenGL/Resource.h"
+#include "Resource.h"
 #include "OpenGL/TextureBuffer.h"
 #include "ShaderLibrary.h"
 

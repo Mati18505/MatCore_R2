@@ -1,6 +1,6 @@
 #include "ShaderLibrary.h"
 #include "Log.h"
-#include "OpenGL/Factory.h"
+#include "Factory.h"
 
 namespace MatCore
 {

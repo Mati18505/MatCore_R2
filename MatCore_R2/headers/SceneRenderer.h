@@ -1,6 +1,6 @@
 #pragma once
 #include "OpenGL/FrameBuffer.h"
-#include "OpenGL/Resource.h"
+#include "Resource.h"
 #include "OpenGL/MeshBuffer.h"
 #include "OpenGL/ShaderProgram.h"
 #include "OpenGL/UniformBuffer.h"

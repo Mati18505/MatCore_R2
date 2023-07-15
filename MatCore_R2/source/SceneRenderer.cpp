@@ -6,7 +6,7 @@
 #include "Cameras/Camera.h"
 #include "Application.h"
 #include <glad/glad.h>
-#include "OpenGL/Factory.h"
+#include "Factory.h"
 
 extern MatCore::Application* applicationP;
     

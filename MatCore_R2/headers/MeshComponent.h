@@ -1,7 +1,7 @@
 #pragma once
-#include "OpenGL/Resource.h"
+#include "Resource.h"
 #include "OpenGL/MeshBuffer.h"
-#include "OpenGL/Factory.h"
+#include "Factory.h"
 #include "Mesh.h"
 
 namespace MatCore
