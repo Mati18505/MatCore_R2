@@ -82,7 +82,8 @@ void MatCore::Application::InitializeApp() {
     LOG_CORE_INFO("Initializing OpenGL...");
     InitGL();
     LOG_CORE_INFO("Creating scene...");
-    assert(this->scene = ApplicationStart());
+    scene = ApplicationStart();
+    assert(this->scene);
 }
 
 void MatCore::Application::MainLoop() {
