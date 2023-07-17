@@ -9,6 +9,8 @@
 #include "Application.h"
 #include <glad/glad.h>
 #include "Factory.h"
+#include <glm/gtc/matrix_inverse.hpp>
+#include "LightComponents.h"
 
 extern MatCore::Application* applicationP;
     
@@ -59,12 +61,13 @@ namespace MatCore {
     
     void SceneRenderer::RenderScene(Scene& scene)
     {
-        entt::registry& registry = scene.GetEntities();
-
         auto mainCameraOpt = scene.GetMainCamera();
         if (!mainCameraOpt)
             return;
         Camera mainCamera = mainCameraOpt.value();
+
+        entt::registry& registry = scene.GetEntities();
+        lightRenderer.UpdateData(registry);
 
         auto group = registry.group<>(entt::get<MeshComponent, Transform, Material>);
         for (auto entity : group)
@@ -78,13 +81,25 @@ namespace MatCore {
     void SceneRenderer::RenderEntity(MeshComponent& meshComponent, Transform& transform, Material& material, Camera& camera) {
         OpenGLRenderAPI::Get().Bind(meshComponent.meshAsset);
         OpenGLRenderAPI::Get().BindTexture(material.albedo, 0);
+        OpenGLRenderAPI::Get().BindTexture(material.specular, 1);
 
         auto& s = material.shader.GetBuffer();
         OpenGLRenderAPI::Get().Bind(s.get());
 
-        cb.mvp = camera.GetProjection() * camera.GetView() * transform.GetGlobalModelMatrix();
-        ub.GetBuffer()->Update(cb);
-        ub.GetBuffer()->Bind(0);
+        objectCB.mvp = camera.GetProjection() * camera.GetView() * transform.GetGlobalModelMatrix();
+        objectCB.model = transform.GetGlobalModelMatrix();
+        objectCB.normalMatrix = glm::inverseTranspose(objectCB.model);
+        objectUB.GetBuffer()->Update(objectCB);
+        objectUB.GetBuffer()->Bind(0);
+
+        lightRenderer.BindToUniform(1);
+
+        fragDataCB.viewPos = glm::vec3(glm::inverse(camera.GetView())[3]);
+        fragDataUB.GetBuffer()->Update(fragDataCB);
+        fragDataUB.GetBuffer()->Bind(2);
+
+        materialDataUB.GetBuffer()->Update(materialDataCB);
+        materialDataUB.GetBuffer()->Bind(3);
 
         OpenGLRenderAPI::Get().DrawIndexed((int)meshComponent.mesh.GetTriangles()->size());
     }

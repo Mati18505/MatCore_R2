@@ -4,7 +4,7 @@
 #include "OpenGL/MeshBuffer.h"
 #include "OpenGL/ShaderProgram.h"
 #include "OpenGL/UniformBuffer.h"
-
+#include "LightRenderer.h"
 
 namespace MatCore
 {
@@ -29,13 +29,31 @@ namespace MatCore
         Resource<FrameBuffer> frameBuffer;
         Resource<MeshBuffer> quad;
         Resource<ShaderProgram> screenShader;
+        LightRenderer lightRenderer;
 
-        struct CB
+        struct ObjectCB
         {
             glm::mat4 mvp;
+            glm::mat4 normalMatrix;
+            glm::mat4 model;
         };
-        CB cb{};
-        Resource<UniformBufferT<CB>> ub{std::make_shared<UniformBufferT<CB>>()};
+        ObjectCB objectCB{};
+        Resource<UniformBufferT<ObjectCB>> objectUB{std::make_shared<UniformBufferT<ObjectCB>>()};
+
+        struct FragDataCB
+        {
+            glm::vec3 viewPos;
+            float padding;
+        };
+        FragDataCB fragDataCB{};
+        Resource<UniformBufferT<FragDataCB>> fragDataUB{std::make_shared<UniformBufferT<FragDataCB>>()};
+        
+        struct MaterialDataCB
+        {
+            float shininess = 32;
+        };
+        MaterialDataCB materialDataCB{};
+        Resource<UniformBufferT<MaterialDataCB>> materialDataUB{std::make_shared<UniformBufferT<MaterialDataCB>>()};
 
         static std::vector<float> quadVertices;
         static std::vector<int> quadIndices;

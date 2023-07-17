@@ -1,9 +1,9 @@
 #version 450 core
-out vec4 FragColor;
+layout (location = 0) out vec4 FragColor;
   
-in vec2 TexCoords;
+layout (location = 0) in vec2 TexCoords;
 
-uniform sampler2D screenTexture;
+layout (binding = 0) uniform sampler2D screenTexture;
 
 const float offset = 1.0 / 300.0;  
 
@@ -36,5 +36,6 @@ void main()
     for(int i = 0; i < 9; i++)
         col += sampleTex[i] * kernel[i];
 
-    FragColor = vec4(col, 1.0);
+    //FragColor = vec4(col, 1.0);
+    FragColor = texture(screenTexture, TexCoords);
 }  

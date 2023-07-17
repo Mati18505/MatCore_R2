@@ -17,6 +17,7 @@ namespace MatCore {
 		
 		Resource<ShaderProgram> shader;
 		Resource<Texture2D> albedo = Factory::Get().CreateTextureAssetFromFile("Resources/Textures/NoTexture.png");
+		Resource<Texture2D> specular = Factory::Get().CreateTextureAssetFromFile("Resources/Textures/DefaultSpecular.png");
 		glm::mat4 mvpMatrix = glm::mat4(1.f);
 	};
 }

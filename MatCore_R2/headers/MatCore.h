@@ -29,6 +29,7 @@
 #include "InheritanceComponent.h"
 #include "CameraComponent.h"
 #include "NativeScriptComponent.h"
+#include "LightComponents.h"
 
 //Eventy
 #include "Events/ApplicationEvents.h"

@@ -121,11 +121,14 @@ namespace MatCore {
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
 		std::vector<Resource<Texture2D>> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE);
+		std::vector<Resource<Texture2D>> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR);
 
 		Material mMaterial{ shader };
 
 		if (diffuseMaps.size() > 0)
 			mMaterial.albedo = diffuseMaps[0];
+		if (specularMaps.size() > 0)
+			mMaterial.specular = specularMaps[0];
 
 		return mMaterial;
 	}
