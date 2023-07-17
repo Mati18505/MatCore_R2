@@ -41,7 +41,6 @@ namespace MatCore {
             lightsCB.pointLights[i].color = light.color;
             lightsCB.pointLights[i].position = transform.position;
             lightsCB.pointLights[i].intensity = light.intensity;
-            lightsCB.pointLights[i].constant = light.constant;
             lightsCB.pointLights[i].linear = light.linear;
             lightsCB.pointLights[i].quadratic = light.quadratic;
             i++;
@@ -63,7 +62,6 @@ namespace MatCore {
             lightsCB.spotLight.position = transform.position;
             lightsCB.spotLight.cutOff = glm::cos(glm::radians(light.cutOffDegrees));
             lightsCB.spotLight.outerCutOff = glm::cos(glm::radians(light.outerCutOffDegrees));
-            lightsCB.spotLight.constant = light.constant;
             lightsCB.spotLight.linear = light.linear;
             lightsCB.spotLight.quadratic = light.quadratic;
         }

@@ -23,7 +23,6 @@ struct PointLight
     float intensity;
     vec3 color;
 
-    float constant;
 	float linear;
 	float quadratic;
 };
@@ -37,7 +36,6 @@ struct SpotLight
     vec3 color; 
     float outerCutOff;
 
-    float constant;
 	float linear;
 	float quadratic;
 };
@@ -99,7 +97,7 @@ vec3 CalculatePointLight(PointLight light, vec3 norm, vec3 viewDir)
 
     //attenuation
     float distance = length(light.position - fs_in.pos);
-    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+    float attenuation = 1.0 / (1.0 + light.linear * distance + light.quadratic * (distance * distance));
 
     ambient = ambient * attenuation * light.intensity;
     diffuse = diffuse * attenuation * light.intensity;
@@ -128,7 +126,7 @@ vec3 CalculateSpotLight(SpotLight light, vec3 norm, vec3 viewDir)
 
     //attenuation
     float distance = length(light.position - fs_in.pos);
-    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+    float attenuation = 1.0 / (1.0 + light.linear * distance + light.quadratic * (distance * distance));
     //ambient attenuation?
     ambient *= light.intensity;
     diffuse = diffuse * attenuation * intensity * light.intensity;

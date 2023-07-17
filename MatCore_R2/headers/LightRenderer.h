@@ -19,12 +19,12 @@ namespace MatCore
             float intensity; // 4 12, 16
             glm::vec3 color; // 16 16, 28
 
-            float constant; // 4 28, 32
-            float linear; // 4 32, 36
-            float quadratic; // 4 36, 40
+            float linear; // 4 28, 32
+            float quadratic; // 4 32, 36
 
-            float padding; // 4 40, 44
-            float padding2; // 4 44, 48
+            float padding; // 4 36, 40
+            float padding2; // 4 40, 44
+            float padding3; // 4 44, 48
         };
 
         struct DirectionalLight
@@ -44,11 +44,11 @@ namespace MatCore
             glm::vec3 color; // 16 32, 44
             float outerCutOff; // 4 44, 48
 
-            float constant; // 4 48, 52
-            float linear; // 4 52, 56
-            float quadratic; // 4 56, 60
+            float linear; // 4 48, 52
+            float quadratic; // 4 52, 56
 
-            float padding; // 4 56, 64
+            float padding; // 4 56, 60
+            float padding2; // 4 60, 64
         };
 
         struct Lights
