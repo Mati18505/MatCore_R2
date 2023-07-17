@@ -64,5 +64,7 @@ namespace MatCore
         void SetDirectionalLight(entt::registry& registry);
         void SetPointLights(entt::registry& registry);
         void SetSpotLight(entt::registry& registry);
+
+        const int maxNumOfLights = 4;
     };
 };

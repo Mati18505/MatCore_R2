@@ -18,7 +18,10 @@ namespace MatCore {
     
     void LightRenderer::SetDirectionalLight(entt::registry& registry)
     {
+        lightsCB.directionalLight = {};
+
         auto& lightsGroup = registry.group<>(entt::get<DirectionalLightComponent, Transform>);
+        
         if (!lightsGroup.empty())
         {
             Transform& transform = lightsGroup.get<Transform>(lightsGroup[0]);
@@ -31,11 +34,15 @@ namespace MatCore {
 
     void LightRenderer::SetPointLights(entt::registry& registry)
     {
+        lightsCB.pointLights = {};
+
         auto& lightsGroup = registry.group<>(entt::get<PointLightComponent, Transform>);
 
-        int i = 0;
-        for (auto& pointLight : lightsGroup)
+        int numOfLights = std::min((int)lightsGroup.size(), maxNumOfLights);
+
+        for (int i = 0; i < numOfLights; i++)
         {
+            const auto& pointLight = lightsGroup[i];
             Transform& transform = lightsGroup.get<Transform>(pointLight);
             PointLightComponent& light = lightsGroup.get<PointLightComponent>(pointLight);
             lightsCB.pointLights[i].color = light.color;
@@ -43,12 +50,13 @@ namespace MatCore {
             lightsCB.pointLights[i].intensity = light.intensity;
             lightsCB.pointLights[i].linear = light.linear;
             lightsCB.pointLights[i].quadratic = light.quadratic;
-            i++;
         }
     }
 
     void LightRenderer::SetSpotLight(entt::registry& registry)
     {
+        lightsCB.spotLight = {};
+
         auto& lightsGroup = registry.group<>(entt::get<SpotLightComponent, Transform>);
 
         if (!lightsGroup.empty())
