@@ -50,7 +50,7 @@ namespace MatCore
         
         struct MaterialDataCB
         {
-            float shininess = 32;
+            float shininess = 64;
         };
         MaterialDataCB materialDataCB{};
         Resource<UniformBufferT<MaterialDataCB>> materialDataUB{std::make_shared<UniformBufferT<MaterialDataCB>>()};

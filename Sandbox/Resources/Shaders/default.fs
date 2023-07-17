@@ -72,8 +72,8 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 norm, vec3 viewDir)
     vec3 diffuse = diffuseStrenght * light.color * texture(diffuse, fs_in.uv).rgb;
 
     //specular
-    vec3 reflectDir = reflect(-lightDir, norm);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+    float spec = pow(max(dot(norm, halfwayDir), 0.0), material.shininess);
     vec3 specular = spec * light.color * texture(specular, fs_in.uv).rgb;
 
     ambient *= light.intensity;
@@ -93,8 +93,8 @@ vec3 CalculatePointLight(PointLight light, vec3 norm, vec3 viewDir)
     vec3 diffuse = diffuseStrenght * light.color * texture(diffuse, fs_in.uv).rgb;
 
     //specular
-    vec3 reflectDir = reflect(-lightDir, norm);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+    float spec = pow(max(dot(norm, halfwayDir), 0.0), material.shininess);
     vec3 specular = spec * light.color * texture(specular, fs_in.uv).rgb;;
 
     //attenuation
@@ -122,8 +122,8 @@ vec3 CalculateSpotLight(SpotLight light, vec3 norm, vec3 viewDir)
     vec3 diffuse = diffuseStrenght * light.color * texture(diffuse, fs_in.uv).rgb;
 
     //specular
-    vec3 reflectDir = reflect(-lightDir, norm);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+    float spec = pow(max(dot(norm, halfwayDir), 0.0), material.shininess);
     vec3 specular = spec * light.color * texture(specular, fs_in.uv).rgb;
 
     //attenuation
