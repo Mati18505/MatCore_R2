@@ -68,6 +68,11 @@ void EditorScene::Start()
 	camera.AddComponent<CameraComponent>();
 	Entity camera2 = CreateEntity("Camera2");
 	camera2.AddComponent<CameraComponent>().primary = false;
+
+	Entity directionalLight = CreateEntity("Directional light");
+	directionalLight.AddComponent<DirectionalLightComponent>();
+	directionalLight.GetComponent<Transform>().rotation.x = -100;
+	directionalLight.GetComponent<Transform>().rotation.y = -270;
 }
 
 void EditorScene::Update()

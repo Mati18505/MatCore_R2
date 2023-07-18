@@ -69,13 +69,13 @@ static void DrawVec3Control(const std::string& label, glm::vec3& values, float r
 	ImGui::PopID();
 }
 
-static void AttributeFloat(const std::string& label, float& value, float dragSpeed = 1.f, float columnWidth = 100.f) {
+static void AttributeFloat(const std::string& label, float& value, float dragSpeed = 1.f, float columnWidth = 100.f, float minValue = 0.0f, float maxValue = 0.0f) {
 	ImGui::PushID(label.c_str());
 	ImGui::Columns(2);
 	ImGui::SetColumnWidth(0, columnWidth);
 	ImGui::Text(label.c_str());
 	ImGui::NextColumn();
-	ImGui::DragFloat("", &value, dragSpeed);
+	ImGui::DragFloat("", &value, dragSpeed, minValue, maxValue);
 	ImGui::Columns(1);
 	ImGui::PopID();
 }
@@ -283,6 +283,27 @@ void SceneHierarchyPanel::DrawInspectorComponents(EditorScene& scene, MatCore::E
 		AttributeFloat("Far clip", camera.camera.farClip);
 	});
 
+	DrawInspectorComponent<DirectionalLightComponent>(u8"Directional Light", entity, true, [&](DirectionalLightComponent& light) {
+		ImGui::ColorPicker3("Color", &light.color.x);
+		AttributeFloat("Intensity ", light.intensity, 0.002f, 100.f, 0.f, 1.f);
+	});
+	
+	DrawInspectorComponent<PointLightComponent>(u8"Point Light", entity, true, [&](PointLightComponent& light) {
+		ImGui::ColorPicker3("Color", &light.color.x);
+		AttributeFloat("Intensity ", light.intensity, 0.002f, 100.f, 0.f, 1.f);
+		AttributeFloat("Linear ", light.linear, 0.001f, 100.f, 0.f, 1.f);
+		AttributeFloat("Quadratic ", light.quadratic, 0.0002f, 100.f, 0.f, 1.f);
+	});
+	
+	DrawInspectorComponent<SpotLightComponent>(u8"Spot Light", entity, true, [&](SpotLightComponent& light) {
+		ImGui::ColorPicker3("Color", &light.color.x);
+		AttributeFloat("Intensity ", light.intensity, 0.002f, 100.f, 0.f, 1.f);
+		AttributeFloat("Linear ", light.linear, 0.001f, 100.f, 0.f, 1.f);
+		AttributeFloat("Quadratic ", light.quadratic, 0.0002f, 100.f, 0.f, 1.f);
+		AttributeFloat("CutOff ", light.cutOffDegrees, 0.5f, 100.f, 0.f, light.outerCutOffDegrees);
+		AttributeFloat("UuterCutOff ", light.outerCutOffDegrees, 0.5f, 100.f, light.cutOffDegrees, 180.f);
+	});
+
 }
 
 void SceneHierarchyPanel::DrawTagComponent(MatCore::Entity entity)
@@ -323,6 +344,24 @@ void SceneHierarchyPanel::DrawAddComponentButton(EditorScene& scene, ImVec2 cont
 		if (!selectedEntity.HasComponent<CameraComponent>()) {
 			if (ImGui::MenuItem("Camera Component")) {
 				selectedEntity.AddComponent<CameraComponent>();
+				ImGui::CloseCurrentPopup();
+			}
+		}
+		if (!selectedEntity.HasComponent<DirectionalLightComponent>()) {
+			if (ImGui::MenuItem("Directional Light")) {
+				selectedEntity.AddComponent<DirectionalLightComponent>();
+				ImGui::CloseCurrentPopup();
+			}
+		}
+		if (!selectedEntity.HasComponent<PointLightComponent>()) {
+			if (ImGui::MenuItem("Point Light")) {
+				selectedEntity.AddComponent<PointLightComponent>();
+				ImGui::CloseCurrentPopup();
+			}
+		}
+		if (!selectedEntity.HasComponent<SpotLightComponent>()) {
+			if (ImGui::MenuItem("Spot Light")) {
+				selectedEntity.AddComponent<SpotLightComponent>();
 				ImGui::CloseCurrentPopup();
 			}
 		}
